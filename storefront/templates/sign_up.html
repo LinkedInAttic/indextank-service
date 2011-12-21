@@ -1,0 +1,46 @@
+{% extends "common-base.html" %}
+{% load custom_tags %}
+
+{% block common_content %}
+        {% if invitation %}
+        <h1>This is an invitation to create a BETA account!</h1>
+        {% else %}
+        <h1>Create an account and get your <span class="highlight">API key!</span></h1>
+        {% endif %}
+    	<img style="float: left; margin: 30px;" src="{% static 'images/users_2.png' %}"></img>
+    	<div style="margin-left: 200px; padding-top: 5px;">
+	    <p><b>You need an email and a password to get started</b></p>
+	    
+
+        <div class="form">
+            {% if message %}
+            <div class="errors">
+                {{ message }}
+            </div>
+            {% endif %}
+            <table>
+                <form name="signup_form" method="POST" action="https://{{ request.get_host }}{% url sign_up package=package %}">
+                    {% for f in sign_up_form %}
+                    <tr class="field">
+                        <td class="label">{{ f.label_tag }}</td>
+                        <td class="input large280">{{ f }}
+                            <div class="errors">{% for e in f.errors %}<span>{{e}}</span> {% endfor %}</div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </form>
+                <tr>
+                    <td colspan="2">
+                        <div style="clear:both; height: 25px;"></div>
+                        <a href="javascript:void(0)" onclick="$('form[name=signup_form]').submit()" class="btn green2" style="float: right; margin-right: 10px;"><i></i><span><span></span><i></i>
+                                <div style="padding: 2px 5px;">Next step >></div>
+                        </span></a>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+    <div style="clear:both;"></div>
+{% endblock %}
+

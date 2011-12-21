@@ -1,0 +1,102 @@
+{% load custom_tags %}
+
+{% with 8|random as p %}
+    {% if p == 1 or showall %}
+    <div class="staff-member banner">
+        <div class="pict"><img src="{% static 'images/developers/waxman.jpg' %}"></img><br>Michael Waxman</div>
+        <blockquote>I love IndexTank! It's much faster, and much, much easier to work with than the alternatives I've used in the past (looking at you Lucene and Solr). Bravo! I'm using it on all my projects now!</blockquote>
+        <p>My App: <a href="http://useqna.com">QNA</a> helps users find information faster than traditional forums and FAQ pages</p>
+    </div>
+    {% endif %}
+    {% if p == 2 or showall %}
+    <div class="staff-member banner">
+        <div class="pict"><img src="{% static 'images/developers/dellinger.jpg' %}"></img><br>Chris Dellinger</div>
+        <blockquote>Overall I was very impressed with the ease at which I could develop an application ...I went from zero knowledge to having something running in the cloud in hours! </blockquote>
+        <p>My App: <a href="http://geekseek.heroku.com/">GeekSeek</a> helps users find technical gurus (IndexTank  + StackOverflow)</p>
+    </div>
+    {% endif %}
+    {% if p == 3 or showall %}
+    <div class="staff-member banner">
+        <div class="pict"><img src="{% static 'images/developers/spence.jpg' %}"></img><br>Tim Spence</div>
+        <br><blockquote>Great white paper, great product. Helpful engineering/support staff.</blockquote>
+        <p>My App: <a href="http://toxosis.heroku.com">Toxosis</a> searches toxic spill data (IndexTank + E.P.A. Toxic Release Inventory National Data)</p>
+    </div>
+    {% endif %}
+    {% if p == 4 or showall %}
+    <div class="staff-member banner">
+        <div class="pict"><img src="{% static 'images/developers/culbreth.jpg' %}"></img><br>Matt Culbreth</div>
+        <blockquote>I really didn't have time to handle searching on my own, even though I've configured Lucene and Solr on other projects. IndexTank's really straightforward API made a ton of sense to me</blockquote>
+        <p>My App: <a href="http://www.proggitftw.com">Proggit FTW</a> allows for searching the programming subreddit's comments (IndexTank + Reddit) </p>
+    </div>
+    {% endif %}
+    {% if p == 5 or showall %}
+    <div class="staff-member banner">
+        <div class="pict"><img src="{% static 'images/developers/hendry.jpg' %}"></img><br>Ginny Hendry</div>
+        <blockquote>Since a low-volume account is available for free on Heroku, it's easy to test it by doing a sample app.  The straightforward API and helpful tech support make it easy, too.</blockquote>
+        <p>My App: <a href="http://lookupcentral.heroku.com">Lookup Central</a> helps you search through your files  and emails (IndexTank + your upload files)</p>
+    </div>
+    {% endif %}
+    {% if p == 6 or showall %}
+    <div class="staff-member banner">
+        <div class="pict"><img src="{% static 'images/developers/damman.jpg' %}"></img><br>Ben Damman</div>
+        <blockquote>Your support was excellent and responsive and  the API is simple and fun to work with. You take action on constructive feedback . Thank you, IndexTank!"</blockquote>
+        <p>My App: <a href="http://jobsbn.heroku.com">Twin Ports Job Aggregator</a> helps you find employment opportunities in hundreds of job sites.</p>
+    </div>
+    {% endif %}
+    {% if p == 7 or showall %}
+    <div class="staff-member banner pictless">
+        <blockquote>IndexTank is really easy to get up and running. There's no reason your site can't have good search.</blockquote>
+        <p>My App: <a href="http://theprism.heroku.com">The Prism</a> searches political blogs and displays results based on bias</p>
+        <div class="pict">Sam de Cesare</div>
+    </div>
+    {% endif %}
+    {% if p == 8 or showall %}
+    <div class="staff-member banner pictless">
+        <blockquote>In case I haven't mentioned it: I'm totally in love with IndexTank. I've been struggling with Solr for a year now. I reimplemented my company's search in 2 days using you guys.</blockquote>
+        <p>My App: <a href="http://cloops.com">Cloops</a> searches local deals</p>
+        <div class="pict" style="margin-top: 8px">Jack Danger Canty</div>
+    </div>
+    {% endif %}
+    {% if p == 0 %}
+    <div class="staff-member banner">
+        <div class="pict"><img src="{% static 'img/testimonials/user.png' %}"></img><br></div>
+        <blockquote></blockquote>
+        <p>My App: <a href=""></a></p>
+    </div>
+    {% endif %}
+    {% if p == 0 %}
+    <div class="staff-member banner">
+        <div class="pict"><img src="{% static 'images/staff-jorge.png' %}"></img><br>Jorge</div>
+        <p>Jorge came to work with us back in 2005, and has mainly been focused on back-end systems, infrastructure and architecture design.  He led development of search for BitTorrent. He also authored one of our white papers, and leads our work with Amazon Web Services. Jorge likes to spoil his kids and is a pilot.</p>
+        <blockquote>I like challenges, problems that require creativity, keeping things clean and simple.</blockquote>
+    </div>
+    {% endif %}
+    {% if p == 0 %}
+    <div class="staff-member banner">
+        <div class="pict"><img src="{% static 'images/staff-spike.png' %}"></img><br>Spike</div>
+        <p>Spike has been part of the team since 2006 working on search with clients such as WordPress, SideStep/Kayak, BitTorrent, Hounder.org and Wink/MyLife.com.  He’s also led full-text search workshops here in San Francisco.   Spike is an electronic hobbyist, gadget builder, and amateur baritone.</p>
+        <blockquote>I like to work on fault-tolerance and distributed decision-making algorithms.</blockquote>
+    </div>
+    {% endif %}
+    {% if p == 0 %}
+    <div class="staff-member banner">
+        <div class="pict"><img src="{% static 'images/staff-nacho.png' %}"></img><br>Ignacio</div>
+        <p>Ignacio -- call him Nacho -- joined the team back in 2007, a week after his younger brother, Santi. Nacho has worked on search for Hounder, WordPress, Trendistic,  and many more.  Most recently, he has been focused on developing Instant Insights. Nacho is a chess player, marathon runner, a tenor in-training, and teaches Semiotics at the University of Buenos Aires.</p>
+        <blockquote>I like problems dealing with semantic text processing, statistical semantic models, NLP in general.</blockquote>
+    </div>
+    {% endif %}
+    {% if p == 0 %}
+    <div class="staff-member banner">
+        <div class="pict"><img src="{% static 'images/staff-santi.png' %}"></img><br>Santi</div>
+        <p>Santi joined back in 2007, and has worked on search projects with Google, open source search project Hounder.org and  (flaptor clients).  More recently, he has led abc, and xyz.  On the weekends, when he is not challenging himself with math problems (ACM ICPC Latin American champion 2008, Google Code Jam Finalist, 2005),  he plays soccer, enjoys traveling and going out to enjoy Buenos Aires.</p>
+        <blockquote>I like solving complex algorithmic challenges and designing good, efficient and maintainable code.</blockquote>
+    </div>
+    {% endif %}
+    {% if p == 0 %}
+    <div class="staff-member banner">
+        <div class="pict"><img src="{% static 'images/staff-spike.png' %}"></img><br>Leandro</div>
+        <p>Leandro recently joined the team from MercadoLibre.com, Latin America’s number one e-commerce site with 42 million registered users. He is an avid trekker, climber, mountain enthusiast and soccer player.</p>
+        <blockquote>I like solving problems in which creativity it's a must have. When all standard solutions have failed, here I come with my crazy ideas.</blockquote>
+    </div>
+    {% endif %}
+{% endwith %}

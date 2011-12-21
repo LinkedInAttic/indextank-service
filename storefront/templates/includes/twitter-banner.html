@@ -1,0 +1,35 @@
+{% load custom_tags %}
+
+{% with 5|random as p %}
+    <div style="text-align: center; max-width: 700px; margin: auto;">
+        <span style='display: inline-block'>
+        <p class='bbpTweet' style='margin:0;font-size:14px;text-align: left;'>
+            {% if p == 1 or showall %}
+                <a href='http://twitter.com/treeder'><img src='http://a1.twimg.com/profile_images/1124555352/34516_407053407201_631617201_4857742_3849060_n-1_normal.jpg' style='float:left;margin:0 7px 0 0px;width:38px;height:38px;' /></a><strong><a href='http://twitter.com/treeder'>treeder</a>: </strong>
+                Just tried <a href="http://twitter.com/IndexTank" target="_new">@IndexTank</a>, color me impressed! - Hosted Real-Time Search <a href='http://bit.ly/g9cInn' target='_new'>http://bit.ly/g9cInn</a>
+                <span style='margin-left: 45px; font-size:12px;display:block;'><a href='http://twitter.com/treeder/status/37010216767721470'>on Monday, February 14</a> via web</span>
+	        {% endif %}
+	        {% if p == 2 or showall %}
+                <a href='http://twitter.com/itsemil'><img src='http://a1.twimg.com/profile_images/1112390567/emilio_normal.jpg' style='float:left;margin:0 7px 0 0px;width:38px;height:38px;' /></a><strong><a href='http://twitter.com/itsemil'>itsemil</a>: </strong>
+                <a href="http://twitter.com/IndexTank" target="_new">@IndexTank</a> saves the day(for pilarhq) again. This is the second time I tweet about them. IndexTank, amazing support, scaled real-time search
+                <span style='margin-left: 45px; font-size:12px;display:block;'><a href='http://twitter.com/itsemil/status/37294976274538496'>on Monday, February 14</a> via web</span>
+	        {% endif %}
+	        {% if p == 3 or showall %}
+                <a href='http://twitter.com/jamesthigpen'><img src='http://a0.twimg.com/profile_images/1176855316/DSC_6035_normal.jpg' style='float:left;margin:0 7px 0 0px;width:38px;height:38px;' /></a><strong><a href='http://twitter.com/jamesthigpen'>jamesthigpen</a>: </strong>
+                I played with solr this morning and the value proposition of indextank became incredibly obvious.
+                <span style='margin-left: 45px; font-size:12px;display:block;'><a href='http://twitter.com/jamesthigpen/status/31397491601575936'>on Saturday, January 29</a> via Twitter for iPhone</span>
+            {% endif %}
+	        {% if p == 4 or showall %}
+                <a href='http://twitter.com/Geletka'><img src='http://a2.twimg.com/profile_images/1138409214/gap_avatar_1_normal.jpg' style='float:left;margin:0 7px 0 0px;width:38px;height:38px;' /></a><strong><a href='http://twitter.com/Geletka'>Geletka</a>: </strong>
+                The folks at indextank are a class act. If you have a rails site on heroku, you should check out their product.
+                <span style='margin-left: 45px; font-size:12px;display:block;'><a href='http://twitter.com/#!/Geletka/status/38663706896371712'>on Friday, February 18</a> via Twitter for iPad</span>
+            {% endif %}
+	        {% if p == 5  or showall %}
+                <a href='http://twitter.com/howardpyle'><img src='http://a1.twimg.com/profile_images/1093694989/kt0vc_normal.jpg' style='float:left;margin:0 7px 0 0px;width:38px;height:38px;' /></a><strong><a href='http://twitter.com/howardpyle'>howardpyle</a>: </strong>
+                Really digging IndexTank (search API) and their app contest entries. Check out this one to search dev subreddits: <a href="http://www.proggitftw.com/">http://www.proggitftw.com/</a>
+                <span style='margin-left: 45px; font-size:12px;display:block;'><a href='http://twitter.com/#!/howardpyle/status/38236681492500480'>on Thursday, February 17</a> via <a href="http://www.hootsuite.com/" rel="nofollow">HootSuite</a></span>
+            {% endif %}
+		</p>
+        </span>    
+    </div>
+{% endwith %}

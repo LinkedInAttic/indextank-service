@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load custom_tags %}
+
+{% block content %}
+<div class="module x"></div>
+<div class="module x">
+    <h3>Closing account</h3>
+    
+    <p>You are about to CLOSE your IndexTank account. Closing the account implies deleting all indexes linked to it and results 
+    in losing all the information within them.</p>
+    <p>You need to enter your password in order to take this action.</p>
+    <div style="margin-top: 40px;">
+    
+    <div class="form">
+      <table>
+         <form name="form" method="POST" action="https://{{ request.get_host }}{% url close_account %}">
+         {% for f in form %}
+             <tr class="field">
+               <td class="label">{{ f.label_tag }}</td>
+               <td class="input">{{ f }}
+                   <div class="errors">{% for e in f.errors %}<span>{{e}}</span> {% endfor %}</div>
+               </td>
+             </tr>
+         {% endfor %}
+        {% if message %}
+          <tr>
+               <td class="label"></td>
+               <td class="input errors">
+                {{ message }}
+              </td>
+          </tr>
+        {% else %}
+        {% endif %}
+         <tr>
+            <td class="label"></td>
+            <td>
+               <a href="javascript:void(0)" onclick="$('form[name=form]').submit()" class="btn" style="float: left;">CLOSE ACCOUNT</a>
+               <div style="clear:both; height: 25px;"></div>
+            </td>
+         </tr>
+         </form>
+      </table>
+    </div>
+     </div>
+    
+</div>
+{% endblock %}
+

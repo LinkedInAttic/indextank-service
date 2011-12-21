@@ -1,0 +1,7 @@
+<div class="input_bg {% if field.field.required %} required_field{% endif %}">
+  <label><span class="none">&nbsp;</span>
+    {{ field }}
+  </label>
+</div>
+<div id="email_error">{% for e in field.errors %}<span>{{e}}</span> {% endfor %}</div>
+<div class="clear"></div>

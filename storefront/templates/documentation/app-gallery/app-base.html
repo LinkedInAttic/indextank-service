@@ -1,0 +1,33 @@
+{% extends "common-base.html" %}
+{% load custom_tags %}
+
+{% block common_content %}
+    <div id="gallery-detail">
+    <span class="app-box">
+        <div class="main">
+            <img src="{% block picture_path %}{% endblock %}"></img>
+            <h2>{% block author %}{% endblock %}</h2>
+        </div>
+
+        <a style="float: right" href="{% url documentation path='app-gallery' %}">[Back to the gallery]</a>           
+        <h1>{% block app_name %}{% endblock %}</h1>
+        <h3>My App</h3>
+        <p>
+            {% block problem_solved %}{% endblock %}
+        </p>
+        <h3>Instructions</h3>
+        <p>
+            {% block instructions %}{% endblock %}
+        </p>
+        <h3>Source datasets</h3>
+        <p>
+            {% block datasets %}{% endblock %}
+        </p>
+        <h3>Website</h3>
+        <p>
+            {% block website %}{% endblock %}
+        </p>
+    </span>
+    
+    </div>    
+{% endblock %}

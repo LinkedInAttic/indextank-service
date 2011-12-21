@@ -1,0 +1,30 @@
+{% extends "documentation/app-gallery/app-base.html" %}
+{% load custom_tags %}
+
+{% block picture_path %}
+    {% static 'images/developers/sharma.jpg' %}
+{% endblock %}
+
+{% block author %}
+    by Bhaarat Sharma
+{% endblock %}
+
+{% block app_name %}
+    Wordsearch
+{% endblock %}
+
+{% block problem_solved %}
+    Wikidex helps you find words that have same definition or can be used in the same sentence.
+{% endblock %}
+           
+{% block instructions %}
+    Just type in a word! For example, enter ‘gracious’ and ‘amiable’ will appear in the search results.
+{% endblock %}
+            
+{% block datasets %}
+    Wiktionary. (It does not provide a simple api. I had to parse through raw xml dump and had to use tricky xpaths)
+{% endblock %}
+
+{% block website %}
+    <a href="http://wikidex.heroku.com">http://wikidex.heroku.com</a>
+{% endblock %}

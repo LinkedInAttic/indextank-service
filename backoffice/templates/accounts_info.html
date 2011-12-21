@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load custom_tags %}
+{% load humanize %}
+{% block content %}
+<div class="module">
+</div>
+<div class="main" style="width: 950px">
+    <div class="module x">
+        <h3>Active Accounts</h3>
+    </div>
+</div>
+<div style="clear:both">
+</div>
+<div class="module x">
+    <div class="roundbox" style="padding: 0px; background-color: #ebebeb">
+        <table width="100%" border="0" cellpadding="10" cellspacing="10" class="indextable">
+            <tr class="round_b clear" style="background-color: transparent;">
+                <td class="first" align="left">
+                    E-MAIL
+                </td>
+                <td align="center">
+                    CREATED
+                </td>
+                <td align="center">
+                    PLAN
+                </td>
+                <td align="center">
+                    INDEX
+                </td>
+                <td align="center">
+                    SIZE
+                </td>
+                <td align="center">
+                    STATUS
+                </td>
+            </tr>
+            {% for account in accounts %}
+                <tbody style="background-color: {% cycle 'white' '#ebebeb' %};">
+                {% for index in account.indexes.all %}
+                    <tr>
+                        {% if forloop.first %}
+                            <td class="first" align="left">
+                                <small><a href="{{ account.get_private_apiurl }}">{{ account.user.email|default:"???" }}</a></small>
+                            </td>
+                            <td class="first" align="left">
+                                <small>{{ account.creation_time|date:"M j, gA" }}</small>
+                            </td>
+                            <td class="first" align="left">
+                                <b><small title="{{ index.account.package.name }}">{{ account.package.code }}</small></b>
+                            </td>
+                        {% else %}
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        {% endif %}
+                        <td class="first" align="left">
+                            <small title="{{ index.code }}"><b>{{ index.name }} [{{ index.code }}]</b></small><br>
+                            <small>{{ index.creation_time|date:"M j, g:iA" }}</small>
+                        </td>
+                        <td class="first" align="left">
+                            <small>{{ index.current_docs_number }}</small>
+                        </td>
+                        <td class="first" align="left">
+                            <small>
+                            {% if index.is_readable %}
+                                <b style="color: green">Read</b>
+                            {% else %}
+                                <b style="color: red">Read</b>
+                            {% endif %}
+                            {% if index.is_writable %}
+                                <b style="color: green">Write</b>
+                            {% else %}
+                                <b style="color: red">Write</b>
+                            {% endif %} on 
+                            </small>
+                            <small><a href="ssh://{{ index.deploys.all.0.worker.wan_dns }}">W:{{ index.deploys.all.0.worker.id }}</a></small>
+                            <br>
+                                   
+                            <small title="{{ index.configuration.json_configuration }}">Config</small>
+                             
+                        </td>
+                        
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td class="first" align="left">
+                            <small><a href="{{ account.get_privateurl }}">{{ account.user.email }}</a></small>
+                        </td>
+                        <td class="first" align="left">
+                            <small>{{ account.creation_time|date:"M j, gA" }}</small>
+                        </td>
+                        <td class="first" align="left">
+                            <small title="{{ index.account.package.name }}">{{ account.package.code }}</small>
+                        </td>
+                        <td colspan="3" align="center">-</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+<div style="clear:both; height: 50px;">
+</div>
+
+{% endblock %}

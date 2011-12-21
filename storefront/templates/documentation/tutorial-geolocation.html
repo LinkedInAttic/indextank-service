@@ -1,0 +1,263 @@
+{% extends "common-base.html" %}
+
+{% load custom_tags %}
+{% load messages %}
+
+{% block extrahead %}
+
+<script type="text/javascript" src="{% static 'common/js/function01.js' %}"></script>
+
+{% endblock %}
+
+{% block container_class %}{{ block.super }} documentation{% endblock %}
+
+{% block right_content %}
+  {% box 'table' %}
+    <ul>
+      <li><h2>Table of contents</h2></li>
+      <li><a href="#about">About Geolocation</a></li>
+      <li><a href="#quickstart">Quick Start: Copy & Paste</a></li>
+      <li class="last"><a href="#more_info">More Information</a></li>
+    </ul>
+  {% endbox %}
+{% endblock %}
+
+{% block content_head %}<h2>Geolocation Tutorial</h2>{% endblock %}
+
+{% block common_content %} 
+<div id="tutorial-main" class="main">
+    
+<p><i>How to implement geolocation, a way to increase the relevance of search results</i></p>
+<h2 id="about">About Geolocation</h2>
+<p>
+To provide search results customized to the user's location, add <i>geolocation</i> functionality. With geolocation, 
+a query can include not only the target search terms but also latitude and longitude data pinpointing the 
+location of the person submitting the search. IndexTank can use this information to provide search results 
+related to that location.</p>
+<h3>Why Use Geolocation?</h3>
+<p>
+For some types of search results, the location of the person doing the search matters. A search for "coffee shop" 
+or "plumber" is most likely not an abstract or academic one, but a practical search for an immediate need. If you 
+know the location from which a query is submitted, you can potentially use that information to provide more useful 
+search results. Finding a nearby place to get coffee, or a local plumber to fix a broken water pipe, is the result 
+most likely to make users happy.
+</p>
+<p>
+You might want to use location data as a ranking signal for every query. Alternatively, you can let the user decide 
+whether location is important by providing a special UI control, such as a "Find Near Me" button or a Settings checkbox, 
+and run the location-based query only when the user selects to do so.
+</p>
+<h3>How It Works</h3>
+<p>Geolocation is performed in several parts:
+<ul>
+    <li>
+        <b>Index:</b> a location (latitude and longitude) can be associated with each document in the index. The latitude and 
+        longitude are stored in the index as document variables. Location data can be associated with all or only some of the 
+        documents in the index.
+    </li>
+    <li>
+        <b>Scoring function:</b> a built-in <a href="{% url documentation path='function-definition#distance' %}">distance scoring function</a> 
+        can be applied to any query to calculate the distance between the user's location and the lat/long point stored for a document.
+    </li>
+    <li>
+        <b>Query:</b> in addition to the scoring function, pass the user's location in the query by including lat/long values as query variables. 
+        With this data, the user's location can be compared to the document location.
+    </li>
+    <li>
+        <b>User interface:</b> You might already know the user's location: perhaps your users are authenticated and you have stored profiles for 
+        them, you are using IP location software, or your users are accessing your application through GPS-enabled devices. If not, you need to 
+        provide a way for the user to specify a location (typically using a postal code or street address). By adding a little code to convert 
+        locations into lat/long coordinates, your application is ready to put location-based result ranking into effect.
+    </li>
+</ul>
+</p>
+<h2 id="quickstart">Quick Start: Copy & Paste</h2>
+<p><i>Tweak the following code snippets for your
+needs, and you're ready to go</i></p>
+
+<h3>Before you start</h3>
+
+<ul>
+  <li style="list-style: none; margin-left: -40px;">
+    <div class="work_tab">
+      <ul>
+        <li><a href="javascript:void(0);" rel="content1" class="active"><span><img src="{% static 'common/images/work_icon03.gif' %}" alt="ruby" /></span></a></li>
+        <li><a href="javascript:void(0);" rel="content2"><span><img src="{% static 'common/images/work_icon02.gif' %}" alt="python" /></span></a></li>
+        <li><a href="javascript:void(0);" rel="content3"><span><img src="{% static 'common/images/work_icon04.gif' %}" alt="php" /></span></a></li>
+        <li><a href="javascript:void(0);" rel="content4"><span><img src="{% static 'common/images/work_icon01.gif' %}" alt="java" /></span></a></li>
+      </ul>
+      <span class="clear"></span>
+    </div>
+    {% bg 'work' %}
+        <div class="work_main content1" style="display:block;">
+          <p>For Ruby environments we provide a gem that handles all the REST calls for you in a very Ruby-fashioned way.</p>
+          <ul>
+            <li>
+              Download the <a href="{% url documentation path='ruby-client' %}">Ruby client</a>
+              if you have not already done so.
+            </li>
+            <li>
+              Know your index's public URL. You'll need
+              it to instantiate the client. Find the public
+              URL on the <a href="{% url dashboard %}">Dashboard</a>.
+            </li>
+          </ul>
+        </div>
+        <div class="work_main content2" style="display:none;">
+          <p>For Python environments we provide a package that handles all the REST calls for you. You can install it with Pip or download the library:</p>
+          <ul>
+            <li>
+              Download the <a href="{% url documentation path='python-client' %}">Python client</a>
+              if you have not already done so.
+            </li>
+            <li>
+              Know your index's public URL. You'll need
+              it to instantiate the client. Find the public
+              URL on the <a href="{% url dashboard %}">Dashboard</a>.
+            </li>
+          </ul>
+        </div>
+        <div class="work_main content3" style="display:none;">
+          <p>For Php environments we provide a client that handles all the REST calls for you. Download a file that comes with the library ready to use.</p>
+          <ul>
+            <li>
+              Download the <a href="{% url documentation path='php-client' %}">PHP client</a>
+              if you have not already done so.
+            </li>
+            <li>
+              Know your index's public URL. You'll need
+              it to instantiate the client. Find the public
+              URL on the <a href="{% url dashboard %}">Dashboard</a>.
+            </li>
+          </ul>
+        </div>
+        <div class="work_main content4" style="display:none;">
+          <p>For Java environments we provide a basic API client that handles all the REST calls for you and translates the responses to simple Java objects.</p>
+          <ul>
+            <li>
+              Download the <a href="{% url documentation path='java-client' %}">Java client</a>
+              if you have not already done so.
+            </li>
+            <li>
+              Know your index's public URL. You'll need
+              it to instantiate the client. Find the public
+              URL on the <a href="{% url dashboard %}">Dashboard</a>.
+            </li>
+          </ul>
+        </div>
+      {% endbg %}
+  
+  </li>
+</ul>
+
+<h3>Add Lat/Long Data to the Documents</h3>
+<div class="clear"></div>
+<p>
+    For those documents in your index that can be associated with a particular geographic location, store that location as a pair of document 
+    variables: one to store the latitude, and one to store the longitude.
+</p>
+<p>
+    The following code shows how to add latitude and longitude data to documents in the index, using the addDocument() method from the Java 
+    client library. The latitude and longitude values are expressed in degrees, as floating point numbers. The location used for this example 
+    is Buenos Aires, Argentina:
+</p>
+{% box 'code' %}
+<pre class="content1 sh_ruby" style="display:block;">
+lat = -34.70549341022545
+lon = -58.359375
+
+variables = { 
+              0 => lat,
+              1 => lon
+            }
+
+index.document(docid).add(fields, :variables => variables)
+</pre>
+<pre class="content2 sh_python" style="display:none;">
+lat = -34.70549341022545
+lon = -58.359375
+
+variables = { 0: lat, 1: lon }
+ 
+index.add_document(id, fields, variables=variables)
+</pre>
+<pre class="content3 sh_php" style="display:none;">
+$lat = -34.70549341022545;
+$lon = -58.359375;
+ 
+$variables = array('0'=>$lat, '1'=>$lon);
+
+$index->add_document($doc_id, $fields. $variables);
+</pre>
+<pre class="content4 sh_java" style="display:none;">
+Float lat = -34.70549341022545f;
+Float lon = -58.359375f;
+
+Map<Integer, Float> variables = new HashMap<Integer, Float>();
+variables.put(0, lat);
+variables.put(1, lon);
+
+index.addDocument(docId, fields, variables);</pre>
+{% endbox %}
+
+<h3>Define Distance Scoring Function</h3>
+<div class="clear"></div>
+<p>
+    IndexTank provides a built-in function that you can use to calculate the distance between two points. Two versions are provided, miles() 
+    and km(), for calculating distance in either miles or kilometers. For details on the function syntax, see <a href="{% url documentation path='function-definition#distance' %}">Scoring Function Formulas</a>.
+</p>
+<p>
+    The following example shows how to use a distance function in the definition of custom scoring function number 5. The inclusion of the 
+    negative sign will cause this function to rank search results from shortest distance to longest.
+</p>
+{% box 'code' %}
+<pre class="content1 sh_ruby" style="display:block;">
+index.functions(5, "-miles(d[0], d[1], q[0], q[1])").add
+</pre>
+<pre class="content2 sh_python" style="display:none;">
+index.add_function(5, '-miles(d[0], d[1], q[0], q[1])')
+</pre>
+<pre class="content3 sh_php" style="display:none;">
+$index->add_function(5, "-miles(d[0], d[1], q[0], q[1])");
+</pre>
+<pre class="content4 sh_java" style="display:none;">
+index.addFunction(5, "-miles(d[0], d[1], q[0], q[1])");
+</pre>
+{% endbox %}
+
+<h3>Specify Location as a Query Variable</h3>
+<div class="clear"></div>
+<p>
+    To pass the geolocation of a particular user in a search query, use query variables. The following code shows how to include both the 
+    distance scoring function and the lat/long data as parameters to a query:</p>
+</p>
+{% box 'code' %}
+<pre class="content1 sh_ruby" style="display:block;">
+index.search(query, 
+             :function => 5, 
+             :var0 => latitude, 
+             :var1 => longitud)</pre>
+<pre class="content2 sh_python" style="display:none;">
+variables = { 0: latitude, 1: longitude }
+
+index.search(query, 
+             scoring_function=5,
+             variables=variables)</pre>
+<pre class="content3 sh_php" style="display:none;">
+# Unsupported by current PHP client
+</pre>
+<pre class="content4 sh_java" style="display:none;">
+results = index.search(Query.forString(query)
+                       .withScoringFunction(5)
+                       .withQueryVariable(0, latitude)
+                       .withQueryVariable(1, longitude));</pre>
+{% endbox %}
+
+
+<h2 id="more_info">More Information</h2>
+<ul>
+    <li><a href="{% url documentation path='tutorial-scoring-functions' %}">Scoring Functions Tutorial</a></li>
+</ul>
+
+</div>  
+{% endblock %}

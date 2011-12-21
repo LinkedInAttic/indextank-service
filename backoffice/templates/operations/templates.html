@@ -1,0 +1,182 @@
+{% load custom_tags %}
+{% load humanize %}
+
+      <div class="item">
+        <div class="iheader">
+          <div class="close">x</div>
+          <div class="reload">r</div>
+          <div style="clear:both"></div>
+        </div>
+        <div class="content"></div>
+      </div>
+      <div class="account_det">
+        <h1 class="email" style="float:left"></h1>
+        <div class="rels" style="float:right; margin-top: 15px;"></div>
+        <div style="clear:left"></div>
+        <div style="float:left">
+          <p><em>created</em> <span class="created"></span></p>
+          <p><em>private</em> <span class="private_url"></span></p>
+          <p><em>public</em> <span class="public_url"></span></p>
+          <p><em>status</em> <span class="status"></span></p>
+          <p><em>usage</em> <b><span class="usage"></span>%</b> of up to <span class="maxdocs"></span> docs / <span class="maxidxs"></span> indexes</p>
+        </div>
+        <div style="clear:left"></div>
+        <div class="btn login">Login</div>
+        <div class="btn delete">Delete</div>
+        <div class="btn set_cfg">Set Config</div>
+        <div class="btn set_pkg">Set Package</div>
+        <div style="clear:both"></div>
+      </div>
+      <div class="index_det">
+        <h1 style="float:left"><span class="name"></span> (<span class="code"></span>)</h1>
+        <div class="rels" style="float:right; margin-top: 15px;"></div>
+        <div style="clear:left"></div>
+        <div style="float:left">
+          <p><em>id</em> <span class="id"></span></p>
+          <p><em>status</em> <span class="status"></span></p>
+          <p><em>created</em> <span class="created"></span></p>
+          <p><em>docs</em> <span class="documents"></span> (<span class="usage"></span>% of <span class="maxdocs"></span>)</p>
+          <p><em>config</em> <span class="configdesc"></span> =&gt; xmx: <span class="xmx"></span>M - bdb: <span class="bdb"></span></p>
+        </div>
+        <div style="clear:left"></div>
+        <div class="btn redeploy">Redeploy</div>
+        <div class="btn set_cfg">Set Config</div>
+        <div style="clear:both"></div>
+      </div>
+      <div class="deploy_det">
+        <h1 style="float:left"><span class="id"></span> (<span class="status"></span>)</h1>
+        <div class="rels" style="float:right; margin-top: 15px;"></div>
+        <div style="clear:left"></div>
+        <div style="float:left">
+          <p><em>created</em> <span class="created"></span></p>
+          <p>ssh indextank@<span class="worker_dns"></span></p>
+          <p>cd /data/indexes/<span class="index_code"></span>-<span class="base_port"></span></p>
+          <p>
+            <div class="btn showstats">Get Stats</div>
+            <div class="btn showlog">Show Log</div>
+            <div class="btn showgclog">Show GC Log</div>
+            <div class="btn showcfg">Show IE Config</div>
+          </p>
+        </div>
+        <div style="clear:both"></div>
+      </div>
+      <div class="worker_det">
+        <h1 style="float:left"><span class="wan_dns"></span></h1>
+        <div style="clear:left"></div>
+        <div style="float:left">
+          <p><em>aws name</em> <span class="name"></span></p>
+          <p><em>lan dns</em> <span class="lan_dns"></span></p>
+          <p><em>status</em> <span class="status"></span></p>
+          <p><em>ram</em> <span class="usage"></span>% <span class="used_ram"></span>M of <span class="ram"></span>M</p>
+        </div>
+        <div style="clear:left"></div>
+        <div class="rels" style="max-height: 200px; width: auto; overflow-y: auto; margin-top: 25px;"></div>
+        <div style="clear:left"></div>
+        <div class="btn decomission">Decommission</div>
+        <div class="btn delete">Delete</div>
+        <div style="clear:both"></div>
+      </div>
+      <div class="package_det">
+        <h1 style="float:left"><span class="name"></span> (<span class="code"></span>)</h1>
+        <div class="rels" style="float:right; margin-top: 15px;"></div>
+        <div style="clear:left"></div>
+        <div style="float:left">
+          <p><em>price</em> $<span class="price"></span> / month</p>
+          <p><em>max docs</em> <span class="docs"></span></p>
+          <p><em>max idxs</em> <span class="indexes"></span></p>
+          <p><em>accounts</em> <a href="javascript:void(0)" class="listaccounts"><span class="accounts"></span> accounts</a></p>
+        </div>
+        <div style="clear:left"></div>
+        <div class="relslong" style="max-height: 200px; width: auto; overflow-y: auto; margin-top: 25px;"></div>
+        <div style="clear:left"></div>
+        <div class="btn choose">Choose Package</div>
+        {#<div class="btn set_cfg">Set Config</div>#}
+        <div style="clear:both"></div>
+      </div>
+      <div class="config listing">
+        <div class="id ldata" style="width: 35px"></div>
+        <div class="name ldata hid"></div>
+        <div style="clear:both"></div>
+      </div>
+      <div class="package listing">
+        <div class="id ldata" style="width: 35px"></div>
+        <div class="name ldata hid"></div>
+        <div class="rdata info">
+          <span class="documents"></span> / $<span class="price"></span>
+        </div>
+        <div style="clear:both"></div>
+      </div>
+      <div class="account listing">
+        <div class="code ldata" style="width: 35px"></div>
+        <div class="email ldata hid"></div>
+        <div class="rdata info">
+          <span class="documents"></span> / <span class="indexes"></span> <span class="usage">&#x25cf;</span>
+        </div>
+        <div style="clear:both"></div>
+      </div>
+      <div class="index listing">
+        <div class="code ldata" style="width: 35px"></div>
+        <div class="name ldata hid" style="width: 135px"></div>
+        <div class="rdata" style="width: 50px; margin-right: -3px;">
+          <span class="documents"></span> <span class="shortstatus">&#x25cf;</span>
+        </div>
+        <div style="clear:both"></div>
+      </div>
+      <div class="deploy listing">
+        <div class="id ldata" style="width: 30px"></div>
+        <div class="ldata hid" style="width: 70px">
+          <b>W<span class="workerid"></span></b>:<span class="base_port"></span>
+        </div>
+        <div class="rdata" style="width: 60px; margin-right: -3px;">
+          bdb:<span class="effective_bdb"></span>M <span class="shortstatus">&#x25cf;</span>
+        </div>
+        <div class="rdata" style="width: 60px;">
+          xmx:<span class="effective_xmx"></span>M
+        </div>
+        <div style="clear:both"></div>
+        <div class="status under"></div>
+      </div>
+      <div class="wdeploy listing" style="width: 530px">
+        <div class="id ldata" style="width: 30px"></div>
+        <div class="ldata hid" style="width: 180px">
+          <span class="email" style="white-space: nowrap;"></span>
+        </div>
+        <div class="ldata hid" style="width: 130px">
+          <span class="name" style="white-space: nowrap;"></span>
+        </div>
+        <div class="rdata hid" style="width: 75px; margin-right: -3px">
+          <span class="status" style="text-transform: lowercase;"></span> <span class="shortstatus">&#x25cf;</span>
+        </div>
+        <div class="rdata" style="width: 40px; margin-right: -3px;">
+          <span class="ram"></span>M
+        </div>
+        <div class="rdata hid" style="width: 60px">
+          <span class="docs"></span> docs
+        </div>
+        <div style="clear:both"></div>
+      </div>
+      <div class="worker listing">
+        <div class="id ldata" style="width: 25px"></div>
+        <div class="ldata hid main" style="width: 80px"><span class="depcount"></span> deploys</div>
+        <div class="rdata info" style="width: 110px; margin-right: -3px;">
+          <span class="used"></span>M
+          of
+          <span class="ram"></span>M <span class="shortstatus">&#x25cf;</span>
+        </div>
+        <div style="clear:both"></div>
+        <div class="under">
+          <div style="float:left; text-align: right; padding-right: 4px; height: 11px; background: #3B3; margin-left: -4px; -webkit-border-bottom-left-radius: 2px; min-width: 40px;" class="usagebar">
+            <span class="usage"></span>%
+          </div>
+        </div>
+      </div>
+      <div class="listing change">
+        <div class="id ldata" style="width: 30px"></div>
+        
+      </div>
+      <div class="wait" style="text-align:center; padding: 50px 0;">
+        <img src="{% static 'images/fastwait.gif' %}"></img>
+      </div>
+      <div class="load" style="text-align:center; padding: 50px 0;">
+        <img src="{% static 'images/loading.gif' %}"></img>
+      </div>

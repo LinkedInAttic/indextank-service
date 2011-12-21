@@ -1,0 +1,193 @@
+.btn { display: block; position: relative; background: #ef6a31; padding: 5px; color: #fff; text-decoration: none; cursor: pointer; text-align: center; line-height: normal;}
+.btn i,.btn span { font-style: normal; background-image: url(images/btn3.png); background-repeat: no-repeat; display: block; position: relative; }
+.btn i { background-position: top left; position: absolute; margin-bottom: -5px; top: 0; left: 0; width: 5px; height: 5px; }
+.btn span { background-position: bottom left; left: -5px; padding: 0 0 5px 10px; margin-bottom: -5px; }
+.btn span i { background-position: bottom right; margin-bottom: 0; position: absolute; left: 100%; width: 10px; height: 100%; top: 0; }
+.btn span span { background-position: top right; position: absolute; right: -10px; margin-left: 10px; top: -5px; height: 0; }
+.btn.blue { background: #2ae; }
+.btn.green { background: #9d4; }
+.btn.disabled { background-color: silver; cursor: default; }
+.btn.disabled:hover { background-color: silver; }
+.btn.green2 { background-color: #88bf1c; }
+.btn.pink { background: #e1a; }
+.btn.black { background: #333; }
+.btn.red { background: #a00; }
+.btn.red:hover { background-color: #aaa; }
+.btn.yellow { background-color: #fa0; }
+.btn.white { background-color: #fff; color: #777; }
+.btn:hover { background-color: #a00; text-decoration: none; }
+.btn:active { background-color: #333; }
+.btn[class] { background-image: url(images/shade.png); background-position: bottom; }
+
+.superbox {
+	border: solid 2px #ccc; 
+	padding: 30px; 
+	background: white; 
+	-webkit-border-radius: 25px; 
+	-webkit-box-shadow: 0 0 10px silver;
+	-moz-border-radius: 25px; 
+	-moz-box-shadow: 0 0 10px silver;
+}
+.superbox.red {
+	background: #FFF8F4;
+	border-color: white;
+	-webkit-box-shadow: 0 0 5px #CA9;
+	-moz-box-shadow: 0 0 5px #CA9;
+}
+.superbox.green {
+	background: #F4FFF4;
+	border-color: white;
+	-webkit-box-shadow: 0 0 5px #9C9;
+	-moz-box-shadow: 0 0 5px #9C9;
+}
+.superbox h1 {
+	font-weight: bold !important; 
+	font-size: 30px; 
+	text-align: center; 
+	text-shadow: silver 2px 2px 2px; 
+	color: #333;
+}
+.superbox h1 .highlight {
+	color: #ef6a31;
+}
+
+.roundbox {
+	line-height: normal;
+	border: solid 1px silver;
+	padding: 8px 14px;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	background-color: white;
+	color: gray;
+}
+
+.roundbox.orange {
+	border: none;
+	color: white;
+	background-color: #ef6a31;
+}
+.roundbox.black {
+	border: none;
+	color: white;
+	background-color: black;
+}
+.roundbox.gold {
+	border: none;
+	color: white;
+	background-color: #DA0;
+}
+.roundbox.green {
+	border: none;
+	color: white;
+	background-color: green;
+}
+.roundbox.gray {
+	border: none;
+	color: white;
+	background-color: gray;
+}
+.roundbox.silver {
+	border: none;
+	color: white;
+	background-color: silver;
+}
+.roundbox.topright {
+	margin-right: -14px; margin-top: -8px;
+	float: right;
+	-webkit-border-top-left-radius: 0px;
+	-webkit-border-bottom-right-radius: 0px;
+	-moz-border-radius-topleft: 0px;
+	-moz-border-radius-bottomright: 0px;
+	padding-top: 6px;
+}
+.roundbox.topleft {
+	margin-left: -14px; margin-top: -8px;
+	float: left;
+	-webkit-border-top-right-radius: 0px;
+	-webkit-border-bottom-left-radius: 0px;
+	-moz-border-radius-topright: 0px;
+	-moz-border-radius-bottomleft: 0px;
+	padding-top: 6px;
+}
+.roundbox big {
+	font-weight: bold;
+}
+
+.apitable {
+	border: solid 2px gray;
+	border-collapse: collapse;
+	line-height: normal;
+}
+.apitable td, .apitable th {
+	border: solid 1px gray;
+	border-collapse: collapse;
+	padding: 5px;
+	font-size: 12px;
+	vertical-align: top;
+}
+.apitable th {
+	background: #ef6a31;
+	border: none;
+	border-bottom: solid 2px gray;
+	color: white;
+}
+
+.form .field {
+}
+.form .field .label {
+    font-size: 20px;
+    padding: 3px 10px 10px 0px;
+    width: 180px;
+    text-align: right;
+    vertical-align: top;
+}
+.form .field .input {
+    margin-top: 15px;
+    margin-left: 150px;
+    width: 200px;
+    vertical-align: top;
+}
+
+.form .field .input input[type=text], .form .field .input input[type=password] {
+    width: 180px;
+    border: solid 1px silver;
+    -moz-border-radius-bottomleft: 3px;
+    -moz-border-radius-bottomright: 3px;
+    -moz-border-radius-topleft: 3px;
+    -moz-border-radius-topright: 3px;
+    -webkit-border-radius: 3px;
+    padding: 5px;
+    font-size: 16px;
+}
+.form .field .input textarea {
+    width: 180px;
+    height: 60px;
+}
+.form .field .input.large280 {
+	width: 280px;
+}
+.form .field .input.functionname {
+    width: 40px;
+    margin-left: 10px;
+}
+
+.form .field .input.small40 input[type=text] {
+    width: 30px;
+}
+
+.form .field .input.small400 {
+	margin-left: 20px;
+    width: 280px;
+}
+
+.form .field .input.small400 input[type=text] {
+    width: 270px;
+}
+.form .field .input.large280 input[type=text], .form .field .input.large280 input[type=password], .form .field .input.large280 textarea {
+	width: 260px;
+}
+
+.form .errors {
+    color: red;
+    vertical-align: top;
+}

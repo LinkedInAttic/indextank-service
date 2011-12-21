@@ -1,0 +1,30 @@
+{% extends "documentation/app-gallery/app-base.html" %}
+{% load custom_tags %}
+
+{% block picture_path %}
+    {% static 'images/developers/waxman.jpg' %}
+{% endblock %}
+
+{% block author %}
+    by Michael Waxman
+{% endblock %}
+
+{% block app_name %}
+    QNA
+{% endblock %}
+
+{% block problem_solved %}
+    QNA is an instant search of a website’s FAQs. Fast, easy way for a user to look up answers.
+{% endblock %}
+           
+{% block instructions %}
+    Press the Big Red Button on the landing page! IMPORTANT: you do NOT need to (and can't) sign up; you can experience the full functionality of the site through the 3 demos (useqna.com/, useqna.com/heroku, and useqna.com/indextank), which are all live and interactive (and powered by IndexTank, of course).
+{% endblock %}
+            
+{% block datasets %}
+    FAQ's and other similar info on Heroku.com
+{% endblock %}
+
+{% block website %}
+    Go to <a href="http://useqna.com">http://useqna.com</a> and <a href="http://useqna.com/heroku">http://useqna.com/heroku</a>
+{% endblock %}

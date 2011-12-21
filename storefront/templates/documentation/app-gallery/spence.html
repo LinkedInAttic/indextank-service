@@ -1,0 +1,30 @@
+{% extends "documentation/app-gallery/app-base.html" %}
+{% load custom_tags %}
+
+{% block picture_path %}
+    {% static 'images/developers/spence.jpg' %}
+{% endblock %}
+
+{% block author %}
+    by Tim Spence
+{% endblock %}
+
+{% block app_name %}
+    Toxosis
+{% endblock %}
+
+{% block problem_solved %}
+    Responsive search of large volume of nationwide toxic spill data
+{% endblock %}
+           
+{% block instructions %}
+    Simple.  Browse the set of spills or use the handy search box to query on city, state, zipcode, etc
+{% endblock %}
+            
+{% block datasets %}
+    E.P.A. Toxic Release Inventory National Data
+{% endblock %}
+
+{% block website %}
+    <a href="http://toxosis.heroku.com/">Go to http://toxosis.heroku.com/</a>
+{% endblock %}

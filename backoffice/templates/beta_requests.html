@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load custom_tags %}
+{% load humanize %}
+{% block content %}
+<div class="module">
+</div>
+<div class="main" style="width: 950px">
+    <div class="module x">
+        <h3>Beta Requests</h3>
+    </div>
+</div>
+<div style="clear:both">
+</div>
+<div class="module x">
+    <div class="roundbox" style="padding: 0px; background-color: #ebebeb">
+        <table width="100%" border="0" cellpadding="10" cellspacing="10" class="indextable">
+            <tbody>
+                <tr class="round_b clear" style="background-color: transparent;">
+                    <td class="first" align="left">
+                        E-MAIL
+                    </td>
+                    <td align="center">
+                        SITE
+                    </td>
+                    <td align="center">
+                        INTENDED USE
+                    </td>
+                    <td align="center">
+                        REQUESTED
+                    </td>
+                    <td align="center">
+                        SIGN UP
+                    </td>
+                    <td>TOTAL: {{ requests.count }}</td>
+                </tr>
+                {% for beta_request in requests %}
+                <tr style="background-color: {% cycle 'white' '#ebebeb' %};">
+                    <td class="first" align="left" style="max-width: 150px; overflow: hidden; white-space: normal">
+                        <small><b>{{ beta_request.email }}</b></small>
+                    </td>
+                    <td style="max-width: 150px; overflow: hidden; white-space: normal"  align="left">
+                        <small><b><a href="{{ beta_request.site_url }}">{{ beta_request.site_url }}</a></b></small>
+                    </td>
+                    <td align="left" style="max-width: 150px; overflow: hidden; white-space: normal">
+                        <small>{{ beta_request.summary }}</small>
+                    </td>
+                    <td align="left" style="white-space: normal">
+                        <small>{{ beta_request.request_date|date:"M j, gA" }}</small>
+                    </td>
+                    <td align="left" style="white-space: normal">
+                        <small>{{ beta_request.invitation.all.0.account.creation_time|date:"M j, gA" }}</small>
+                    </td>
+                    <td align="left" style="white-space: normal">
+                        <small>{% if beta_request.invitation.all %}Invited on {{ beta_request.invitation.all.0.invitation_date|date:"M j, gA" }}{% else %}<a href="{% url beta_request_invite request_id=beta_request.id %}">Invite</a>{% endif %}</small>
+                    </td>
+                    
+                </tr>
+                {% empty %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div style="clear:both; height: 50px;">
+</div>
+
+{% endblock %}

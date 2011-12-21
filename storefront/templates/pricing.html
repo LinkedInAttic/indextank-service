@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% load custom_tags %}
+{% load humanize %}
+
+{% block extrahead %}
+  {{ block.super }}
+  
+  <script type="text/javascript" src="{% static 'common/js/function01.js' %}"></script>
+
+{% endblock %}
+
+
+{% block title %}Pricing <strong>Free for the first 100k docs, upgrade any time.</strong>{% endblock %}
+
+{% block tryit %}{% endblock %}
+
+{% block content_body %}
+  <div class="outer_contaent_sec">
+    <div class="layout01">
+      <div class="tab_sec">  <div style="margin: 0px 28px;">
+        {% box 'largebox' %}
+          <table class="pricing">
+            <tr>
+              <th class="first"></th>
+              <th class="starter">Starter <strong>Free $0/month</strong></th>
+              <th class="plus">Plus <strong>$49/month</strong></th>
+              <th class="pro">Pro <strong>$175/month</strong></th>
+              <th class="custom last">Custom <strong><a href="mailto:support@indextank.com">contact us</a></strong></th>
+            </tr>
+            <tr>
+               <td class="first">Core Features</td>
+               <td>Yes</td>
+               <td>Yes</td>
+               <td>Yes</td>
+               <td class="last">Yes</td>
+            </tr>
+            <tr class="highlight">
+               <td class="first">Documents</td>
+               <td>100K</td>
+               <td>500K</td>
+               <td>2M</td>
+               <td class="last">Custom</td>
+            </tr>
+            <tr>
+               <td class="first">Unlimited queries <a href="http://blog.indextank.com/471/unlimited-queries-please-be-gentle/">*</a></td>
+               <td>Yes</td>
+               <td>Yes</td>
+               <td>Yes</td>
+               <td class="last">Yes</td>
+            </tr>
+            <tr class="last">
+               <td class="first">Requires <a href="{% url documentation path='badges' %}">logo</a></td>
+               <td>Yes</td>
+               <td>No</td>
+               <td>No</td>
+               <td class="last">No</td>
+            </tr>
+            {% comment %}
+            <tr class="last">
+               <td class="first"></td>
+               {% if user.is_authenticated %}
+                 {% if user.get_profile.account.package.base_price > 0 %}
+                   <td><a href="mailto:support@indextank.com">Contact us</a></td>
+                   <td><a href="mailto:support@indextank.com">Contact us</a></td>
+                   <td><a href="mailto:support@indextank.com">Contact us</a></td>
+                   <td class="last"><a href="mailto:support@indextank.com">Contact us</a></td>
+                 {% else %}
+                   <td><a href="mailto:support@indextank.com">Contact us</a></td>
+                   <td><a href="mailto:support@indextank.com">Contact us</a></td>
+                   <td><a href="mailto:support@indextank.com">Contact us</a></td>
+                   <td class="last"><a href="mailto:support@indextank.com">Contact us</a></td>
+                 {% endif %}
+               {% else %}
+                 <td><a class="signup" href="{% url get_started %}">Sign Up</a></td>
+                 <td><a class="signup" href="{% url get_started %}?plan=PLUS_TANK">Sign Up</a></td>
+                 <td><a class="signup" href="{% url get_started %}?plan=PRO_TANK">Sign Up</a></td>
+                 <td class="last"><a href="mailto:support@indextank.com">Contact us</a></td>
+               {% endif %}
+            </tr>
+            {% endcomment %}
+          </table>
+        {% endbox %}
+        <div class="clear"></div>
+        {#<a class="itsfree" href="{% url get_started %}"></a>#}
+      
+    
+      </div>
+      
+      </div>
+    </div>
+  </div>
+  
+  <div class="outer_tank_box white">
+    <div class="layout">
+      <div class="tank_box">
+        <h2 style="margin-bottom: 10px;">JOIN THE GROWING LIST OF TOP COMPANIES TRUSTING INDEXTANK</h2>
+        <div class="pricing_userlist">
+          <span class="userlist user0"></span>
+          <span class="userlist user1"></span>
+          <span class="userlist user2"></span>
+          <span class="userlist user3"></span>
+          <span class="userlist user4"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="clear"></div>
+            
+  <div class="outer_contaent_sec pad_bot">
+    <div class="layout">
+      <div class="bottom_box">
+        <div class="feature_section">
+          <div class="feature_left">
+            <div class="feature_box">
+              <h2>Questions</h2>
+              <ul>
+                <li>
+                  <h3>Can I try it out without having to enter my credit card?</h3>
+                </li>
+                <li>
+                  <p>Yes. Our free account just requires you to enter an email address.</p>
+                </li>
+                <li>
+                  <h3>Will you help me get started?</h3>
+                </li>
+                <li>
+                  <p>Absolutely! Try our tutorials for the quickest way to get up to speed. 
+                  Every plan gets our great customer support from our own team of developers. 
+                  We’ve been working on search for years, and want to share our experience with 
+                  you the moment you need help. Plus, we also know we can learn from you as well, 
+                  so please be in touch.</p>
+                </li>
+                <li>
+                  <h3>Can I upgrade my account?</h3>
+                </li>
+                <li>
+                  <p>Yes. If you have a free account you can upgrade it to a paid plan automatically.
+                  If you want to upgrade or downgrade an already paying account, please <a href="mailto:support@indextank.com">contact us</a> and we'll help you.</p>
+                </li>
+                <li>
+                  <h3>Can I cancel any time I want?</h3>
+                </li>
+                <li>
+                  <p>Yes. You can cancel your account at any time without any prior notification.</p>
+                </li>
+                <li>
+                  <h3>How do I cancel my service?</h3>
+                </li>
+                <li>
+                  <p>Send us an email telling us you want to cancel, and we’ll take care of it.</p>
+                </li>
+                <li>
+                  <h3>When will you charge me?</h3>
+                </li>
+                <li>
+                  <p>We charge for the paid plans every month in advance, and we provide the first 
+                  month free of charge. This means that if you sign up, for example, on January 15th, 
+                  you will not be charged until February 15th, and that will pay for the period from 
+                  February 15th until March 14th.</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="feature_right">
+            {% box 'chat' %}
+                      <h2>HAVE A QUESTION?</h2>
+                      <div class="chat_btn"> <a href="javascript:void(0)" onclick="go_chat()">LIVE CHAT NOW</a><span class="clear"></span> </div>
+                      <p>Our team of experienced and friendly devs will respond almost as quickly as our search API. </p>
+            {% endbox %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <span class="clear"></span>
+        
+{% endblock %}
+
+

@@ -1,0 +1,72 @@
+{% extends "common-base.html" %}
+{% load humanize %}
+{% load custom_tags %}
+
+
+{% block title %}Scoring Functions{% endblock %}endblock %}
+
+{% block common-content %}
+    
+    <p>
+      Manage your scoring functions.
+    </p>
+    {% if message %}
+      <div class="errors" style="color: red">
+        {{ message }}
+      </div>
+    {% endif %}
+    
+    <div>
+    </div>
+    <div id="edit_div" class="roundbox" style="display: none; margin-left: 20px; margin-top: 30px;">
+        <form name="score_function_form" method="POST">
+        <input type="hidden" name="index_code" value="{{ index_code }}">
+        <div class="form">
+        <div style="font-weight: bold; font-size: 150%; " class="">Edit function <span id="function_id_span"></span></div>
+        <div class="field" style="margin-top: 10px;">
+           {{ form.name }}
+            <div style="margin-top: 10px;"><span class="label"> {{ form.definition.label_tag }} </span> <span class="input small400"> {{ form.definition }} <div class="errors">{% for e in form.definition.errors %}<span>{{e}}</span> {% endfor %}</div></span></div>
+        </div>
+        </div>
+            <a href="javascript:void(0)" onclick="$('form[name=score_function_form]').submit()" class="btn" style="float: right; margin-top: 10px;"><i></i><span><span></span><i></i>
+                <div style="padding: 2px 5px;">Save</div>
+            </span></a>
+       
+            <div style="clear: both"></div> 
+        </form>
+    </div>
+
+    <script>
+        if (document.forms['score_function_form'].name.value != '') {
+        	document.getElementById('edit_div').style.display = '';
+        	document.getElementById('function_id_span').innerHTML = '#' + document.score_function_form.name.value;
+        } 
+    </script>
+
+   <p>
+       {% for function in functions %}
+        <div class="roundbox" style="padding: 5px 10px 5px 10px; margin-left: 20px; margin-top: 10px;">
+            <div> <span style="font-weight: bold; font-size: 120%; " class="">Formula #{{ function.name }}:</span><br></br><div style="margin-left: 40px; margin-top: 5px;"><i>{% if function.definition %}{{ function.definition }}{% else %}[undefined]{% endif %}</i></div>
+            <a href="javascript:void(0);" onclick="document.getElementById('function_id_span').innerHTML='#{{ function.name }}';document.score_function_form.name.value='{{ function.name }}'; document.score_function_form.definition.value='{% if function.definition %}{{ function.definition }}{% endif %}'; document.getElementById('edit_div').style.display = ''" class="btn " style="float: right; margin-left: 10px; margin-top: -27px;"><i></i><span><span></span><i></i>
+            <div style="padding: 2px 5px;">Edit</div>
+            </span></a>
+            <a href="{% url remove_function %}?index_code={{ index_code }}&function_name={{ function.name }}" class="btn " style="float: right; margin-top: -27px;"><i></i><span><span></span><i></i>
+                <div style="padding: 2px 5px;">Remove</div>
+            </span></a>
+                                  
+            <div style="clear: both"></div>
+        </div>
+       
+       <!-- 
+           <tr> 
+                <td>Function #{{ function.name }}</td>
+                <td>{{ function.definition }}</td> 
+                <td><a href="remove_function?index_id={{ index_id }}&function_name={{ name }}">Remove</a></td>
+                <td>-</td>
+           </tr>
+       -->
+       {% endfor %}
+   </p> 
+
+{% endblock %}
+

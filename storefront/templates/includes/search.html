@@ -1,0 +1,14 @@
+
+<form id="search-form" action="{% url search %}">
+  <fieldset>
+    <label for="search"><span class="none">&nbsp;</span>
+      <input type="submit" value="" class="search_btn" id="search" />
+    </label>
+    <div class="search_bg">
+      <label><span class="none">&nbsp;</span>
+      <input type="text" class="empty" emptyvalue="Site Search" name="query" id="query" value="{{ query }}"/>
+      </label>
+    </div>
+  </fieldset>
+</form>
+

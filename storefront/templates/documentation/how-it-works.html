@@ -1,0 +1,29 @@
+{% extends "common-base.html" %}
+{% load custom_tags %}
+
+{% block title %}How it works{% endblock %}endblock %}
+
+{% block common_content %}
+	<p>IndexTank provides online search to your site or product taking care of all the heavy lifting for you.</p>
+	
+	<p>It is very simple to use. </p>
+	
+		<div class="docblock">
+		    <p>1. <a href="/beta-notice">Sign up</a> to get an API key.</p>
+		    <p>2. Create an index (or more than one) using the dashboard or through the <a href="/documentation/api">API</a>.
+		    <p>3. Then, add a few lines of code and a search box to your site
+		            (access the <a href="/documentation/api">API</a> directly 
+		            or through the <a href="/documentation/clients">client library</a>)
+		
+			<p>That's it.</p>
+	    </div>
+	
+	    <p>You can start submitting your content to the index and it will become searcheable in <b>real-time</b>.</p>
+	    <br/>
+		   
+		<div class="docblock">
+    		<div class="superbox" style="text-align: center"><img src="{% static '/images/documentation/howitworks.png' %}"></img></div>
+		</div>
+
+{% endblock %}
+

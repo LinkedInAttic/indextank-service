@@ -1,0 +1,298 @@
+{% extends "documentation/client-base.html" %}
+{% load custom_tags %}
+
+{% block language-name %}ruby{% endblock %}
+{% block download-box %}
+<ul>
+    <li style="margin-bottom: 10px;">
+        Package: <span style="font-family: 'Courier new'; font-size: 14px; color: yellow;">gem install indextank</span> {% with "gem install indextank" as text %}{% with "1" as small %}{% with "#999999" as bgcolor %}{% include 'includes/clippy.html' %}{% endwith %}{% endwith %}{% endwith %}
+    </li>
+    <li>
+        <a href="http://github.com/flaptor/indextank-rb">Source code (github)</a>
+    </li>
+</ul>
+
+{% endblock %}
+
+
+{% block summary-title %}Ruby client{% endblock %}
+{% block summary-content %}Interface details at <a href="http://rubydoc.info/gems/indextank/frames">indextank yard documentation</a> (from <a href="http://rubydoc.info">rubydoc.info</a>).{% endblock %}
+{% block extra-summary %}
+    <p>If you're using IndexTank in Heroku through the Add-on program, usage of this client will be slightly different. You can see those differences in the <a href="/documentation/heroku-addon">Heroku Add-on documentation</a>.</p>
+
+    <div class="module"></div>
+    <h2>Installation</h3>
+    <p><i>(Please make sure you have gem installed)</i></p>
+    <p>Get the indextank gem (might need administrative privileges):</p>
+    <p></p>
+    
+{% box 'code' %}
+<pre class="sh_ruby">
+$ gem install indextank
+</pre>
+{% endbox %}
+
+{% endblock %}
+
+{# <!-------- INSTANTIATE CLIENT --------> #}
+{% block code-instatiate %}
+require 'rubygems'
+require 'indextank'
+
+api = IndexTank::Client.new {% if request.user.is_authenticated %}"{{ request.user.get_profile.account.get_private_apiurl }}"{% else %}"&lt;YOUR API URL HERE&gt;"{% endif %}
+
+index = api.indexes "&lt;YOUR INDEX NAME&gt;"
+{% endblock %}
+
+
+{# <!-------- SIMPLE INDEXING --------> #}
+{% block code-simple-indexing %}
+docid = "&lt;YOUR DOCUMENT ID&gt;"
+text = "&lt;THE TEXTUAL CONTENT&gt;"
+
+index.document(docid).add({ :text => text })
+{% endblock %}
+
+
+{# <!-------- SIMPLE SEARCHING --------> #}
+{% block code-simple-searching %}
+query = "&lt;YOUR QUERY STRING&gt;"
+
+results = index.search query
+
+print results['matches'], " results\n"
+results['results'].each {|doc|
+    docid = doc['docid']
+    print "docid: #{docid}" 
+}
+{% endblock %}
+
+{# <!-------- QUERY DELETE --------> #}
+{% block code-query-delete %}
+query = "&lt;YOUR QUERY STRING&gt;"
+
+index.delete_by_search query
+{% endblock %}
+
+{# <!-------- SNIPPET SEARCHING --------> #}
+{% block code-snippet-searching %}
+query = "&lt;YOUR QUERY STRING&gt;"
+results = index.search(query, 
+                       <b>:fetch</b> => 'title,timestamp', 
+                       <b>:snippet</b> => 'text')
+
+print results['matches'], " results\n"
+results['results'].each {|doc|
+    docid = doc['docid']
+    title = doc['title']
+    timestamp = doc['timestamp']
+    text = doc['snippet_text']
+    print "{% filter force_escape %}<a href='/#{docid}'>#{title}</a><p>#{text}</p>{% endfilter %}" 
+}
+{% endblock %}
+
+{% block code-simple-deleting %}
+docid = "&lt;YOUR DOCUMENT ID&gt;"
+
+index.document(docid).delete()
+{% endblock %}
+
+
+{# <!-------- MULTIPLE FIELD INDEXING --------> #}
+{% block code-multiple-field-indexing %}
+#### INDEX MULTIPLE FIELDS
+index.document(docid).add({ :text => text, 
+                            :title => title, 
+                            :author => author })
+{% endblock %}
+
+
+{# <!-------- FILTER BY AUTHOR --------> #}
+{% block code-filter-by-author %}
+#### FILTER TO USER'S CONTENT
+index.search "#{query} author:#{user}"
+{% endblock %}
+
+
+{# <!-------- INDEX WITH TIMESTAMP --------> #}
+{% block code-index-with-timestamp %}
+index.document(docid).add({ :text => text, 
+                            :timestamp => Time.now.to_i })
+{% endblock %}
+
+
+{# <!-------- INDEX WITH BOOSTS --------> #}
+{% block code-index-with-boosts %}
+#### INDEX DOCUMENT WITH VARIABLES
+fields = { :text => text }
+variables = { 
+              0 => rating,
+              1 => reputation,
+              2 => visits
+            }
+
+index.document(docid).add(fields, :variables => variables)
+{% endblock %}
+
+
+{# <!-------- UPDATE BOOSTS --------> #}
+{% block code-update-boosts %}
+#### UPDATE DOCUMENT VARIABLES ONLY
+new_variables = { 
+                  0 => new_rating,
+                  1 => new_reputation,
+                  2 => new_visits
+                }
+
+index.document(docid).update_variables(new_variables)
+{% endblock %}
+
+
+{# <!-------- REFEDINE FUNCTIONS --------> #}
+{% block code-redefine-functions %}
+# FUNCTION 0 : sorts by most recent 
+index.functions(0, "-age").add
+
+# FUNCTION 1 : standard textual relevance
+index.functions(1, "relevance").add
+
+# FUNCTION 2 : sorts by rating
+index.functions(2, "doc.var[0]").add
+
+# FUNCTION 3 : sorts by reputation
+index.functions(3, "d[1]").add
+
+# FUNCTION 4 : advanced function
+index.functions(4, "log(d[0]) - age/50000").add
+{% endblock %}
+
+
+{# <!-------- SEARCH WITH RELEVANCE FUNCTIONS --------> #}
+{% block code-search-with-relevance-function %}
+index.search(query, :function => 2)
+{% endblock %}
+
+{# <!-------- PROXIMITY SCORING FUNCTION --------> #}
+{% block code-proximity-scoring-function %}
+# FUNCTION 5 : inverse distance calculated in miles
+index.functions(5, "-miles(d[0], d[1], q[0], q[1])").add
+{% endblock %}
+
+
+{# <!-------- SEARCH WITH GEO --------> #}
+{% block code-search-with-geo %}
+index.search(query, 
+             :function => 5, 
+             <b>:var0</b> => latitude, 
+             <b>:var1</b> => longitud)
+{% endblock %}
+
+{# <!-------- RANGE QUERIES --------> #}
+{% block code-range-queries %}
+# Ranges are specified by a two elements list: 
+#  bottom and top bounds.
+# Both top and bottom can be nil indicating they should be ignored.
+#   
+# In this sample, the results will only include documents 
+# whose variable #0 value is between 5 and 10 or between 15
+# and 20, and variable #1 value is less than or equal to 3
+index.search(query, 
+             :docvar_filters => { 0 => [ [5, 10], [15, 20] ],
+			                     1 => [ [nil, 3] ]}) 
+# This also applies to functions
+index.search(query, 
+             :function_filters => { 0 => [ [0.5, nil]) 
+{% endblock %}
+
+{# <!-------- UPDATE CATEGORIES --------> #}
+{% block code-update-categories %}
+categories = { 
+                  'priceRange' => '$0 to $299',
+                  'articleType' => 'camera'
+             }
+index.document(docid).update_categories(categories) 
+{% endblock %}
+
+{# <!-------- SAMPLE FACETS RESULT --------> #}
+{% block code-sample-facets-result %}
+{ 
+    'matches' => 8,
+    'results' => [ {'docid' => 'doc1'}, ... ],
+    'facets' => {
+        'articleType' => {
+            'camera' => 5,
+            'laptop' => 3
+        },
+        'priceRange' => {
+            '$0 to $299' => 4,
+            '$300 to $599' => 4
+        }
+    }    
+}
+{% endblock %}
+
+{# <!-------- FACETING FILTERING --------> #}
+{% block code-faceting-filtering %}
+index.search(query,
+             :category_filters => {
+                'priceRange' => ['$0 to $299', '$300 to $599'],
+                'articleType' => ['camera']
+             })
+{% endblock %}
+
+
+{# <!-------- BATCH INDEXING --------> #}
+{% block code-batch-indexing %}
+documents = []
+documents &lt;&lt; { :docid => 'doc1', :fields => { :text => text1 } }
+documents &lt;&lt; { :docid => 'doc2', :fields => { :text => text2 } }
+documents &lt;&lt; { :docid => 'doc3', :fields => { :text => text3 }, :variables => { 0 => 1.5 } }
+documents &lt;&lt; { :docid => 'doc4', :fields => { :text => text4 }, :variables => { 0 => 2.1 }, :categories => { 'Price' => '0 to 100' } }
+response = index.batch_insert(documents)
+{% endblock %}
+
+{% block code-batch-indexing-failed %}
+failed_documents = []
+response.each_with_index do |r, i|
+     failed_documents &lt;&lt; documents[i] unless r['added']
+end
+{% endblock %}
+
+{# <!-------- BULK DELETE --------> #}
+{% block code-bulk-delete %}
+docids = ["doc1", "doc2", "doc3", "doc4"]
+response = index.bulk_delete(docids)
+{% endblock %}
+
+{% block code-bulk-delete-failed %}
+failed_documents = []
+response.each_with_index do |r, i|
+     failed_documents &lt;&lt; docids[i] unless r['deleted']
+end
+{% endblock %}
+
+{# <!-------- INDEX CREATION --------> #}
+{% block code-index-creation %}
+require 'indextank'
+
+api = IndexTank::Client.new {% if request.user.is_authenticated %}"{{ request.user.get_profile.account.get_private_apiurl }}"{% else %}"&lt;YOUR API URL HERE&gt;"{% endif %}
+index = api.indexes "&lt;YOUR INDEX NAME&gt;"
+
+# this parameter allows you to create indexes with public search enabled.
+# default is false. 
+index.add :public_search => false
+
+while not index.running?
+    sleep 0.5
+end
+
+# use the index
+{% endblock %}
+
+
+{# <!-------- INDEX DELETION --------> #}
+{% block code-index-deletion %}
+index = api.indexes "&lt;YOUR INDEX NAME&gt;"
+index.delete
+{% endblock %}
+

@@ -1,0 +1,12 @@
+{% load humanize %}
+
+<h2 class="first">Chosen plan: <span style="text-transform: none; color: #2c84b3">{{ package.name }}</span></h2>
+
+<div>
+  <p>
+    &nbsp;&nbsp; - &nbsp; Maximum index size: {{ package.index_max_size|intcomma }} documents.<br/>
+    &nbsp;&nbsp; - &nbsp; First 30 days are free! And you can cancel at anytime.<br/>
+    &nbsp;&nbsp; - &nbsp; Total price: <b>${{ package.base_price|floatformat:2 }} / month
+  </p>
+</div>
+

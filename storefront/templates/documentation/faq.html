@@ -1,0 +1,183 @@
+{% extends "common-base.html" %}
+
+{% load custom_tags %}
+{% load messages %}
+
+{% block right_content %}
+  {% box 'table' %}
+    <ul>
+      <li><h2>Table of contents</h2></li>
+        <li><a href="#general">General / Overview</a></li>
+        <li><a href="#sign-up">Sign-up, Pricing and Billing</a></li>
+        <li class="last"><a href="#search">IndexTank search</a></li>
+    </ul>
+  {% endbox %}
+{% endblock %}
+
+{% block container_class %}{{ block.super }} documentation{% endblock %}
+{% block title %}Frequently Asked Questions (FAQ){% endblock %}
+
+{% block common_content %}
+    <h2 id="general">General / Overview</h2>
+    <div class="faq indent">
+        <h3>What can I do with IndexTank?</h3>
+        <p>
+            You can use IndexTank to create a finely-tuned search function for your web site or application. 
+            If you have content you want your users to find, but you don’t want to deal with complicated coding 
+            and system administration tasks, IndexTank is for you. Check out our <a href="/documentation/clients">plug-in page</a>.
+        </p>
+    
+        <h3>I am not a developer. What can I do with IndexTank?</h3>
+        <p>
+           IndexTank is a service intended to be used mainly by developers or system administrators. It's not a standalone web search engine, and we don't currently have a way for you to set it up directly through the Web. It requires downloading software such as a Wordpress plug-in (if you wanted to add better search to your blog, for example) or writing a program to interact with our servers.
+        </p>
+        <p>
+           Please <a href="mailto:support@indextank.com">let us know</a> what you would like to do with IndexTank, and we'll do our best to help you. Thanks for your interest!
+        </p>
+    
+        <h3>Do I download IndexTank and run it on my computer?</h3>
+        <p>IndexTank is a hosted service, which means that it runs on our servers over your Internet connection, what we like to call “in the cloud.” Using IndexTank saves you from having to do any system administrations tasks or pay for hardware.</p>
+    
+        <h3>How much set up and management does IndexTank require?</h3>
+        <p>Very little. You can be up and running in minutes, and we take care of all the maintenance.</p>
+    
+        <h3 id="languages">What languages do you support?</h3>
+        <p>
+            We provide clients for Python, Ruby, PHP and Java. Our <a href="/documentation/api">API spec</a> is public and consists of <a href="http://en.wikipedia.org/wiki/Representational_State_Transfer">REST</a> calls that can be made through HTTP, 
+            so if you don’t use one of our client libraries, it’s easy to implement your own client or even use the API from the command line
+            with tools like Curl. You can find open source clients in Clojure, Perl, C#, and more <a href="http://blog.indextank.com/737/the-state-of-the-indextank-ecosystem/">here</a>.
+        </p>
+    
+        <h3>What level of support do you provide?</h3>
+        <p>
+            We provide support via email at <a href="mailto:support@indextank.com">support@indextank.com</a> and via chat through the pop-up window in the lower left corner of our site. We’re also in the process of setting up a discussion group.
+        </p>
+    
+        <h3 id="data_upload">How do I get my data to you?</h3>
+        <p>
+            To index your existing data for the first time, you need to iterate through your document database and send each document to the index via the “add_document” function.
+        </p>
+        <p>
+            To keep your index up-to-date with the latest additions and changes on your site, you need to call the “add_document” function for new or changed documents, and the “delete_document” function for deleted documents.
+        </p>
+    
+        <h3>How fast does IndexTank deliver search results?</h3>
+        <p>IndexTank resolves most queries in well under the 50ms mark. For very large data sets and complex queries, times can go up to 300ms.</p>
+    
+        <h3>Can IndexTank handle a large web site with a lot of users and a lot of queries?</h3>
+        <p>Absolutely. Basic accounts support 20-30 queries per second out of the box. If that’s not sufficient for your needs, we can set up custom accounts that can easily handle several hundred queries per second.</p>
+    
+        <h3>I have tens of millions of documents to index. Will IndexTank work for me?</h3>
+        <p>Absolutely! Check out <a href="http://www.reddit.com/">reddit’s search</a> to see IndexTank in action over a huge data set. For more information about a custom plan tailored to your needs, please <a href="mailto:support@indextank.com">contact us</a>.</p>
+    </div>
+	
+	<h2 id="sign-up">Sign-up, Pricing and Billing</h2>
+    <div class="indent">
+        <h3>How do I sign up?</h3>
+        <p>
+           Go to our <a href="/get-started">sign-up page</a> and select a plan. For free plans, we only need your email address and a password. For plans that require payment, we also need your billing information.
+        </p>
+
+        <h3>Can I cancel any time I want?</h3>
+        <p>Yes. You can cancel your account at any time without any prior notification.</p>
+        
+        <h3>How do I cancel my service?</h3>
+        <p><a href="mailto:support@indextank.com">Send us an email</a> telling us you want to cancel, and we’ll take care of it.</p>
+        
+        <h3>When will you charge me?</h3>
+        <p>We charge for the paid plans every month in advance, and we provide the first month free of charge. This means that if you sign up, for example, on January 15th, you will not be charged until February 15th, and that will pay for the period from February 15th until March 14th. </p>
+        
+        <h3>Can I switch plans?</h3>
+        <p>Sure. We’re working on automating this process, but in the meantime, <a href="mailto:support@indextank.com">contact us</a> and we’ll do it for you.</p>
+        
+        <h3>How do I upgrade from the Free package to the Starter package?</h3>
+        <p>Contact us via <a href="mailto:support@indextank.com">email</a></p>
+    </div>
+    
+	<h2 id="search">IndexTank search</h2>
+    <div class="indent">
+        <h3 id="index">What is an index?</h3>
+        <p>
+        An index is a structure designed for quick and efficient keyword searches. Think of the index at the back of a book, and how you can find a page containing a particular word without having to scan every single page. When you create a new index in IndexTank and start adding entries to it, it is as if you are starting with an empty book and updating the index every time you add a section.
+        </p>
+        <p>
+        For example, let’s say you have a blog and you want to index it so your users can search through it. You index the first post (post #1) which contains the word “apple”. The index will contain an entry for “apple” pointing to the post #1. When a user searches for “apple” the index shows that “apple” is mentioned in post #1.
+        </p>
+        <p>
+        You can also split your document into several fields and index them as separate entities. For example, your blog post might be composed of a “title” field, an “author” field and a “content” field, etc. When you index the document, you provide its unique identifier (the document ID, or docid for short) and the contents of each field. You can later restrict your search to a specific field by using the field name in the query, for example “title:apple”.
+        </p>
+        
+        <h3>Can I organize the results in different ways?</h3>
+        <p>Yes. IndexTank gives you the ability to fine-tune your search results based on your specific needs. You can define your own scoring functions and document variables to influence the search results.</p>
+
+        <h3 id="scoring_function">What are scoring functions and document variables?</h3>
+        <p>
+            IndexTank uses scoring functions to customize the order of search results. Scoring functions are mathematical formulas that we apply to every document on search time to calculate a value (score) for it. We then use this value to sort the results.
+        </p>
+        <p>
+            The scoring functions can refer to the document’s age, its relevance to the query and special variables that you can supply for a document, such as number of votes, or any numeric value that you can associate with your document and that somehow describes the importance of that document.
+        </p>
+        <p>
+            IndexTank is optimized to allow very frequent updates to document variables without slowing down the index.
+        </p>
+        <p>
+            You can define several scoring functions and choose which one to use for each query. When you change a scoring function, the new version immediately takes effect.
+        </p>
+        <p>
+            Scoring functions are different from typical database sort clauses in that they allow much greater flexibility.
+        </p>
+        <p>
+            See our <a href="/documentation/function-definition">Scoring Functions</a> documentation page for more information.
+        </p>
+        
+        <h3>How often will my data be indexed?</h3>
+        <p>As often as you wish. IndexTank doesn’t actively fetch data from you as a web crawler would do. Instead, your application sends IndexTank the data as soon as it is created or updated.</p>
+
+        <h3>How is IndexTank different than Lucene and Solr?</h3>
+        <p>
+            There are many functional differences. For example, documents added to an IndexTank index are immediately searchable; document variables can be updated without having to re-index the whole document and they can be updated very quickly and at a very rapid pace without affecting the index performance; results can be sorted by arbitrary functions that include geolocation support.
+        </p>
+        <p>
+            But more importantly, IndexTank is a cloud-based, robust and scalable service, so you don’t have to worry about managing servers, configuring the software and scalabilty.
+        </p>
+        <p>
+            For a more detailed discussion of how IndexTank compares to Lucene and Solr, download our white paper, <a href="/_static/papers/IndexTank%20WhitePaper%20Technical.pdf">A Technical Discussion about Search Solutions</a>.
+        </p>
+        
+        <h3>Is IndexTank better than Google Custom Search?</h3>
+        <p>
+           Yes. IndexTank provides more complete, relevant, and timely search results, because we give you the ability 
+           to control what gets indexed, when it gets indexed, and how the results are sorted. Google Custom Search results
+           are often stale or incomplete in comparison. Further, Google Custom Search requires you to show ads, which Google
+           chooses in order to increase its own advertising revenue, so you may end up serving sponsored links for your competitors. 
+           IndexTank does not require ads.
+        </p>
+        
+        <h3>Is my data secure in the cloud?</h3>
+        <p>
+           Yes. From a security standpoint, we use <a href="http://aws.amazon.com/security/">Amazon AWS</a> security best practices, and our servers are not accessible in any way except to provide the search 
+           service. Since each customer has a unique key to access their own index, no unauthorized access is possible. Your data is as private as you choose to make it.
+        </p>
+        <p>
+           In terms of integrity, storing your data in the cloud can be more secure than storing it on-site, because cloud data is typically replicated in several 
+           locations and supported by a lot more hardware than most companies want to own and maintain.
+        </p>
+        
+        <h3>Can IndexTank search though PDF or Microsoft Word documents?</h3>
+        <p>
+           IndexTank, like other full-text search alternatives, indexes only text. However, for common formats like PDF or Word, it is very easy to parse them to obtain the readable text by using open source tools.
+        </p>
+        
+        <h3 id="query_types">What types of queries work with IndexTank?</h3>
+        <p>IndexTank implements Boolean operators (and, or, and not) and phrase queries.</p>
+
+        <h3>Can I control what appears at the top of my search results?</h3>
+        <p>
+            Yes. IndexTank’s scoring functions have enormous flexibility and will help you build a scoring system that perfectly matches your data’s semantics.
+            In some situations, however, you may prefer to have manual control of the top result. For this, IndexTank implements a “promote” API call that enables you 
+            to pin down a particular document as the top result for a given query. Take a look at the <a href="/documentation/api#promoting">“Promoting results”</a> section of our API spec for more information.
+        </p>
+      </div>
+      <hr>
+{% endblock %}
+

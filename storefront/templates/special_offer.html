@@ -1,0 +1,102 @@
+{% extends "common-base.html" %}
+{% load custom_tags %}
+{% load humanize %}
+
+{% block bodyclasses %}{{ block.super }} get_started step{{ step }}{% endblock %}
+{% block common_content %}
+
+<h1 style="text-align: center;">
+    Primary Messaging<br><small>optional subtitle</small></h1>
+
+<div class="price-box-group">
+    <div class="price-box large" id="freeplan">
+        <h3>Secondary messaging</h3>    
+        <h1>Secondary messaging</h1>
+        <div style="float: right">
+            <h2 style="text-align: center">get started now</h2>
+            <a href="{% url get_started %}?plan=FREE" class="button price">$0/month</a>
+        </div>
+        <h2>Secondary messaging</h2>
+        <h2>Secondary messaging</h2>
+        <div class="footer">&nbsp;</div>
+    </div>
+</div>
+
+<div class="pricing-features large">
+    <div class="bgtop">
+        <div class="bgbottom">
+            <div class="feature-box" id="freeplan-features">
+                <h3>What's included?</h3>
+                <div class="feature-item">
+                    <img src="{% static 'images/features_item_core.png' %}"></img>
+                    Core Features
+                </div>
+                <div class="feature-item">
+                    <img src="{% static 'images/features_item_docs.png' %}"></img>
+                    Documents = 5,000
+                </div>
+                <div class="feature-item">
+                    <img src="{% static 'images/features_item_storage.png' %}"></img>
+                    Storage = 10MB
+                </div>
+                <div class="feature-item">
+                    <img src="{% static 'images/features_item_queries.png' %}"></img>
+                    Queries = 500/day
+                </div>
+                <div class="feature-item">
+                    <img src="{% static 'images/features_item_geo.png' %}"></img>
+                    Geolocation
+                </div>
+                <div class="feature-item">
+                    <img src="{% static 'images/features_item_faceting.png' %}"></img>
+                    Faceting
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="lowerportion">
+    <div style="float: right; margin: 5px -40px 0 0;">Want more power? checkout our complete <a href="{% url get_started %}">pricing plans</a>.</div>
+    <div class="questions">
+        <h1>Questions?</h1>
+        <div class="leftcol">
+            <p>
+                <b>Can I try it out without having to enter my credit card?</b><br> 
+                Yes. Our free account just requires you to enter an email address and choose a password.
+            </p>
+            <p>
+                <b>Will you help me get started?</b><br>
+                Absolutely! Try our tutorials for the quickest way to get up to speed. Every plan gets our great customer support from our own team of developers. We’ve been working on search for years, and want to share our experience with you the moment you need help. Plus, we also know we can learn from you as well, so please be in touch.
+            </p>
+            <p>
+                <b>How do I upgrade from the Free package to the Starter package?</b><br>
+                Contact us via <a href="mailto:support@indextank.com">email</a> .
+            </p>
+        </div>
+        <div class="rightcol">
+            <p>
+                <b>Can I switch plans?</b><br>
+                Sure. We’re working on automating this process, but in the meantime, contact us and we’ll do it for you.
+            </p>
+            <p>
+                <b>Can I cancel any time I want?</b><br>
+                Yes. You can cancel your account at any time without any prior notification.
+            </p>
+            <p>
+                <b>How do I cancel my service?</b><br>
+                Send us an email telling us you want to cancel, and we’ll take care of it.
+            </p>
+            <p>
+                <b>When will you charge me?</b><br>
+                We charge for the paid plans every month in advance, and we provide the first month free of charge. This means that if you sign up, for example, on January 15th, you will not be charged until February 15th, and that will pay for the period from February 15th until March 14th.
+            </p>
+        </div>
+    </div>
+
+    {% include 'includes/staff-banner.html' %}
+</div>
+
+
+{% endblock %}
+

@@ -1,0 +1,162 @@
+{% extends "common-base.html" %}
+{% load custom_tags %}
+{% load humanize %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <script type="text/javascript">
+
+    function toggleUrlDoc() {
+        if ($('#urlDoc:visible').length > 0 ) {
+            $('#urlDoc').hide()
+        } else {
+            $('#urlDoc').show()
+        }
+    }
+    function toggleIndexName() {
+        if ($('#indexName:visible').length > 0 ) {
+            $('#indexName').hide()
+        } else {
+            $('#indexName').show()
+        }
+    }
+</script>
+{% endblock %}
+
+{% block container_class %}{{ block.super }} dashboard wide{% endblock %}
+
+{% block title %}My Dashboard{% endblock %}
+
+
+{% block common_content %}
+<div class="module">
+</div>
+
+<div class="main" style="width: 900px">
+    <div class="module x">
+        <h3>IndexTank Add-on</h3>
+        <p>
+            <a href="/">IndexTank</a> is a cloud-based search solution. With it you can have your application's textual content searchable in a highly efficient, scalable and robust platform, without the hassle and cost of building, configuring, maintaining and hosting your own search implementation.
+            This Heroku Add-on allows you to use IndexTank in your application, adding real-time search with very little effort.
+        </p>
+    </div>
+
+    <div class="module x">
+        <h3>Your IndexTank add-on configuration</h3>
+	    <div class="module x" style="margin-bottom: 15px;">
+{% box 'code' %}
+<pre class="sh_ruby">
+api_url = '{{ account.get_private_apiurl }}'
+{% if indexes.0 %}index_name = '{{ indexes.0.name }}'{% endif %}
+</pre>
+{% endbox %}
+		</div>
+		<p>
+	        The <b>api_url</b> is your private key that you can use to talk to the IndexTank service from within your application when it is running locally (not on Heroku).<br></br>
+	        The <b>index_name</b> is the name of your index. You will use this name to operate with your index from within your app code.<br></br>
+	        You'll need to install the IndexTank gem to develop locally.
+		</p>
+    </div>
+    <div class="module x"> 
+        <div class="module"></div> 
+		    <h3>
+		        Installing the IndexTank Gem
+		    </h3>
+ 	        <div class="module x" style="margin-bottom: 15px;"> 
+{% box 'code' %}
+<pre class="sh_ruby">
+$ gem install indextank
+</pre>
+{% endbox %}
+            </div> 
+            <p>
+                Now you can use the IndexTank client to add documents to your index and perform searches. You can grab the following sample code and use it in your application:
+            </p>
+            <div class="module x" style="margin-bottom: 15px;"> 
+{% box 'code' %}
+<pre class="sh_ruby">
+require 'rubygems'
+require 'indextank'
+
+client = IndexTank::Client.new(ENV['INDEXTANK_API_URL'] || '{{ account.get_private_apiurl }}')
+index = client.indexes('{% if indexes.0 %}{{ indexes.0.name }}{% endif %}')
+
+begin
+    index.document("1").add({ :text => "some text here" })
+    index.document("2").add({ :text => "some other text" })
+    index.document("3").add({ :text => "something else here" })
+
+    results = index.search("some")
+
+    print "#{results['matches']} documents found\\n"
+    results['results'].each { |doc|
+      print "docid: #{doc['docid']}\\n"
+    }
+rescue
+    print "Error: ",$!,"\\n"
+end
+</pre>
+{% endbox %}
+           </div> 
+           <p>
+               You can check the gem specification <a href="/documentation/ruby-client">here</a>.
+           </p>
+    </div> 
+
+    <div class="module x">
+        <div class="module"></div> 
+            <h3>
+                Testing your application
+            </h3>
+            <p>
+                Using the code above, you should be able to test your application both locally and running on Heroku. Keep in mind that your tests affect the live index. You can delete and re-create your index anytime to clean it up, either from the code as shown below or from IndexTank's <a href="http://indextank.com/dashboard">dashboard</a>:
+            </p>
+            <div class="scrollable" style="margin-bottom: 15px;">
+{% box 'code' %}
+<pre class="sh_ruby">
+### Deleting an index
+
+client = IndexTank::Client.new(ENV['INDEXTANK_API_URL'] || '{{ account.get_private_apiurl }}')
+index = client.indexes('{% if indexes.0 %}{{ indexes.0.name }}{% endif %}')
+index.delete()
+
+### Creating a new index
+
+client = IndexTank::Client.new(ENV['INDEXTANK_API_URL'] || '{{ account.get_private_apiurl }}')
+index = client.indexes('{% if indexes.0 %}{{ indexes.0.name }}{% endif %}')
+index.add()
+
+print "Waiting for index to be ready"
+while not index.running?
+    print "."
+    STDOUT.flush
+    sleep 0.5
+end
+print "\\n"
+STDOUT.flush
+</pre>
+{% endbox %}
+           </div>
+    </div>
+
+    <div class="module x">
+        <div class="module"></div>
+            <h3>
+                Pushing to Heroku
+            </h3>
+            <p>
+                You should be able to use IndexTank from within your application running on Heroku after the usual push commands:
+            </p>
+            <div class="module x" style="margin-bottom: 15px;">
+{% box 'code' %}
+<pre class="sh_ruby">
+$ git commit
+$ git push heroku master
+</pre>
+{% endbox %}
+           </div>
+    </div>
+</div> 
+<div style="clear:both; height: 0px;">
+</div>
+{% endblock %}

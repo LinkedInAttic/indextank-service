@@ -1,0 +1,563 @@
+{% extends "common-base.html" %}
+
+{% load custom_tags %}
+{% load messages %}
+
+
+{% block right_content %}
+  {% box 'table' %}
+	  <ul>
+      <li><h2>Table of contents</h2></li>
+	    <li><a href="#intro">Scoring Function Formulas</a></li>
+	    <li><a href="#operators">Operators</a></li>
+	    <li><a href="#variables">Variables</a></li>
+	    <li class="last"><a href="#functions">Functions</a></li>
+	  </ul>
+  {% endbox %}
+{% endblock %}
+    
+{% block container_class %}{{ block.super }} documentation{% endblock %}
+ 
+{% block title %}Scoring Function Formulas{% endblock %}
+    
+{% block common_content %}
+<h2 id="intro">Introduction</h2>
+
+	<p>
+		<i>Scoring functions</i> are defined by mathematic formulas that take data from the document, the query and the textual relevance in order to
+		assign a score to each matching document for a query. The resulting scores are used when searching the index to provide specific orderings for the results.
+    </p>
+    <p>
+       	You can modify these formulas in real-time and they can be as complex as you need them to be. <!-- In order to do that, we provide you with a specific
+       	syntax that allows you to use powerful mathematical expressions.-->
+	</p>
+
+        <p>When writing the formula, have in mind that:
+	    <ul style="font-size: 14px; color: #666666">
+	        <li style="padding-bottom: 10px;">
+	            Variable and function names are <b>case sensitive</b>. 
+	        </li>
+	        <li style="padding-bottom: 10px;">
+                Formulas must be <b>well formed</b>. A missing parenthesis, an unknown function or variable name or an undefined 
+                operator will result in a syntax error when editing the function.
+            </li>
+	        <li style="padding-bottom: 10px;">
+                Variable values and the resulting score are <b>float numbers</b>. 
+            </li>
+            <li style="padding-bottom: 10px;">
+                All expressions except <a href="#if">conditions</a> are <b>float expressions</b>. In any context where you can use a <a href="#variables">variable</a>
+                you can also use a <a href="#functions">function</a> or a literal scalar value ("1", "0.5", "-5"). 
+            </li>
+	    </ul>
+	    </p>
+
+<h2 id="operators">Operators</h2>
+
+        <p>Formulas allow the following operators to work with expressions: 
+        <span class="formula_variable">+</span>, <span class="formula_variable">-</span>, <span class="formula_variable">*</span>, <span class="formula_variable">/</span>
+        </p>
+        <p>
+        These are all binary operators except for "<span class="formula_variable">-</span>" which can also be used to negate (being a unary operator).
+        </p>
+
+        <!-- <p>Formulas allow the following operators to work with expressions:
+	    <ul style="font-size: 14px; color: #666666">
+	        <li style="padding-bottom: 10px;">
+	            <span class="formula_variable">a + b</span>: takes two expressions and adds them up. 
+	        </li>
+	        <li style="padding-bottom: 10px;">
+	            <span class="formula_variable">a - b</span>: takes two expressions and subtracts the second from the first. 
+            </li>
+	        <li style="padding-bottom: 10px;">
+	            <span class="formula_variable">- a</span>: negates the argument. 
+            </li>
+            <li style="padding-bottom: 10px;">
+	            <span class="formula_variable">a / b</span>: takes two arguments and divides the first by the second. 
+            </li>
+            <li style="padding-bottom: 10px;">
+	            <span class="formula_variable">a * b</span>: takes two arguments and multiplies them. 
+            </li>
+	    </ul>
+	    </p>
+	    -->
+
+<br/>
+
+<h2 id="variables">Variables</h2>
+
+<div class="docblock">
+	<p>Scoring function formulas are computed for each document matching a given query. Hence there is a list of variables related to
+	the document or the query that can be used in the formula:</p>
+    <p>
+        <ul>
+	        <li><a href="#relevance">Textual relevance</a><br></li>
+	        <li><a href="#age">Document's age</a><br></li>
+	        <li><a href="#docvars">Document's variables</a><br></li>
+	        <li><a href="#queryvars">Query variables</a><br></li>
+        </ul>
+    </p>
+    <div>
+	        <table id="relevance" border="0" class="indextable">
+	            <tbody><tr class="round_b"> 
+	                <th class="first last" colspan="2">Textual Relevance</th> 
+	            </tr>
+	            <tr>
+	                <td rowspan="3" class="first" style="white-space: normal;">
+	                    <span class="formula_title">Description:</span> For each document matching a query a textual relevance (how relevant is the documents text for the query) is calculated. You may or may not consider this
+	                    value in your formula, or decide how important it is in the final calculation (e.g.: if you want to sort your results just by creation time, you may 
+	                    discard this variable in your scoring function).  
+	                </td>
+	                <td class="last" style="white-space: normal;">
+	                    <span class="formula_title">Syntax:</span> <span class="formula_variable">relevance</span>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td class="last" style="white-space: normal;">
+	                    <span class="formula_title">Short syntax:</span> <span class="formula_variable">rel</span> or <span class="formula_variable">r</span> or <span class="formula_variable">R</span>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td class="last" style="white-space: normal;">
+	                    <span class="formula_title">Values:</span> <i>Relevance</i> is always a positive float number. Because of precision issues, <i>relevance</i> CAN be zero.
+	                </td>
+	            </tr>
+	            <tr>
+	               <td class="first last" colspan="2">
+	                   <span class="formula_title">Sample:</span><br>
+{% box 'code' %}
+<pre style="color: #222">  
+    -age * <b>relevance</b> <span style="font-family: arial,helvetica,clean,sans-serif; font-size: 85%; color: #888888;">(sorts documents considering how new and how relevant to the query the document is equally)</span>
+</pre>
+{% endbox %}
+                       
+	               </td>
+	            </tr>
+	        </tbody></table>
+            <table id="age" border="0" width="100%" class="indextable small">
+                <tbody><tr class="round_b"> 
+                    <th class="first last" colspan="2">Document's Age</th> 
+                </tr>
+                <tr>
+                    <td rowspan="3" class="first" style="white-space: normal; padding-right: 20px">
+                        <span class="formula_title">Description:</span> When indexed, every document is assigned a timestamp, an integer value which usually describes its creation time. The larger the value, the newer the document.
+			            The timestamp field can be provided when adding the document. Otherwise, IndexTank automatically assigns a value representing the number of seconds since
+			            Unix Epoch (00:00:00 UTC on 1 January 1970) until the moment the document was indexed.  
+			            <br><br>
+			            When writing formulas you can use the document's age, which is the result of subtracting the documents timestamp to the number of seconds since Unix Epoch until
+			            the moment the query was executed. When using UNIX time for the documents' timestamps, this variable represents the age of the document in seconds.  
+                    </td>
+                    <td class="last" style="white-space: normal;">
+                        <span class="formula_title">Syntax:</span> <span class="formula_variable">doc.age</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="last" style="white-space: normal;">
+                        <span class="formula_title">Short syntax:</span> <span class="formula_variable">age</span> or <span class="formula_variable">a</span> or <span class="formula_variable">A</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="last" style="white-space: normal;">
+                        <span class="formula_title">Values:</span> Since there are no restrictions to the documents' timestamps provided, <i>age</i> can contain negative values.
+                    </td>
+                </tr>
+                <tr>
+                   <td class="first last" colspan="2">
+                       <span class="formula_title">Sample:</span><br>
+{% box 'code' %}
+<pre style="color: #222">  
+    <b>-age</b> * relevance <span style="font-family: arial,helvetica,clean,sans-serif; font-size: 85%; color: #888888;">(sorts documents considering how new and how relevant to the query the document is equally)</span>
+</pre>
+{% endbox %}
+                       
+                   </td>
+                </tr>
+            </tbody></table>
+
+            <table id="docvars" border="0" width="100%" class="indextable small">
+                <tbody><tr class="round_b"> 
+                    <th class="first last" colspan="2">Document's Variables</th> 
+                </tr>
+                <tr>
+                    <td rowspan="3" class="first" style="white-space: normal; padding-right: 20px">
+                        <span class="formula_title">Description:</span> When a document is indexed, it is possible to assign numeric (float) variables to it. These 
+                        variables may represent rapidly changing numeric values that have some implication on the document's possible valuation in a sorting function 
+                        (number of positive and negative votes, number of comments, user generated score, review score, number of visits, etc.). Once a document is
+                        indexed, its variables can be changed any time it is necessary with no cost other than the one related to the HTTP communication. 
+                        <br><br>
+                        The variables are identified by an integer number from zero to the the variables' limit minus one. 
+                        The maximum number of variables available for each document will depend on the package of the account.
+                    </td>
+                    <td class="last" style="white-space: normal;">
+                        <span class="formula_title">Syntax:</span> <span class="formula_variable">doc.var[n]</span> (where <span class="formula_variable">n</span> is the variable's integer identifier) 
+                    </td>
+               </tr>
+                <tr>
+                    <td class="last" style="white-space: normal;">
+                        <span class="formula_title">Short syntax:</span> <span class="formula_variable">d[n]</span> or <span class="formula_variable">D[n]</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="last" style="white-space: normal;">
+                        <span class="formula_title">Values:</span> Any float entered when the document was indexed or afterwards. 
+                        For negative values, NaN (not a number) will be returned. A zero value will return negative infinity.
+                    </td>
+                </tr>
+                <tr>
+                   <td class="first last" colspan="2">
+                       <span class="formula_title">Sample:</span><br>
+{% box 'code' %}
+<pre style="color: #222">  
+    log(<b>doc.var[0]</b>) - age/86400 <span style="font-family: arial,helvetica,clean,sans-serif; font-size: 85%; color: #888888;">(sorts documents considering natural logarithm of the variable #0 of the document minus its age in days)</span>
+</pre>
+{% endbox %}
+                       
+                   </td>
+                </tr>
+            </tbody></table>
+    	
+            <table id="queryvars" border="0" width="602px" class="indextable small">
+                <tbody><tr class="round_b"> 
+                    <th class="first last" colspan="2">Query Variables</th> 
+                </tr>
+                <tr>
+                    <td rowspan="3" class="first" style="white-space: normal; padding-right: 20px">
+                        <span class="formula_title">Description:</span> When performing a search in the index, it is possible to pass float variables along with 
+                        the query (check the <a href="http://indextank.com/documentation/api#searching">searching</a> documentation).
+                        These variables can be later used in the scoring function's formula.
+                        <br><br>
+                    </td>
+                    <td class="last" style="white-space: normal;">
+                        <span class="formula_title">Syntax:</span> <span class="formula_variable">query.var[n]</span> (where <span class="formula_variable">n</span> is the variable's integer identifier) 
+                    </td>
+                </tr>
+                <tr>
+                    <td class="last" style="white-space: normal;">
+                        <span class="formula_title">Short syntax:</span> <span class="formula_variable">q[n]</span> or <span class="formula_variable">Q[n]</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="last" style="white-space: normal;">
+                        <span class="formula_title">Values:</span> Any float passed as a query variable. 
+                    </td>
+                </tr>
+            </tbody></table>
+            </div>
+    <!-- <pre style="border-left: 3px solid silver; margin-left: 25px; margin-right: 20px; padding-left: 20px; color: #222222;">   
+        log(boost(0)) - age/50000
+</pre>
+{% endbox %} -->
+
+<br/>
+
+<h2 id="functions">Available functions</h2>
+
+<div class="docblock">
+    <p>There is a set of mathematical functions available for writing formulas:</p>
+    <p>
+        <ul>
+            <li><a href="#log">Natural Logarithm</a><br></li>
+            <li><a href="#pow">Power</a><br></li>
+            <li><a href="#max">Max</a><br></li>
+            <li><a href="#min">Min</a><br></li>
+            <li><a href="#abs">Absolute</a><br></li>
+            <li><a href="#sqrt">Square root</a><br></li>
+            <li><a href="#if">If clause</a><br></li>
+            <li><a href="#distance">Distance functions</a><br></li>
+        </ul>
+    </p>
+    
+    <div>
+            <table id="log" border="0" width="100%" class="indextable small">
+                <tbody>
+                <tr class="round_b"> 
+                    <th class="first last" colspan="2">Natural logarithm</th> 
+                </tr>
+                <tr>
+                    <td rowspan="2" class="first" style="white-space: normal; padding-right: 20px">
+                        <span class="formula_title">Description:</span> Calculates the natural logarithm of an expression.<br>
+                        The logarithm function is useful when there's a need to consider the order of magnitude of an expression instead of its actual value 
+                        (for example, it is comparable to considering the number of digits of the value). Mathematically speaking, it is the inverse to 
+                        an exponential function.
+                    </td>
+                    <td class="last" style="white-space: normal;">
+                        <span class="formula_title">Syntax:</span> <span class="formula_variable">log(val)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="last" style="white-space: normal;">
+                        <span class="formula_title">Arguments:</span> 
+                        <br><span class="formula_variable"><b>val:</b></span> a float expression to the which apply the logarithm. For negative values, NaN
+                    </td>
+                </tr>
+                <tr>
+                   <td class="first last" colspan="2">
+                       <span class="formula_title">Sample:</span><br>
+{% box 'code' %}
+<pre style="color: #222">  
+    <b>log(doc.var[0])</b> - age/86400 <span style="font-family: arial,helvetica,clean,sans-serif; font-size: 85%; color: #888888;">(sorts documents considering natural logarithm of the variable #0 of the document minus its age in days)</span>
+</pre>
+{% endbox %}
+                       
+                   </td>
+                </tr>
+                
+            </tbody></table>
+
+           <table id="pow" border="0" width="100%" class="indextable small">
+               <tbody>
+               <tr class="round_b"> 
+                   <th class="first last" colspan="2">Power</th> 
+               </tr>
+               <tr>
+                   <td rowspan="2" class="first" style="white-space: normal; padding-right: 20px">
+                       <span class="formula_title">Description:</span> Raises a given float expression to a given power (integer).<br>
+                       The power function can be used to create exponential functions or to weight different factors (make one more important than another
+                       in a product).
+                   </td>
+                   <td class="last" style="white-space: normal;">
+                       <span class="formula_title">Syntax:</span> <span class="formula_variable">pow(base, exponent)</span>
+                   </td>
+               </tr>
+               <tr>
+                   <td class="last" style="white-space: normal;">
+                       <span class="formula_title">Arguments:</span> 
+                       <br><span class="formula_variable"><b>base:</b></span> a float expression, the base. 
+                       <br><span class="formula_variable"><b>exponent:</b></span> a integer expression, the exponent. Zero, and negative values
+                       can be used. Float expressions (variables, function results) can be used, but will be truncated (the integer value closest
+                       to zero will be considered).  
+                   </td>
+               </tr>
+               <tr>
+                  <td class="first last" colspan="2">
+                      <span class="formula_title">Sample:</span><br>
+{% box 'code' %}
+<pre style="color: #222">  
+   <b>pow(doc.var[0], 3)</b> * doc.var[1] <span style="font-family: arial,helvetica,clean,sans-serif; font-size: 85%; color: #888888;">(sorts documents considering variable #0 three times as important as variable #1)</span>
+</pre>
+{% endbox %}
+                      
+                  </td>
+               </tr>
+               
+           </tbody></table>
+           <table id="max" border="0" width="100%" class="indextable small">
+               <tbody>
+               <tr class="round_b"> 
+                   <th class="first last" colspan="2">Max</th> 
+               </tr>
+               <tr>
+                   <td rowspan="2" class="first" style="white-space: normal; padding-right: 20px">
+                       <span class="formula_title">Description:</span> Returns the greater of two values.
+                   </td>
+                   <td class="last" style="white-space: normal;">
+                       <span class="formula_title">Syntax:</span> <span class="formula_variable">max(a, b)</span>
+                   </td>
+               </tr>
+               <tr>
+                   <td class="last" style="white-space: normal;">
+                       <span class="formula_title">Arguments:</span> 
+                       <br><span class="formula_variable"><b>a:</b></span> a float expression. 
+                       <br><span class="formula_variable"><b>b:</b></span> a float expression.  
+                   </td>
+               </tr>
+               <tr>
+                  <td class="first last" colspan="2">
+                      <span class="formula_title">Sample:</span><br>
+{% box 'code' %}
+<pre style="color: #222">  
+   <b>max(doc.var[0], doc.var[1])</b> <span style="font-family: arial,helvetica,clean,sans-serif; font-size: 85%; color: #888888;">(sorts documents considering variable #0 or variable #1 wichever is greater)</span>
+</pre>
+{% endbox %}
+                      
+                  </td>
+               </tr>
+               
+           </tbody></table>
+           <table id="min" border="0" width="100%" class="indextable small">
+               <tbody>
+               <tr class="round_b"> 
+                   <th class="first last" colspan="2">Min</th> 
+               </tr>
+               <tr>
+                   <td rowspan="2" class="first" style="white-space: normal; padding-right: 20px">
+                       <span class="formula_title">Description:</span> Returns the smaller of two values.
+                   </td>
+                   <td class="last" style="white-space: normal;">
+                       <span class="formula_title">Syntax:</span> <span class="formula_variable">min(a, b)</span>
+                   </td>
+               </tr>
+               <tr>
+                   <td class="last" style="white-space: normal;">
+                       <span class="formula_title">Arguments:</span> 
+                       <br><span class="formula_variable"><b>a:</b></span> a float expression. 
+                       <br><span class="formula_variable"><b>b:</b></span> a float expression.  
+                   </td>
+               </tr>
+               <tr>
+                  <td class="first last" colspan="2">
+                      <span class="formula_title">Sample:</span><br>
+{% box 'code' %}
+<pre style="color: #222">  
+   <b>min(doc.var[0], doc.var[1])</b> <span style="font-family: arial,helvetica,clean,sans-serif; font-size: 85%; color: #888888;">(sorts documents considering variable #0 or variable #1 wichever is smaller)</span>
+</pre>
+{% endbox %}
+                      
+                  </td>
+               </tr>
+               
+           </tbody></table>
+           <table id="abs"  border="0" width="100%" class="indextable small">
+               <tbody>
+               <tr class="round_b"> 
+                   <th class="first last" colspan="2">Absolute</th> 
+               </tr>
+               <tr>
+                   <td rowspan="2" class="first" style="white-space: normal; padding-right: 20px">
+                       <span class="formula_title">Description:</span> Returns the absolute value of a double value. For positive values, the argument is 
+                       returned. For negative values, the negation of the value is returned.
+                   </td>
+                   <td class="last" style="white-space: normal;">
+                       <span class="formula_title">Syntax:</span> <span class="formula_variable">abs(value)</span>
+                   </td>
+               </tr>
+               <tr>
+                   <td class="last" style="white-space: normal;">
+                       <span class="formula_title">Arguments:</span> 
+                       <br><span class="formula_variable"><b>value:</b></span> a float expression, zero, positive, or negative. 
+                   </td>
+               </tr>
+               <tr>
+                  <td class="first last" colspan="2">
+                      <span class="formula_title">Sample:</span><br>
+{% box 'code' %}
+<pre style="color: #222">  
+   <b>abs(doc.var[0])</b> <span style="font-family: arial,helvetica,clean,sans-serif; font-size: 85%; color: #888888;">(sorts documents considering variable #0 equally when its value is 1 or -1)</span>
+</pre>
+{% endbox %}
+                      
+                  </td>
+               </tr>
+               
+           </tbody></table>
+           
+           <table id="sqrt" border="0" width="100%" class="indextable small">
+               <tbody>
+               <tr class="round_b"> 
+                   <th class="first last" colspan="2">Square root</th> 
+               </tr>
+               <tr>
+                   <td rowspan="2" class="first" style="white-space: normal; padding-right: 20px">
+                       <span class="formula_title">Description:</span> Calculates the square root of a double value. This function is a variant of
+                       the <b>power</b> function that considers one case of non integer exponent (1/2). 
+                   </td>
+                   <td class="last" style="white-space: normal;">
+                       <span class="formula_title">Syntax:</span> <span class="formula_variable">sqrt(value)</span>
+                   </td>
+               </tr>
+               <tr>
+                   <td class="last" style="white-space: normal;">
+                       <span class="formula_title">Arguments:</span> 
+                       <br><span class="formula_variable"><b>value:</b></span> a float expression. For negative values, NaN (not a number) will be returned. 
+                   </td>
+               </tr>
+               
+           </tbody></table>
+           <table id="if" border="0" width="100%" class="indextable small">
+               <tbody>
+               <tr class="round_b"> 
+                   <th class="first last" colspan="2">If clause</th> 
+               </tr>
+               <tr>
+                   <td rowspan="2" class="first" style="white-space: normal; padding-right: 20px">
+                       <span class="formula_title">Description:</span> Evaluates a condition and returns the corresponding expression. This function takes
+                       three arguments: a boolean condition, the expression to evaluate when the condition is met and the expression to consider when it is not.<br>
+                       The expressions are regular float expressions (a variable, the result of a function, the result of an operation, a literal).<br>
+                       The boolean condition is expressed by comparing two float expressions (no boolean operations allowed) with one of this comparators:<br>
+                       <ul>
+                            <li>
+                                <b>a == b</b>: true when both expressions are equal.
+                            </li>
+                            <li>
+                                <b>a <= b</b>: true when expression <b>a</b> is smaller than or equal to expression <b>b</b>.
+                            </li>
+                            <li>
+                                <b>a >= b</b>: true when expression <b>a</b> is greater than or equal to expression <b>b</b>.
+                            </li>
+                            <li>
+                                <b>a < b</b>: true when expression <b>a</b> is smaller than expression <b>b</b>.
+                            </li>
+                            <li>
+                                <b>a > b</b>: true when expression <b>a</b> is greater than expression <b>b</b>.
+                            </li>
+                            <li>
+                                <b>a != b</b>: true when expression <b>a</b> and <b>b</b> are not equal.
+                            </li>
+                       </ul> 
+                   </td>
+                   <td class="last" style="white-space: normal;">
+                       <span class="formula_title">Syntax:</span> <span class="formula_variable">if(cond, true, false)</span>
+                   </td>
+               </tr>
+               <tr>
+                   <td class="last" style="white-space: normal;">
+                       <span class="formula_title">Arguments:</span> 
+                       <br><span class="formula_variable"><b>cond:</b></span> the boolean condition comparing two expressions. 
+                       <br><span class="formula_variable"><b>true:</b></span> the expression to evaluate when <span class="formula_variable"><b>cond:</b></span> is met. 
+                       <br><span class="formula_variable"><b>false:</b></span> the expression to evaluate when <span class="formula_variable"><b>cond:</b></span> is not met. 
+                   </td>
+               </tr>
+               <tr>
+                  <td class="first last" colspan="2">
+                      <span class="formula_title">Sample:</span><br>
+{% box 'code' %}
+<pre style="color: #222">  
+   <b>if(doc.var[0] < 1, doc.var[0], rel)</b> <span style="font-family: arial,helvetica,clean,sans-serif; font-size: 85%; color: #888888;">(sorts documents considering variable #0 while its value is less than 1, otherwise considering textual relevance)</span>
+</pre>
+{% endbox %}
+                  </td>
+               </tr>
+               
+           </tbody></table>
+           <table id="distance" border="0" width="100%" class="indextable small">
+               <tbody>
+               <tr class="round_b"> 
+                   <th class="first last" colspan="2">Kms/miles calculator</th> 
+               </tr>
+               <tr>
+                   <td rowspan="2" class="first" style="white-space: normal; padding-right: 20px">
+                       <span class="formula_title">Description:</span> Calculates the distance between two geographical points expressed as longitude/latitude coordinates. 
+                       The distance can be expressed in kilometers or in miles.  
+                   </td>
+                   <td class="last" style="white-space: normal;">
+                       <span class="formula_title">Syntax:</span> <span class="formula_variable">km(lat1, long1, lat2, long2)</span> or <span class="formula_variable">miles(lat1, long1, lat2, long2)</span>
+                   </td>
+               </tr>
+               <tr>
+                   <td class="last" style="white-space: normal;">
+                       <span class="formula_title">Arguments:</span>
+                       <br><span class="formula_variable"><b>lat1:</b></span> latitude of point 1.
+                       <br><span class="formula_variable"><b>long1:</b></span> longitude of point 1. 
+                       <br><span class="formula_variable"><b>lat2:</b></span> latitude of point 2. 
+                       <br><span class="formula_variable"><b>long2:</b></span> longitude of point 2.
+                       <br><br>All coordinates are float values and they are expressed in degrees (non integer values ARE considered). 
+                   </td>
+               </tr>
+               <tr>
+                  <td class="first last" colspan="2">
+                      <span class="formula_title">Sample:</span><br>
+{% box 'code' %}
+<pre style="color: #222">  
+   <b>miles(query.var[0], query.var[1], doc.var[0], doc.var[1])</b> 
+   <span style="font-family: arial,helvetica,clean,sans-serif; font-size: 85%; color: #888888;">(sorts documents considering the distance between doc and a point passed in the query)</span>
+</pre>
+{% endbox %}
+                  </td>
+               </tr>
+               
+           </tbody></table>
+       
+       </div>
+    </div>
+  </div>
+{% endblock %}
+

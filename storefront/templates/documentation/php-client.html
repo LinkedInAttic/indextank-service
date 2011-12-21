@@ -1,0 +1,279 @@
+{% extends "documentation/client-base.html" %}
+{% load custom_tags %}
+
+
+{% block language-name %}php{% endblock %}
+
+{% block download-box %}
+
+<div class="docblock" style="padding: 0px; font-size: 90%">
+<b>PHP client</b>
+<ul>
+    <li>
+        Stable Version - 
+        <a href="http://github.com/flaptor/indextank-php/zipball/stable">zip</a> |
+        <a href="http://github.com/flaptor/indextank-php/tarball/stable">tgz</a>
+    </li>
+    <li>
+        <a href="http://github.com/flaptor/indextank-php/downloads">All versions</a>
+    </li>
+    <li>
+        <a href="http://github.com/flaptor/indextank-php">Source code (github)</a>
+    </li>
+</ul>
+</div>
+
+{% endblock %}
+
+
+{% block summary-title %}PHP client{% endblock %}
+
+
+{# <!-------- INSTANTIATE CLIENT --------> #}
+{% block code-instatiate %}
+  include_once "indextank.php";
+
+  $API_URL = '&lt;YOUR API URL&gt;';
+
+  $client = new Indextank_Api($API_URL);
+  $index = $client-&gt;get_index("&lt;YOUR INDEX NAME&gt;");
+{% endblock %}    
+
+
+{# <!-------- SIMPLE INDEXING --------> #}
+{% block code-simple-indexing %}	  
+  $text = 'this is a text';
+  $doc_id = 1234;
+  $index-&gt;add_document($doc_id, array('text'=&gt;$text));
+{% endblock %}    
+
+
+{# <!-------- SIMPLE SEARCHING --------> #}
+{% block code-simple-searching %}	  
+  $query = "&lt;YOUR QUERY&gt;";
+  $res = $index-&gt;search($query);
+
+  echo $res-&gt;matches . " results\n";
+  foreach($res-&gt;results as $doc) {
+    print_r($doc);
+    echo "\n";
+  }
+{% endblock %}    
+
+{# <!-------- QUERY DELETE --------> #}
+{% block code-query-delete %}
+  $query = "&lt;YOUR QUERY&gt;";
+  $index-&gt;delete_by_search($query);
+  {% endblock %}
+
+{# <!-------- SNIPPET SEARCHING --------> #}
+{% block code-snippet-searching %}   
+  $query = "&lt;YOUR QUERY&gt;";
+  $fetch_fields = "title,timestamp";
+  $snippet_fields = "text";
+
+  $res = $index-&gt;search($query);
+
+  $res = $index-&gt;search($query, NULL, NULL, NULL, 
+                      $snippet_fields, $fetch_fields);
+  echo $res-&gt;matches." results\n";
+  foreach($res-&gt;results as $doc) {
+      $docid = $doc-&gt;doc_id;
+      $title = $doc-&gt;title;
+      $text = $doc-&gt;snippet_text;
+      echo "{% filter force_escape %}<a href='/$docid'>$title</a><p>$text</p>{% endfilter %}\n";
+  }
+{% endblock %}
+
+{% block code-simple-deleting %}
+  $doc_id = "&lt;YOUR DOCUMENT ID&gt;";
+
+  $index-&gt;delete_document($doc_id);
+{% endblock %}
+
+
+{# <!-------- MULTIPLE FIELD INDEXING --------> #}
+{% block code-multiple-field-indexing %}
+  $index-&gt;add_document($doc_id, array('text'=&gt;$text, 
+                                    'title'=&gt;$title, 
+                                    'author'=&gt;$author));
+{% endblock %}    
+
+
+{# <!-------- FILTER BY AUTHOR --------> #}
+{% block code-filter-by-author %}
+  $res = $index-&gt;search($query." author:$author");
+{% endblock %}    
+
+
+{# <!-------- INDEX WITH TIMESTAMP --------> #}
+{% block code-index-with-timestamp %}
+  $index-&gt;add_document($doc_id, array('text'=&gt;$text, 'timestamp'=&gt;time()));
+{% endblock %}    
+
+
+{# <!-------- INDEX WITH BOOSTS --------> #}
+{% block code-index-with-boosts %}
+  $variables = array('0'=&gt;$rating, '1'=&gt;$reputation, '2'=&gt;$visits);
+  $index-&gt;add_document($doc_id, array('text'=&gt;$text), $variables);
+{% endblock %}    
+
+
+{# <!-------- UPDATE BOOSTS --------> #}
+{% block code-update-boosts %}
+  $index-&gt;update_variables($doc_id, $variables);
+{% endblock %}    
+
+
+{# <!-------- REFEDINE FUNCTIONS --------> #}
+{% block code-redefine-functions %}
+# FUNCTION 0 : sorts by most recent 
+  $index-&gt;add_function(0, "-age");
+
+# FUNCTION 1 : standard textual relevance
+  $index-&gt;add_function(1, "relevance");
+
+# FUNCTION 2 : sorts by rating
+  $index-&gt;add_function(2, "doc.var[0]");
+
+# FUNCTION 3 : sorts by reputation
+  $index-&gt;add_function(3, "d[1]");
+
+# FUNCTION 4 : advanced function
+  $index-&gt;add_function(4, "log(d[0]) - age/50000");
+{% endblock %}
+
+{# <!-------- BATCH INDEXING --------> #}
+{% block code-batch-indexing %}
+$documents = array();
+$documents[]= array( "docid" =&gt; "doc1", "fields" =&gt; array( "text" =&gt; "text1 is short" ) );
+$documents[]= array( "docid" =&gt; "doc2", "fields" =&gt; array( "text" =&gt; "text2 is a bit longer" ) );
+$documents[]= array( "docid" =&gt; "doc3", "fields" =&gt; array( "text" =&gt; "text3 is longer than text2" ), "variables" =&gt; array( 0 =&gt; 1.5 ) );
+$response = $index-&gt;add_documents($documents);
+{% endblock %}
+
+{% block code-batch-indexing-failed %}
+$failed_documents = array();
+foreach ($response as $r) {
+    if (!$r-&gt;added)
+        $failed_documents[]= $r;
+}
+{% endblock %}
+
+{# <!-------- BULK DELETE --------> #}
+{% block code-bulk-delete %}
+$docids = array("doc1", "doc2", "doc3", "doc4");
+$response = $index-&gt;delete_documents($docids);
+{% endblock %}
+
+{% block code-bulk-delete-failed %}
+$failed_documents = array();
+foreach ($response as $r) {
+    if (!$r-&gt;deleted)
+        $failed_documents[]= $r;
+}
+{% endblock %}
+
+
+{# <!-------- SEARCH WITH RELEVANCE FUNCTIONS --------> #}
+{% block code-search-with-relevance-function %}
+$relevance_function = 2;
+$index-&gt;search($query, NULL, NULL, $relevance_function);
+{% endblock %}
+
+{# <!-------- PROXIMITY SCORING FUNCTION --------> #}
+{% block code-proximity-scoring-function %}
+# FUNCTION 5 : inverse distance calculated in miles
+$index-&gt;add_function(5, "-mi(d[0], d[1], q[0], q[1])");
+{% endblock %}
+
+
+{# <!-------- SEARCH WITH GEO --------> #}
+{% block code-search-with-geo %}
+$variables = array( 0 =&gt; $latitude, 1 =&gt; $longitude );
+
+$index-&gt;search($query, NULL, NULL, 5, NULL, NULL, NULL, $variables);
+
+{% endblock %}
+
+{# <!-------- UPDATE CATEGORIES --------> #}
+{% block code-update-categories %}
+categories = array('priceRange' =&gt; '$0 to $299',
+                   'articleType' =&gt; 'camera');
+$index-&gt;update_categories($docid, $categories); 
+{% endblock %}
+
+{# <!-------- SAMPLE FACETS RESULT --------> #}
+{% block code-sample-facets-result %}
+{ 
+    'matches': 8,
+    'results': [ {'docid': 'doc1'}, ... ],
+    'facets': {
+        'articleType': {
+            'camera': 5,
+            'laptop': 3
+        },
+        'priceRange': {
+            '$0 to $299': 4,
+            '$300 to $599': 4
+        }
+    }    
+}
+{% endblock %}
+
+{# <!-------- FACETING FILTERING --------> #}
+{% block code-faceting-filtering %}
+$index.search($query, NULL, NULL, NULL, NULL, NULL,
+             array('priceRange' =&gt; array('$0 to $299', '$300 to $599'),
+                   'articleType' =&gt; array('camera'))
+             );
+{% endblock %}
+
+{% block code-range-queries %}
+# Ranges are specified by a two elements list: 
+#  bottom and top bounds.
+# Both top and bottom can be NULL indicating they should be ignored.
+#   
+# In this sample, the results will only include documents 
+# whose variable #0 value is between 5 and 10 or between 15
+# and 20, and variable #1 value is less than or equal to 3
+
+$index.search($query, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+             array( 0 =&gt; array(array(5,10), array(15, 20)), 
+                    1 =&gt; array(array(NULL, 3))
+             ));
+
+# This also applies to functions
+
+$index.search($query, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL
+             array( 0 =&gt; array(array(0.5,NULL)) )
+             );
+
+{% endblock %}
+
+
+{# <!-------- INDEX CREATION --------> #}
+{% block code-index-creation %}
+  include_once "indextank_client.php";
+
+  $API_URL = '&lt;YOUR API URL&gt;'
+
+  $client = new ApiClient($API_URL);
+
+  // this parameter allows you to create indexes with public search enabled.
+  // default is false. 
+  $public_search_enabled = false;
+
+  $index = $client-&gt;create_index("&lt;YOUR INDEX NAME&gt;", $public_search_enabled);
+  
+  while (!$index-&gt;has_started()) {
+    sleep(1);
+  }
+{% endblock %}
+
+
+{# <!-------- INDEX DELETION --------> #}
+{% block code-index-deletion %}
+  $index-&gt;delete_index();
+{% endblock %}
+

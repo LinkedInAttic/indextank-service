@@ -1,0 +1,147 @@
+{% extends "common-base.html" %}
+
+{% load custom_tags %}
+{% load messages %}
+
+{% block extrahead %}
+
+{% endblock %}
+
+{% block container_class %}{{ block.super }} documentation{% endblock %}
+
+{% block right_content %}
+  {% box 'table' %}
+    <ul>
+      <li><h2>Table of contents</h2></li>
+      <li><a href="#about">About Sorting Search Results</a></li>
+      <li><a href="#quickstart">Quick Start: Copy & Paste</a></li>
+      <li class="last"><a href="#more_info">More Information</a></li>
+    </ul>
+  {% endbox %}
+
+{% endblock %}
+
+{% block content_head %}<h2>Sorting Search Results</h2>{% endblock %}
+
+{% block common_content %}
+<div id="tutorial-main" class="main">
+ 
+<p><i>How to use scoring functions to customize the order of search results</i></p>
+<h2 id="about">About Sorting Search Results</h2>
+<p>Are the most useful documents listed first? This one simple question sums up the field of search result ranking—a field to which considerable engineering brain-power has been devoted in recent years. Starting from the relatively simple matter of matching the search terms entered by the user, a wide variety of criteria can be brought to bear in order to calculate the optimal order in which to display the documents that contain the search terms.</p>
+<h3>Why Customize Sorting?</h3>
+<p>The IndexTank server applies its own sorting techniques and returns results in order by age (most recent first). In many cases, this default behavior will be sufficient.</p>
+<p>When the requirements of your application, user needs, or business logic demand it, you can customize IndexTank's sorting technique to take control of the order in which search results are displayed. By fine-tuning the search output, you can improve the experience for users and also direct them towards the results you would prefer them to see.</p>
+<h3>How It Works</h3>
+<p>In a word: mathematics. With every search query, you can pass a scoring function, a mathematical formula that encapsulates your ranking preferences. This function overrides IndexTank's default scoring formula. The formula can be as simple or as complex as you need it to be.</p>
+<p>The implementation involves two parts:</p>
+<ul>
+    <li>
+        <b>Scoring Function:</b>a custom sorting algorithm is expressed in a formula that is constructed using IndexTank's built-in functions and values. If you have defined custom document variables, you can use them as well. For each document that matches the query's search terms, the scoring function is evaluated, substituting any needed values from that particular document. For details about scoring function syntax, see <a href="/documentation/function-definition">Scoring Function Formulas.</a>
+    </li>
+    <li>
+        <b>Query:</b>the ID number of a scoring function can be passed as a parameter to any query. You can pass only one scoring function with each query. If needed, you can redefine scoring functions in real time between queries to reflect changing circumstances.
+    </li>
+</ul>
+<h3>Anatomy of a Scoring Function</h3>
+<p>At any given time, your application can have up to six scoring functions 
+defined. The functions are named with the integers from 0 to 5. 
+Function 0 is the default and will be applied if no other is specified; 
+it starts out with an initial definition of-age, which sorts query results 
+from most recently indexed to least recently indexed (newest to oldest).</p>
+
+<div class="sideNote">
+    <b>Syntax Notes:</b>
+    Variable and function names are case 
+    sensitive.
+    The following are all floats: expressions 
+    (except conditions), variable values, 
+</div>
+
+<p>A scoring function is an expression built up from some or all of the 
+following components:</p>
+<ul>
+    <li>
+        <b>relevance:</b>a numeric score indicating how closely the document matches the search terms. Calculated by the IndexTank server based on how often each search term appears in the text, and whether the text contains all of the terms.
+    </li>
+    <li>
+        <b>age:</b>a number that tells how fresh the document is. Calculated based on the document's timestamp field, which contains either IndexTank's automatic timestamp (indicating the time when the document was indexed) or a custom timestamp you have applied yourself.
+    </li>
+    <li>
+        <b>Document variables:</b>custom values that you have associated with documents in the index. For example, you might store a count of how many users commented on a document.
+    </li>
+    <li>
+        <b>Query variables:</b>values that are passed in with a query. For example, the user's location.
+    </li>
+    <li>
+        <b>Functions:</b>built-in mathematical and flow control functions provided by IndexTank, including max(), min(), miles(), km(), if(), and <a href="/documentation/function-definition">more</a>.
+    </li>
+    <li>
+        <b>Operators:</b>+ - * /
+    </li>
+</ul>
+
+<h2 id="quickstart">Quick Start: Copy & Paste</h2>
+
+<p><i>Tweak the following code snippets for your needs, and you're ready to go</i></p>
+
+<div class="sideNote">
+    <b>Before You Start:</b>
+    <ul>
+        <li>
+            Download and instantiate the Java client, if you 
+            have not already done so.
+        </li>
+        <li>
+            Know your index's public URL. You'll need it to 
+            instantiate the client. Find the public URL on 
+            the Dashboard.
+        </li>
+</div>
+
+<h3>Define the Scoring Function</h3>
+<p>The possibilities are limitless, but here are a few ideas to get you started.</p>
+{% box 'code' %}
+<pre class="sh_java">
+// Make function 0 sort most recent first
+index.addFunction(0, "-age");
+
+// Make function 1 sort by textual relevance
+index.addFunction(1, "relevance");
+
+// Make function 2 sort by distance between document and
+// a geographic location passed in the query, sorting
+// from nearest to farthest.
+// doc.var[0] and doc.var[1] have the lat/long of the document.
+// query.var[0] and query.var[1] have the latitude and
+// longitude of an outside location (probably the user's locale).
+index.addFunction(2, "-miles(query.var[0], query.var[1], doc.var[0], doc.var[1])");
+
+// Make function 3 sort by a combination of textual
+// relevance and two document variables, which are
+// given different weights by the use of the log() function
+index.addFunction(3, "relevance * log(doc.var[0]) * doc.var[1]");
+
+// Make function 4 sort by the greater of document variable 0 or 1
+index.addFunction(4, "max(doc.var[0], doc.var[1])");
+</pre>
+{% endbox %}
+
+<h3>Pass the Scoring Function in a Query</h3>
+<p>To indicate which scoring function to use, pass its ID number as a parameter to the query. This query will use scoring function 2:</p>
+
+{% box 'code' %}
+<pre class="sh_java">
+index.search(Query.forString(query).withScoringFunction(2));
+</pre>
+{% endbox %}
+
+
+<h2 id="more_info">More Information</h2>
+<ul>
+    <li><a href="/documentation/api#promoting">Promoting a Search Result</a>&mdash; how to make sure a particular result appears at the top of the list</li>
+    <li><a href="/documentation/function-definition">Scoring Function Formulas</a>&mdash; syntax reference</li>
+</ul>
+
+</div>  
+{% endblock %}

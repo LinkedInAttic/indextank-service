@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+{% load custom_tags %}
+{% load messages %}
+{% load analytical %}
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    {% analytical_head_top %}
+    {% block head %}
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <title>{% block page_title %}{% endblock %}</title>
+    {% endblock %}
+    {% analytical_head_bottom %}
+  </head>
+    
+  <body class="{% block bodyclasses %}{% endblock %}">
+    {% analytical_body_top %}
+
+    {% block body %}
+      <!--outer layout starts here-->
+      <div id="outer_layout">
+        <!--header starts here-->
+        <div id="outer_header">
+          <div class="layout">
+            <div id="header">
+              {% block header %}{% endblock %}
+            </div>
+          </div>
+        </div>
+        <!--header ends here-->
+        
+        <div class="head_bg">
+          <div class="layout">
+            <!--login area starts here-->
+            <div id="login_area">
+              {% block login_area %}{% endblock %}
+            </div>
+            <!--login area ends here-->
+            <!--head starts here-->
+            <div class="head">
+              {% block content_head %}{% endblock %}
+            </div>
+            <span class="clear"></span>
+            <!--head ends here-->
+          </div>
+          <div style="clear:both"></div>
+        </div>
+        
+        <!--content section starts here-->
+        {% block content_body %}{% endblock %} 
+        <!--content section ends here-->
+      
+        <!--footer starts here-->
+        <div>
+          <div id="outer_footer">
+            <div class="layout">
+              <div id="footer">
+                {% block footer %}{% endblock %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--footer ends here-->
+      </div>
+      <!--outer layout ends here-->
+    {% endblock %}
+    {% analytical_body_bottom %}
+  </body>
+</html>
+
+{% comment %}
+  {% block messages %}{% endblock %}
+{% endcomment %}

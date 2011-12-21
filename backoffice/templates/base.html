@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+{% load custom_tags %}
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>IndexTank - Hosted Real-Time Search</title>
+	<!-- css --> 
+	<!--	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.5.2/build/reset-fonts/reset-fonts.css" /> -->
+	<link rel="stylesheet" type="text/css" href="{% static 'styles/yui_reset.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'styles/styles.css' %}" />
+	<!-- javascript --> 
+	<script type="text/javascript" src="{% static 'js/jquery-1.3.2.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/jquery.cycle.lite.min.js' %}"></script>
+	
+	{% block extrahead %}
+		<!-- plug in instalation -->
+		<script type="text/javascript">
+		$(function(){
+			$(".ImageGallery li a").lightBox();
+			$("#SlideShow").cycle();
+		});	
+		$(function() {
+			var elems = $('input.empty');
+			elems.blur(function() { 
+				var e = $(this); 
+				if (this.value == '') {
+					e.addClass('empty');
+					this.value = this.getAttribute('emptyvalue');
+					if (this.type == 'password') {
+						this.setAttribute('ispass', true);
+						this.type = 'text';
+					}
+				} 
+			}); 
+			elems.focus(function() { 
+				var e = $(this); 
+				if (e.hasClass('empty')) {
+					e.removeClass('empty');
+					this.value = '';
+					if (this.getAttribute('ispass')) {
+						this.type = 'password';
+					}
+				} 
+			}); 
+			elems.blur();
+		});
+		</script>
+	{% endblock %}
+	
+</head>
+
+<body>
+
+<div id="foreground">
+<div id="wrap">
+
+<div id="header">
+<div class="width">	
+	<h1>IndexTank - custom search you control</h1>	
+	<h2></h2>
+	<div id="NavBar">
+		<ul>
+        <li><a href="/">Home</a></li> 
+        <li>|</li> 
+        <li><a href="/accounts_info">Account info</a></li>
+        <li>|</li> 
+        <li><a href="/resource_map">Resource Map</a></li>
+        
+        {% block extramenu %}
+        {% endblock %}
+		</ul>
+		
+	
+      {% if request.user.is_authenticated %}
+    	<ul style="float: right">
+  		  <li><a href="javascript:void(0)">Welcome, {{ request.user.username }}</a></li>
+    	  <li>|</li> 
+  		  <li><a href="{% url logout %}">Log out</a></li>
+          </ul>
+      {% endif %}		
+	
+	</div><!-- ends Navbar -->
+	
+</div><!-- ends width -->		
+</div><!-- ends header -->
+
+<div id="content"><!-- !content -->
+{% block content %}
+{% endblock %}
+</div><!-- ends content -->
+
+<div id="footer"><!-- !sidebar -->
+<div class="width">	
+	
+	<div class="main">
+	{% comment %}
+	<div class="module">
+	
+	<h3>Credits</h3><!-- map -->
+	
+	
+		<p>Thanks to fastpartner for the good relationship. This document is Valid XHTML and CSS. It also uses Ticketbox and SlideShow JQuery plugins.</p>	
+	
+	
+	</div><!-- ends module-->
+	{% endcomment %}
+	
+	
+	<div class="module">
+	
+	<h3>Privacy Policy</h3>
+	
+	<p>©  FLAPTOR 2010 ALL RIGHTS RESERVED	</p>
+	
+	</div><!-- ends module-->
+	
+	
+	</div>
+	
+	<div class="SideBar">
+	<div class="module">
+	
+		<h3>Contact us</h3>
+		
+		<p><a style="color: gray" href="mailto:indextank@flaptor.com">indextank@flaptor.com</a></p>
+		
+		{% comment %}
+		<form action="#">
+		<ol>
+			<li><label>Name</label><input type="text" /></li>
+			<li><label>Email</label><input type="text" /></li>
+			<li><label>Message</label><textarea cols="20" rows="5"></textarea></li> 
+		</ol>	
+			<input type="submit" value="SEND" class="submit" />
+	
+		</form>
+		{% endcomment %}
+	
+	</div><!-- ends module-->
+	
+	</div><!-- sidebar -->
+	
+	
+</div><!-- ends width -->
+</div><!-- ends sidebar -->
+
+</div><!-- ends wrap -->
+</div><!-- ends foreground -->
+
+</body>
+
+</html>

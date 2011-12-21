@@ -1,0 +1,1043 @@
+{% extends "common-base.html" %}
+{% load custom_tags %}
+
+{% block container_class %}{{ block.super }} documentation wide{% endblock %}
+
+{% block right_content %}
+{% endblock %}
+
+{% block title %}IndexTank API{% endblock %}
+
+{% block common_content %}
+
+<div style="float:right; margin-left: 40px">
+{% box 'table' %}
+    <ul>
+        <li><a href="#index_management">Index Management</a></li>
+        <li><a href="#indexing">Indexing</a></li>
+        <li><a href="#scoring_vars">Scoring variables</a></li>
+        <li><a href="#categories">Categories</a></li>
+        <li><a href="#scoring_functions">Scoring functions</a></li>
+        <li><a href="#searching">Searching</a></li>
+        <li><a href="#promoting">Promoting</a></li>
+        <li><a href="#metadata">Metadata</a></li>
+        <li class="last"><a href="#autocomplete">Autocomplete</a></li>
+    </ul>
+{% endbox %}
+</div>
+
+<div class="preventexpansion">
+	<p>The API defines methods to manage indexes (create and delete them), operate on them (add and delete documents, functions, etc), perform searches, etc.</p>
+	<p>All calls should be made to your specific private API url (which you'll find in your account's dashboard).</p>
+    
+	<p>Every call will report its success via the HTTP status code returned. If the status code is 4xx or 5xx then the response body may contain a plain error message providing further details.
+       If a 2xx code is returned the body will either be a JSON-serialized object or it'll be empty depending on the call. 
+	</p>
+</div>
+
+<br/>
+
+<div style="clear: right;"></div>
+<h2 id="index_management">Index Management</h2>
+	<p>Before using an index you need to create an index and assign it a name. This name (NOT its code) has to be provided at creation time, and is used to reference that index in all other API calls.</p>
+        <table width="100%" border="0" class="indextable small">
+            <tr class="blue"> 
+                <th class="first">HTTP Request / Description</th> 
+                <th class="last">HTTP Response codes / body</th>
+            </tr>
+            <tr>
+		        <td class="first" rowspan="1">
+		            <div class="urlcode">GET /v1/indexes</div>
+                    <div class="apidesc">
+                        Retrieves the metadata of every index in this account.  
+                    </div>
+                </td>
+                <td class="last">
+		            <div class="urlcode"><span class="responsecode">200</span> OK</div>
+                    <div class="apidesc">
+                        The response body will contain a JSON map.<br>
+                        Each key will be an index name, and its value, the index metadata. <a href="#metadata">More details...</a>
+                    </div>
+                </td>
+			</tr>
+            <tr>
+		        <td class="first" rowspan="2">
+		            <div class="urlcode">GET /v1/indexes/<span class="urlvar">name</span></div>
+                    <div class="apidesc">
+                        Retrieves metadata for the index <span class="urlvar">name</span>.<br> 
+                    </div>
+                </td>
+                <td class="last">
+		            <div class="urlcode"><span class="responsecode">200</span> OK</div>
+                    <div class="apidesc">
+                        The response body will contain a JSON map with metadata for the index. <a href="#metadata">More details...</a>
+                    </div>
+                </td>
+			</tr>
+            <tr>
+                <td class="last">
+		            <div class="urlcode"><span class="responsecode">404</span> No index existed for the given name</div>
+                    <div class="apidesc">
+                        The response body will be empty.
+                    </div>
+                </td>
+			</tr>
+            <tr>
+		        <td class="first" rowspan="3">
+		            <div class="urlcode">PUT /v1/indexes/<span class="urlvar">name</span></div>
+                    <div class="apidesc">
+                        Creates or updates an index with the given <span class="urlvar">name</span>.<br> 
+                        It cannot contain forward slashes "/". <br> <br>
+
+                        The request body can contain a <b>JSON object</b> with:<br>
+                        <ul>
+                            <li><b>"public_search"</b>: a boolean indicating <br>
+                              whether public API is enable</li>
+                        </ul>
+                    </div>
+                </td>
+                <td class="last">
+		            <div class="urlcode"><span class="responsecode">201</span> An index has been created</div>
+                    <div class="apidesc">
+                        The response body will contain a JSON map with metadata for the index. <a href="#metadata">More details...</a>
+                    </div>
+                </td>
+			</tr>
+            <tr>
+                <td class="last">
+		            <div class="urlcode"><span class="responsecode">204</span> An index already existed for that name</div>
+                    <div class="apidesc">
+                        If body was sent, the index will be modified according to the options sent.</br>
+                        The response body will be empty.
+                    </div>
+                </td>
+			</tr>
+            <tr>
+                <td class="last">
+		            <div class="urlcode"><span class="responsecode">409</span> Too many indexes for this account</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+			</tr>
+            <tr>
+                <td class="first" rowspan="2">
+                    <div class="urlcode">DELETE /v1/indexes/<span class="urlvar">name</span></div>
+                    <div class="apidesc">
+                        Removes the index <span class="urlvar">name</span> from the account.
+                    </div>
+                </td>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">200</span> OK</div>
+                    <div class="apidesc">
+                        The response body will be empty.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">204</span> No index existed for that name</div>
+                    <div class="apidesc">
+                        The response body will be empty.
+                    </div>
+                </td>
+            </tr>
+		</table>
+
+<br/>
+
+<h2 id="indexing">Indexing</h2>
+
+	<p>Documents can be added, updated and deleted from the index. An identifier must be provided for each document. It can be your internal identifier for that document.</p>
+	<p>This identifier will be used in the search results to reference the matching documents. Every field defined in the indexed document will be searcheable. The indexed fields can be fetched or snippeted along with the search results.</p>
+        <table width="100%" border="0" class="indextable small">
+            <tr class="blue"> 
+                <th class="first">HTTP Request / Description</th> 
+                <th class="last">HTTP Response codes / body</th>
+            </tr>
+            <tr>
+                <td class="first" rowspan="5">
+                    <div class="urlcode">PUT /v1/indexes/<span class="urlvar">name</span>/docs</div>
+                    <div class="apidesc">
+                        Adds a document to the index <span class="urlvar">name</span>.<br>
+                        <br>
+                        The request body should contain a <b>JSON object</b> with:<br>
+                        <ul>
+                            <li><b>"docid"</b>: your document identifier<br>A non-empty String no longer than 1024 bytes</li>
+                            <li><b>"fields"</b>: a map from field name to field value.<br>The sum of the length of each field value MUST not be greater than 100kbytes</li>
+                        </ul>
+                        And optionally:<br>
+                        <ul>
+                            <li><b>"variables"</b>: a map from the var number to float</li>
+                            <li><b>"categories"</b>: a map from the category name to its value</li>
+                        </ul>
+                        
+                    </div>
+                </td>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">200</span> OK - Document indexed</div>
+                    <div class="apidesc">
+                        The response body will be empty.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">400</span> Invalid or missing argument</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">404</span> No index existed for the given name</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">409</span> The index was initializing</div>
+                    <div class="apidesc">
+                        Until the value for <b>"started"</b> in the metadata is <b>true</b> attempts to add a document will fail.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">503</span> Service Unavailable</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="first" rowspan="5">
+                    <div class="urlcode">PUT /v1/indexes/<span class="urlvar">name</span>/docs</div>
+                    <div class="apidesc">
+                        Adds a batch of documents to the index <span class="urlvar">name</span>.<br>
+                        <br>
+                        The request body should contain a <b>JSON list</b> where each element should have the following attributes:<br>
+                        <ul>
+                            <li><b>"docid"</b>: your document identifier<br>A non-empty string no longer than 1024 bytes</li>
+                            <li><b>"fields"</b>: a map from field name to field value.<br>The sum of the length of each field value MUST not be greater than 100kbytes</li>
+                        </ul>
+                        And optionally:<br>
+                        <ul>
+                            <li><b>"variables"</b>: a map from the var number to float</li>
+                            <li><b>"categories"</b>: a map from the category name to its value</li>
+                        </ul>
+                        
+                    </div>
+                </td>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">200</span> OK - Batch processed</div>
+                    <div class="apidesc">
+                        The response body will be a <b>JSON list</b> where each element will have the following attributes:
+                        <ul>
+                            <li><b>"added"</b>: a boolean indicating whether the document in this position was successfully indexed</li>
+                            <li><b>"error"</b>: a message detailing the reasons why a document was not successfully indexed</li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">400</span> Invalid or missing argument</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.<br>
+						If any of the documents in the list was malformed, this response will be given and no document will be indexed.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">404</span> No index existed for the given name</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">409</span> The index was initializing</div>
+                    <div class="apidesc">
+                        Until the value for <b>"started"</b> in the metadata is <b>true</b> attempts to add a document will fail.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">503</span> Service Unavailable</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="first" rowspan="5">
+                    <div class="urlcode">DELETE /v1/indexes/<span class="urlvar">name</span>/docs</div>
+                    <div class="apidesc">
+                        Removes a document from the index <span class="urlvar">name</span>.<br>
+                        <br>
+                        The request body should contain a <b>JSON object</b> with:<br>
+                        <ul>
+                            <li><b>"docid"</b>: the document identifier</li>
+                        </ul>
+                        For clients that do not support body in DELETE<br>
+                        requests the docid can be sent in the querystring
+                        
+                    </div>
+                </td>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">200</span> OK - Document deleted</div>
+                    <div class="apidesc">
+                        The response body will be empty.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">400</span> Invalid or missing argument</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">404</span> No index existed for the given name</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">409</span> The index was initializing</div>
+                    <div class="apidesc">
+                        Until the value for <b>"started"</b> in the metadata is <b>true</b> attempts to delete a document will fail. 
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">503</span> Service Unavailable</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="first" rowspan="5">
+                    <div class="urlcode">DELETE /v1/indexes/<span class="urlvar">name</span>/docs</div>
+                    <div class="apidesc">
+                        Removes a bulk of documents from the index <span class="urlvar">name</span>.<br>
+                        <br>
+                        The request body should contain a <b>JSON List</b> where each element should have the following attributes:<br>
+                        <ul>
+                            <li><b>"docid"</b>: the document identifier</li>
+                        </ul>
+                        For clients that do not support body in DELETE<br>
+                        requests the docid can be sent in the querystring one time per document.
+                        
+                    </div>
+                </td>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">200</span> OK - Bulk delete processed</div>
+                    <div class="apidesc">
+                        The response body will be a <b>JSON list</b> where each element will have the following attributes:
+                        <ul>
+                            <li><b>"deleted"</b>: a boolean indicating whether the document in this position was successfully deleted</li>
+                            <li><b>"error"</b>: a message detailing the reasons why a document was not successfully deleted</li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">400</span> Invalid or missing argument</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">404</span> No index existed for the given name</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">409</span> The index was initializing</div>
+                    <div class="apidesc">
+                        Until the value for <b>"started"</b> in the metadata is <b>true</b> attempts to delete a document will fail. 
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">503</span> Service Unavailable</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+		</table>
+
+<br/>
+
+<h2 id="scoring_vars">Scoring variables</h2>
+
+    <p>
+       Documents can have numeric variables attached to them. These variables can be used in <a href="#scoring_functions">scoring functions</a> for sorting search results. 
+       Variables can be updated rapidly; these updates don't count towards your indexing limits.
+    </p>
+        <table width="100%" border="0" class="indextable small">
+            <tr class="blue"> 
+                <th class="first">HTTP Request / Description</th> 
+                <th class="last">HTTP Response codes / body</th>
+            </tr>
+            <tr>
+                <td class="first" rowspan="5">
+                    <div class="urlcode">PUT /v1/indexes/<span class="urlvar">name</span>/docs/variables</div>
+                    <div class="apidesc">
+                        Update the variables of a document in index <span class="urlvar">name</span>.<br>
+                        <br>
+                        The request body should contain a <b>JSON object</b> with:<br>
+                        <ul>
+                            <li><b>"docid"</b>: your document identifier</li>
+                            <li><b>"variables"</b>: a map from the var number to float</li>
+                        </ul>
+                        
+                    </div>
+                </td>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">200</span> OK - Variables indexed</div>
+                    <div class="apidesc">
+                        The response body will be empty.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">400</span> Invalid or missing argument</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">404</span> No index existed for the given name</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">409</span> The index was initializing</div>
+                    <div class="apidesc">
+                        Until the value for <b>"started"</b> in the metadata is <b>true</b> attempts to update variables will fail. 
+                    </div>
+                </td> 
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">503</span> Service Unavailable</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+<br/>
+
+
+<h2 id="categories">Categories</h2>
+
+    <p>Documents already added can be categorized. Categories are a way to partition your index for different dimensions. For instance, you may want to have your documents
+    grouped by type (cds, books), price range (0-99, 100-199), manufacturer, author, or any dimension in which your documents have meaning. For every category (the dimension) 
+    every document can have at most one value.
+	</p> 
+    <p>These categories can be used later to filter your query (e.g.: only return books that cost between 0 and 100 dollars) or to facet the results of a query (i.e. 
+    showing the user how many documents, for each category and category value, match the query)
+	</p>
+
+      
+        <table width="100%" border="0" class="indextable small">
+            <tr class="blue"> 
+                <th class="first">HTTP Request / Description</th> 
+                <th class="last">HTTP Response codes / body</th>
+            </tr>
+            <tr>
+                <td class="first" rowspan="5">
+                    <div class="urlcode">PUT /v1/indexes/<span class="urlvar">name</span>/docs/categories</div>
+                    <div class="apidesc">
+                        Update the categories of a document in index <span class="urlvar">name</span>.<br>
+                        <br>
+                        The request body should contain a <b>JSON object</b> with:<br>
+                        <ul>
+                            <li><b>"docid"</b>: your document identifier</li>
+                            <li><b>"categories"</b>: a map from the categories' names<br>to the values for this document</li>
+                        </ul>
+                        
+                    </div>
+                </td>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">200</span> OK - Categories indexed</div>
+                    <div class="apidesc">
+                        The response body will be empty.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">400</span> Invalid or missing argument</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">404</span> No index existed for the given name</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">409</span> The index was initializing</div>
+                    <div class="apidesc">
+                        Until the value for <b>"started"</b> in the metadata is <b>true</b> attempts to update categories will fail. 
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">503</span> Service Unavailable</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+
+<br/>
+
+<h2 id="scoring_functions">Scoring functions</h2>
+
+<div class="docblock">
+	<p>Scoring functions can be defined through the API. These functions can later be used when searching the index
+    to provide specific orderings for the results. They can use the variables defined in the document as well
+    as some special variables such as the document's age and the textual relevance of the match. You can find more detail
+    in the <a href="/documentation/function-definition">function definition syntax</a> page.</p>
+	<p>Geolocation can be used to prioritize documents closer to (or further from) the user's location. 
+	Check the <a href="/documentation/function-definition#distance">distance functions</a> for this.</p>
+	<p></p>
+        <table width="100%" border="0" class="indextable small">
+            <tr class="blue"> 
+                <th class="first">HTTP Request / Description</th> 
+                <th class="last">HTTP Response codes / body</th>
+            </tr>
+            <tr>
+                <td class="first" rowspan="3">
+                    <div class="urlcode">GET /v1/indexes/<span class="urlvar">name</span>/functions</div>
+                    <div class="apidesc">
+                        Retrieves all the functions defined for the index <span class="urlvar">name</span>.<br> 
+                    </div>
+                </td>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">200</span> OK</div>
+                    <div class="apidesc">
+                        The response body will contain a JSON map from the function number to its definition.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">404</span> No index existed for the given name</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">409</span> The index was initializing</div>
+                    <div class="apidesc">
+                        This will happen until the value for <b>"started"</b> in the metadata is <b>true</b>. 
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="first" rowspan="4">
+                    <div class="urlcode">PUT /v1/indexes/<span class="urlvar">name</span>/functions/<span class="urlvar">num</span></div>
+                    <div class="apidesc">
+                        Defines the function number <span class="urlvar">num</span> for the index <span class="urlvar">name</span>.<br> 
+                        <br>
+                        The request body should contain a <b>JSON object</b> with:<br>
+                        <ul>
+                            <li><b>"definition"</b>: the formula that defines the function</li>
+                        </ul>
+                    </div>
+                </td>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">200</span> OK - Function saved</div>
+                    <div class="apidesc">
+                        The response body will be empty.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">400</span> Invalid or missing argument</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">404</span> No index existed for the given name</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">409</span> The index was initializing</div>
+                    <div class="apidesc">
+                        This will happen until the value for <b>"started"</b> in the metadata is <b>true</b>. 
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="first" rowspan="5">
+                    <div class="urlcode">DELETE /v1/indexes/<span class="urlvar">name</span>/functions/<span class="urlvar">num</span></div>
+                    <div class="apidesc">
+                        Removes the function <span class="urlvar">num</span> from the index <span class="urlvar">name</span>.<br> 
+                    </div>
+                </td>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">200</span> OK - Function deleted</div>
+                    <div class="apidesc">
+                        The response body will be empty.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">400</span> Invalid or missing argument</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">404</span> No index existed for the given name</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">409</span> The index was initializing</div>
+                    <div class="apidesc">
+                        This will happen until the value for <b>"started"</b> in the metadata is <b>true</b>. 
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">503</span> Service Unavailable</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+<br/>
+
+<h2 id="searching">Searching</h2>
+
+    <p>A query must be provided to search an index. Optional parameters include: start and length (for results paging), a scoring function (for results ordering), and a list of fetch and snippet fields (for getting stored data).</p>
+    <p>Search results will contain the document identifiers provided at indexing time. If fetch and snippet fields were specified, the field's content or a snippet of the content can be returned along with the identifiers.</p>
+		<table width="100%" border="0" class="indextable small">
+            <tr class="blue"> 
+                <th class="first">HTTP Request / Description</th> 
+                <th class="last">HTTP Response codes / body</th>
+            </tr>
+            <tr>
+                <td class="first" rowspan="5">
+                    <div class="urlcode">GET /v1/indexes/<span class="urlvar">name</span>/search</div>
+                    <div class="apidesc">
+                        Performs a search on the index <span class="urlvar">name</span>.<br> 
+                        <br>
+                        The querystring should contain:<br>
+                        <ul>
+                            <li><b>"q"</b>: the query to be performed</li>
+                        </ul>
+                        And optionally:<br>
+                        <ul>
+                            <li><b>"start"</b>: for paging, the first position to return</li>
+                            <li><b>"len"</b>: how many results to return (default: 10)</li>
+                            <li><b>"function"</b>: the number of the scoring function to use (default: 0)</li>
+                            <li><b>"fetch"</b>: comma-separated list of fields to fetch. '*' returns all present fields for each document<sup>1</sup></li>
+                            <li><b>"fetch_variables"</b>: 'true' returns all variables for each document as variable_<i>&lt;N&gt;</i> (unset vars return 0)</li>
+                            <li><b>"fetch_categories"</b>: 'true' returns all categories for each document as category_<i>&lt;NAME&gt;</i></li>
+                            <li><b>"snippet"</b>: comma-separated list of fields to snippet <sup>1</sup></li>
+                            <li><b>"var<i>&lt;N&gt;</i>"</b>: value of the query variable <i>&lt;N&gt;</i> <sup>2</sup></li>
+                            <li><b>"category_filters"</b>: a json map from category name<br> 
+							    to a list of the admitted values for those categories <sup>3</sup></li>
+                            <li><b>"filter_docvar<i>&lt;N&gt;</i>"</b>: comma-separated list of<br>
+							    ranges to filter the values of variable <i>&lt;N&gt;</i>. Each range is<br>
+								expressed as BOTTOM:TOP, where any of both limits can<br>
+								be replaced by an * symbol to indicate it should be ignored</li>
+                        
+                            <li><b>"filter_function<i>&lt;N&gt;</i>"</b>: comma-separated list of<br>
+							    ranges to filter the values of function <i>&lt;N&gt;</i>. Each range is<br>
+								expressed as BOTTOM:TOP, where any of both limits can<br>
+								be replaced by an * symbol to indicate it should be ignored</li>
+                        
+						</ul>
+                    </div>
+                </td>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">200</span> OK</div>
+                    <div class="apidesc">
+                        The response body will contain a JSON map with these fields:</a>
+                        <ul>
+                            <li><b>"matches"</b>: the total number of matches for the query</li>
+                            <li><b>"facets"</b>: a map from category name to a values count map</li>
+                            <li><b>"results"</b>: a list of objects with the "docid" field<ul>
+                                <li><b>query_relevance_score</b>: query specific document relevance score</li>
+                                <li><b>variable_&lt;N&gt;</b>: variable value, from 0 to N</li>
+                                <li><b>category_&lt;NAME&gt;</b>: category value for the NAME document category / facet</li>
+                            </ul></li>
+                            <li><b>"search_time"</b>: the time it took to search in seconds</li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">400</span> Invalid or missing argument</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">404</span> No index existed for the given name</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">409</span> The index was initializing</div>
+                    <div class="apidesc">
+                        This will happen until the value for <b>"started"</b> in the metadata is <b>true</b>. 
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">503</span> Service Unavailable</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+        
+            <tr>
+                <td class="first" rowspan="5">
+                    <div class="urlcode">DELETE /v1/indexes/<span class="urlvar">name</span>/search</div>
+                    <div class="apidesc">
+                        Performs a search on the index <span class="urlvar">name</span>.<br> 
+                        <br>
+                        The querystring should contain:<br>
+                        <ul>
+                            <li><b>"q"</b>: the query to be performed</li>
+                        </ul>
+                        And optionally:<br>
+                        <ul>
+                            <li><b>"start"</b>: the first result to delete</li>
+                            <li><b>"function"</b>: the number of the scoring function to use (default: 0) (only relevant if 'start' is being used)</li>
+                            <li><b>"var<i>&lt;N&gt;</i>"</b>: value of the query variable <i>&lt;N&gt;</i> <sup>2</sup> (only relevant if 'start' is being used)</li>
+                            <li><b>"category_filters"</b>: a json map from category name<br> 
+							    to a list of the admitted values for those categories <sup>3</sup></li>
+                            <li><b>"filter_docvar<i>&lt;N&gt;</i>"</b>: comma-separated list of<br>
+							    ranges to filter the values of variable <i>&lt;N&gt;</i>. Each range is<br>
+								expressed as BOTTOM:TOP, where any of both limits can<br>
+								be replaced by an * symbol to indicate it should be ignored</li>
+                        
+                            <li><b>"filter_function<i>&lt;N&gt;</i>"</b>: comma-separated list of<br>
+							    ranges to filter the values of function <i>&lt;N&gt;</i>. Each range is<br>
+								expressed as BOTTOM:TOP, where any of both limits can<br>
+								be replaced by an * symbol to indicate it should be ignored</li>
+                        
+						</ul>
+                    </div>
+                </td>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">200</span> OK</div>
+                    <div class="apidesc">
+                        The response body will be empty.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">400</span> Invalid or missing argument</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">404</span> No index existed for the given name</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">409</span> The index was initializing</div>
+                    <div class="apidesc">
+                        This will happen until the value for <b>"started"</b> in the metadata is <b>true</b>. 
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">503</span> Service Unavailable</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+        
+        </table>
+
+
+<h2 id="promoting">Promoting results</h2>
+
+	<p>The API also allows you to promote a document to the top of a query's result page</p>
+		<table width="100%" border="0" class="indextable small">
+            <tr class="blue"> 
+                <th class="first">HTTP Request / Description</th> 
+                <th class="last">HTTP Response codes / body</th>
+            </tr>
+            <tr>
+                <td class="first" rowspan="5">
+                    <div class="urlcode">PUT /v1/indexes/<span class="urlvar">name</span>/promote</div>
+                    <div class="apidesc">
+                        Promotes a document for a query on the index <span class="urlvar">name</span>.<br> 
+                        <br>
+                        The request body should contain a <b>JSON object</b> with:<br>
+                        <ul>
+                            <li><b>"docid"</b>: the id of the document to promote</li>
+                            <li><b>"query"</b>: the query to in which to promote it</li>
+                        </ul>
+                    </div>
+                </td>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">200</span> OK - The document has been promoted</div>
+                    <div class="apidesc">
+                        The response body will be empty.
+                    </div>
+                </td>
+            </tr>
+           <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">400</span> Invalid or missing argument</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">404</span> No index existed for the given name</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">409</span> The index was initializing</div>
+                    <div class="apidesc">
+                        This will happen until the value for <b>"started"</b> in the metadata is <b>true</b>. 
+                    </div>
+                </td>
+            </tr>
+             <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">503</span> Service Unavailable</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body.
+                    </div>
+                </td>
+            </tr>
+		</table>
+
+<h2 id="metadata">Index metadata</h2>
+
+	<p>Some methods will return metadata for an index. This metadata will be in the form of a JSON object and will include the following fields:</p>
+		<table width="100%" border="0" class="indextable small">
+            <tr class="blue"> 
+                <td class="first">Field name</td> 
+                <td class="last">Content</td>
+            </tr>
+            <tr>
+                <td class="first">
+                    <div class="urlcode">started</div>
+                </td>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">boolean</span> true / false</div>
+                    <div class="apidesc">
+                        A boolean value representing whether the given index has started.<br/> 
+                        False usually means that the index has been recently it created and isn't available yet. 
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="first">
+                    <div class="urlcode">code</div>
+                </td>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">string</span> alphanumeric</div>
+                    <div class="apidesc">
+                        A string with an alphanumeric code that uniquely identifies the index under the given name.<br/>
+                        If an index is deleted and a new one is created with the same name, it will have a different code.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="first">
+                    <div class="urlcode">creation_time</div>
+                </td>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">string</span> ISO 8601 formatted date format</div>
+                    <div class="apidesc">
+                        A string with the time when this index was created formatted according to the ISO 8601 format.<br/>
+                        For example: 2010-01-01T12:00:00
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="first">
+                    <div class="urlcode">size</div>
+                </td>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">integer</span> </div>
+                    <div class="apidesc">
+                        An integer with the size in documents of this index. The size is not updated in real-time so the value may be up to a minute old.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="first">
+                    <div class="urlcode">public_search</div>
+                </td>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">boolean true / false</span> </div>
+                    <div class="apidesc">
+                        A boolean value indicating whether public search API is enabled.
+                    </div>
+                </td>
+            </tr>
+		</table>
+
+<h2 id="autocomplete">Autocomplete</h2>
+
+    <p>JSON data source to work with <a href="https://github.com/flaptor/indextank-jquery/wiki/AutoComplete">Indextank-jQuery Autocomplete</a>.</p>
+    <p>Additional support for JSONP is provided.</p>
+
+		<table width="100%" border="0" class="indextable small">
+            <tr class="blue"> 
+                <th class="first">HTTP Request / Description</th> 
+                <th class="last">HTTP Response codes / body</th>
+            </tr>
+            <tr>
+                <td class="first" rowspan="4">
+                    <div class="urlcode">GET /v1/indexes/<span class="urlvar">name</span>/autocomplete</div>
+                    <div class="apidesc">
+                        Performs a search on the index <span class="urlvar">name</span>.<br> 
+                        <br>
+                        The querystring parameters should contain:<br>
+                        <ul>
+                            <li><b>"query"</b>: the query to be performed</li>
+                        </ul>
+                        And optionally:<br>
+                        <ul>
+                            <li><b>"field"</b>: the field to take suggestions from. By default, <br>
+                            'text' field will be chosen.
+                            </li>
+                            <li><b>"callback"</b>: the callback JS function on the client (enables JSONP),<br>
+                            if callback is present response will be JSONP,<br> 
+                            if no callback is present, response will be a JSON map<br> 
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">200</span> OK</div>
+                    <div class="apidesc">
+                        The response body will be JSONP or a JSON map with these fields:</a>
+                        <ul>
+                            <li><b>"suggestions"</b>: JSON array with query matches</li>
+                            <li><b>"query"</b>: requested query parameter (may be normalized)</li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">409</span> The index was initializing</div>
+                    <div class="apidesc">
+                        This will happen until the value for <b>"started"</b> in the metadata is <b>true</b>. 
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">400</span> Invalid or missing argument</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="last">
+                    <div class="urlcode"><span class="responsecode">404</span> No index existed for the given name</div>
+                    <div class="apidesc">
+                        A descriptive error message will be found in the body
+                    </div>
+                </td>
+            </tr>
+		</table>
+
+{% endblock %}
+

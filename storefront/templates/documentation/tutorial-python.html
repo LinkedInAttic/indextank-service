@@ -1,0 +1,607 @@
+{% extends "documentation/tutorial-base.html" %}
+
+{% load custom_tags %}
+
+{% block language %}Python{% endblock %}
+
+{% block language_prerequisite %}
+            <b>Python (version 2.6 or greater) installed on your machine</b>
+            <small>
+                (IndexTank can be used with other languages, but in this Tutorial we use Python. If you don't already have Python, you can get it at <a href="http://python.org">python.org</a>)
+            </small>.
+{% endblock %}
+
+{% block system_requirements %}
+                <li>
+                   <b>The Tutorial has been tested on Linux, Mac OS X, and Windows.</b>
+                </li>
+
+{% endblock %}
+
+{% block download_client %}
+        <li>
+            <p>Click <b>Python client library</b>. This takes you to <br><a href="http://indextank.com/documentation/python-client">http://indextank.com/documentation/python-client</a>.</p>
+        </li>
+        <li>
+            <p>In the Download area, in Stable Version, click one of the links: <b>zip</b>
+            for Windows or Mac, <b>tgz</b>
+            for Unix/Linux.</p>
+        </li>
+        <li>
+            <p>Extract the compressed library to a convenient directory on your computer.</p>
+        </li>
+        <li>
+            <p>Open a console window and change (
+            <code>
+                cd
+            </code>) to the directory where the client library is installed.</p>
+        </li>
+    </ol>
+    <p>
+        <b>Result:</b>
+        <br>
+        If you run the command to view the contents of the directory (
+        <code>
+            ls
+        </code>
+        on Unix or Mac OS X; 
+        <code>
+            dir
+        </code>
+        on Windows), you should see the file 
+        <code>
+            indextank_client.py
+        </code>.
+    </p>
+    <p>
+        <img style="padding: 0px;" src="/_static/images/tutorial/image6.png">
+    </p>
+{% endblock %}
+
+{% block instantiate_client %}
+    <ol>
+        <li>
+            <p>While still in the directory where the client library is installed, run the Python interpreter.</p>
+            <p>
+                If you don't know how to use the Python interpreter, see <br><a href="http://docs.python.org/tutorial/interpreter.html">http://docs.python.org/tutorial/interpreter.html</a>.
+            </p>
+            <div class="scrollable_snippet">
+{% box 'code' %}
+<pre>
+C:\> python
+</pre>
+{% endbox %}
+            </div>
+            <p>
+                The Python prompt appears:
+            </p>
+            <div class="scrollable_snippet">
+{% box 'code' %}
+<pre class="sh_python">
+>>>
+</pre>
+{% endbox %}
+            </div>
+        </li>
+        <li>
+        <p>Import the IndexTank client library to the Python interpreter by typing the following command at the Python prompt.</p>
+        <div class="scrollable_snippet">
+{% box 'code' %}
+<pre class="sh_python">
+>>> import indextank.client as itc
+</pre>
+{% endbox %}
+        </div>
+        <p>
+            <code>
+                itc
+            </code>
+            is a name you give to the imported client so you can refer to it later.
+        </p>
+        <li>
+            <p>Instantiate the client by calling
+            <code>
+                ApiClient()
+            </code>.
+			</p> 
+            <div class="scrollable_snippet">
+{% box 'code' %}
+<pre class="sh_python">
+>>> api_client = itc.ApiClient('YOUR_API_URL')
+</pre>
+{% endbox %}
+            </div>
+            <p>
+                For 
+                <code>
+                    <i>YOUR_API_URL</i>
+                </code>, substitute the URL from <b>Private URL</b>
+                in your Dashboard (refer to the screen shot at the beginning of the Tutorial if you forgot where to find this).
+            </p>
+        </li>
+    </ol>
+{% endblock %}
+
+{% block get_handle %}
+            <div class="scrollable_snippet">
+{% box 'code' %}
+<pre class="sh_python">
+>>> test_index = api_client.get_index('test_index')
+</pre>
+{% endbox %}
+            </div>
+            <p>
+                Here we call the 
+                <code>
+                    get_index()
+                </code>
+                method in the client library and pass it the name you assigned when you created the index.
+            </p>
+{% endblock %}
+
+{% block add_documents1 %}
+            <div class="scrollable_snippet">
+{% box 'code' %}
+<pre class="sh_python">
+>>> test_index.add_document('post1', {'text':'I love Bioshock'})
+>>> test_index.add_document('post2', {'text':'Need cheats for Bioshock'})
+>>> test_index.add_document('post3', {'text':'I love Tetris'})
+</pre>
+{% endbox %}
+            </div>
+            <p>
+                Here we call the 
+                <code>
+                    add_document()
+                </code>
+                method in the client library three times to index three posts in the video gamer forum.
+            </p>
+{% endblock %}
+
+{% block search1 %}
+            <div class="scrollable_snippet">
+{% box 'code' %} 
+<pre class="sh_python">
+>>> test_index.search('Bioshock')
+</pre>
+{% endbox %}
+            </div>
+{% endblock %}
+
+{% block search1_output %}
+            <div class="scrollable_snippet">
+{% box 'code' %}
+<pre class="sh_python">
+{'matches': 2,
+ 'facets': {}, 
+ 'search_time': '0.070',
+ 'results': [{'docid': 'post2'},{'docid': 'post1'}]}
+</pre>
+{% endbox %}
+            </div>
+{% endblock %}
+
+{% block search2 %}
+            <div class="scrollable_snippet">
+{% box 'code' %}
+<pre class="sh_python">
+>>> test_index.search('love Bioshock')
+</pre>
+{% endbox %}
+            </div>
+{% endblock %}
+
+{% block search2_output %}
+            <div class="scrollable_snippet">
+{% box 'code' %}
+<pre class="sh_python">
+{'matches': 1,
+ 'facets': {}, 
+ 'search_time': '0.005',
+ 'results': [{'docid': 'post1'}]}
+</pre>
+{% endbox %}
+            </div>
+{% endblock %}
+
+{% block search3 %}
+            <div class="scrollable_snippet">
+{% box 'code' %}
+<pre class="sh_python">
+>>> test_index.search('Bioshock OR Tetris')
+</pre>
+{% endbox %}
+            </div>
+{% endblock %}
+
+{% block search3_output %}
+            <div class="scrollable_snippet">
+{% box 'code' %}
+<pre class="sh_python">
+{'matches': 3,
+ 'facets': {}, 
+ 'search_time': '0.007',
+ 'results': [{'docid': 'post3'},{'docid': 'post2'},{'docid': 'post1'}]}
+</pre>
+{% endbox %}
+            </div>
+{% endblock %}
+
+{% block fetch_fields %}
+        <li>
+            <p>To ask IndexTank to return more than just the doc ID, add the argument
+            <code>
+                fetch_fields</code>.</p>
+            <div class="scrollable_snippet">
+{% box 'code' %}
+<pre class="sh_python">
+>>> test_index.search('love', fetch_fields=['text'])['results']
+</pre>
+{% endbox %}
+            </div>
+{% endblock %}
+
+{% block fetch_fields_output %}
+            <div class="scrollable_snippet">
+{% box 'code' %}
+<pre class="sh_python">
+[{'text': 'I love Tetris', 'docid': 'post3'},
+ {'text': 'I love Bioshock', 'docid': 'post1'}]
+</pre>
+{% endbox %}
+            </div>
+{% endblock %}
+
+{% block snippet_fields %}
+        <li>
+            <p>To show portions of the result text with the search term highlighted, use
+            <code>
+                snippet_fields</code>.</p>
+            <div class="scrollable_snippet">
+{% box 'code' %}
+<pre class="sh_python">
+>>> test_index.search('love', snippet_fields=['text'])['results']
+</pre>
+{% endbox %}
+            </div>
+{% endblock %}
+
+{% block snippet_fields_output %}
+            <div class="scrollable_snippet">
+{% box 'code' %}
+<pre class="sh_python">
+[{'snippet_text': 'I &lt;b&gt;love&lt;/b&gt; Tetris', 'docid': 'post3'},
+ {'snippet_text': 'I &lt;b&gt;love&lt;/b&gt; Bioshock', 'docid': 'post1'}]
+</pre>
+{% endbox %}
+            </div>
+{% endblock %}
+
+{% block add_fields %}
+            <div class="scrollable_snippet">
+{% box 'code' %}
+<pre class="sh_python">
+>>> test_index.add_document('post1', {'text':'I love Bioshock', 'game':'Bioshock'})
+>>> test_index.add_document('post2', {'text':'Need cheats for Bioshock', 'game':'Bioshock'})
+>>> test_index.add_document('post3', {'text':'I love Tetris', 'game':'Tetris'})
+</pre>
+{% endbox %}
+            </div>
+            <p>
+                Here we call 
+                <code>
+                    add_document()
+                </code>
+                with the same document IDs as before, so IndexTank will overwrite the existing entries in your test index.
+            </p>
+{% endblock %}
+
+{% block search_field %}
+                    <p>Now you can search within a particular field. Let's use
+                    <code>
+                        fetch_fields
+                    </code>
+                    again to get some user-friendly output.</p>
+                    <div class="scrollable_snippet">
+
+{% box 'code' %}
+<pre class="sh_python">
+>>> test_index.search('game:Tetris', fetch_fields=['text'])['results']
+</pre>
+{% endbox %}
+                    </div>
+{% endblock %}
+
+{% block search_field_output %}
+                    <div class="scrollable_snippet">
+        {% box 'code' %}
+<pre class="sh_python">
+[{'text': 'I love Tetris', 'docid': 'post3'}]
+</pre>
+{% endbox %}
+                    </div>
+{% endblock %}
+
+{% block timestamps %}
+                <div class="scrollable_snippet">
+    {% box 'code' %}
+<pre class="sh_python">
+>>> test_index.add_document('newest',{'text': 'New release: Fable III is out','timestamp':1286673129})
+>>> test_index.add_document('not_so_new',{'text': 'New release: GTA III just arrived!','timestamp':1003626729})
+>>> test_index.add_document('oldest',{'text': 'New release: This new game Tetris is awesome!','timestamp':455332329})
+</pre>
+{% endbox %}
+                </div>
+{% endblock %}
+
+{% block scoring1 %}
+                <div class="scrollable_snippet">
+    {% box 'code' %}
+<pre class="sh_python">
+>>> test_index.search('New release')
+</pre>
+{% endbox %}
+                </div>
+{% endblock %}
+
+{% block scoring1_output %}
+                <div class="scrollable_snippet">
+    {% box 'code' %}
+<pre class="sh_python">
+{'matches': 3,
+ 'facets': {}, 
+ 'search_time': '0.002',
+ 'results': [{'docid': 'newest'},{'docid': 'not_so_new'},{'docid': 'oldest'}]}
+</pre>
+{% endbox %}
+                </div>
+{% endblock %}
+
+{% block scoring2_redefine %}
+                <div class="scrollable_snippet">
+    {% box 'code' %}
+<pre class="sh_python">
+>>> test_index.add_function(0,'age')
+</pre>
+{% endbox %}
+                </div>
+{% endblock %}
+
+{% block scoring2_search %}
+                <div class="scrollable_snippet">
+    {% box 'code' %}
+<pre class="sh_python">
+>>> test_index.search('New release')
+</pre>
+{% endbox %}
+                </div>
+{% endblock %}
+
+{% block scoring2_output %}
+                <div class="scrollable_snippet">
+    {% box 'code' %}
+<pre class="sh_python">
+{'matches': 3,
+ 'facets': {}, 
+ 'search_time': '0.005',
+ 'results': [{'docid': 'oldest'},{'docid': 'not_so_new'},{'docid': 'newest'}]}
+</pre>
+{% endbox %}
+                </div>
+{% endblock %}
+
+{% block add_documents2 %}
+                <div class="scrollable_snippet">
+    {% box 'code' %}
+<pre class="sh_python">
+>>> test_index.add_document('post4', {'text': 'When is Duke Nukem Forever coming out? I need my Duke.'})
+>>> test_index.add_document('post5', {'text': 'Duke Nukem is my favorite game. Duke Nukem rules. Duke Nukem is awesome. Here are my favorite Duke Nukem links.'})
+>>> test_index.add_document('post6', {'text': 'People who love Duke Nukem also love our great product!'})
+</pre>
+{% endbox %}
+                </div>
+{% endblock %}
+
+{% block define_function %}
+                <div class="scrollable_snippet">
+    {% box 'code' %}
+<pre class="sh_python">
+>>> test_index.add_function(1,'relevance')
+</pre>
+{% endbox %}
+                </div>
+{% endblock %}
+
+{% block search4 %}
+                <div class="scrollable_snippet">
+    {% box 'code' %}
+<pre class="sh_python">
+>>> test_index.search('duke', scoring_function=1, fetch_fields=['text'])['results']
+</pre>
+{% endbox %}
+                </div>
+{% endblock %}
+
+{% block search4_output %}
+                <div class="scrollable_snippet">
+    {% box 'code' %}
+<pre class="sh_python">
+[{'docid': 'post5',
+'text': 'Duke Nukem is my favorite game. Duke Nukem rules. Duke Nukem is awesome. Here are my favorite Duke Nukem links.'},
+{'docid': 'post4', 'text': 'When is Duke Nukem Forever coming out? I need my Duke.'},
+{'docid': 'post6', 'text': 'People who love Duke Nukem also love our great product!'}]
+</pre>
+{% endbox %}
+                </div>
+{% endblock %}
+
+{% block assign_vars %}
+                <div class="scrollable_snippet">
+    {% box 'code' %}
+<pre class="sh_python">
+>>> test_index.add_document('post4', {'text': 'When is Duke Nukem Forever coming out? I need my Duke.'}, variables={0:10, 1:1.0})
+>>> test_index.add_document('post5', {'text': 'Duke Nukem is my favorite game. Duke Nukem rules. Duke Nukem is awesome. Here are my favorite Duke Nukem links.'}, variables={0:1000, 1:0.9})
+>>> test_index.add_document('post6', {'text': 'People who love Duke Nukem also love our great product!'}, variables={0:1, 1:0.05})
+</pre>
+{% endbox %}
+                </div>
+{% endblock %}
+
+{% block function_vars %}
+                <div class="scrollable_snippet">
+    {% box 'code' %}
+<pre class="sh_python">
+>>> test_index.add_function(2, 'relevance * log(doc.var[0]) * doc.var[1]')
+</pre>
+{% endbox %}
+                </div>
+{% endblock %}
+
+{% block scoring3 %}
+                <div class="scrollable_snippet">
+    {% box 'code' %}
+<pre class="sh_python">
+>>> test_index.search('duke', scoring_function=2, fetch_fields=['text'])['results']
+</pre>
+{% endbox %}
+                </div>
+{% endblock %}
+
+{% block scoring3_output %}
+                <div class="scrollable_snippet">
+    {% box 'code' %}
+<pre class="sh_python">
+[{'docid': 'post5', 'text': 'Duke Nukem is my favorite game. Duke Nukem rules. Duke Nukem is awesome. Here are my favorite Duke Nukem links.'},
+ {'docid': 'post4', 'text': 'When is Duke Nukem Forever coming out? I need my Duke.'},
+ {'docid': 'post6', 'text': 'People who love Duke Nukem also love our great product!'}]
+</pre>
+{% endbox %}
+                </div>
+{% endblock %}
+
+{% block update_var %}
+                <div class="scrollable_snippet">
+    {% box 'code' %}
+<pre class="sh_python">
+>>> test_index.update_variables('post4',{0:1000000})
+</pre>
+{% endbox %}
+                </div>
+{% endblock %}
+
+{% block scoring4 %}
+                <div class="scrollable_snippet">
+    {% box 'code' %}
+<pre class="sh_python">
+>>> test_index.search('duke', scoring_function=2, fetch_fields=['text'])['results']
+</pre>
+{% endbox %}
+                </div>
+{% endblock %}
+
+{% block scoring4_output %}
+                <div class="scrollable_snippet">
+    {% box 'code' %}
+<pre class="sh_python">
+[{'docid': 'post4', 'text': 'When is Duke Nukem Forever coming out? I need my Duke.'},
+ {'docid': 'post5', 'text': 'Duke Nukem is my favorite game. Duke Nukem rules. Duke Nukem is awesome. Here are my favorite Duke Nukem links.'},
+ {'docid': 'post6', 'text': 'People who love Duke Nukem also love our great prod]
+</pre>
+{% endbox %}
+                </div>
+{% endblock %}
+
+{% block delete_document %}
+                <div class="scrollable_snippet">
+    {% box 'code' %}
+<pre class="sh_python">
+>>> test_index.delete_document('post6')
+</pre>
+{% endbox %}
+                </div>
+{% endblock %}
+
+{% block search5 %}
+                <div class="scrollable_snippet">
+    {% box 'code' %}
+<pre class="sh_python">
+>>> test_index.search('duke', scoring_function=2, fetch_fields=['text'])['results']
+</pre>
+{% endbox %}
+                </div>
+{% endblock %}
+
+{% block search5_output %}
+                <div class="scrollable_snippet">
+    {% box 'code' %}
+<pre class="sh_python">
+[{'docid': 'post4', 'text': 'When is Duke Nukem Forever coming out? I need my Duke.'},
+ {'docid': 'post5', 'text': 'Duke Nukem is my favorite game. Duke Nukem rules. Duke Nukem is awesome. Here are my favorite Duke Nukem links.'}]
+</pre>
+{% endbox %}
+                </div>
+{% endblock %}
+
+{% block add_doc_var %}
+            <div class="scrollable_snippet">
+{% box 'code' %}
+<pre class="sh_python">
+>>> test_index.add_document('post1', {'text':'I love Bioshock'}, variables={0:115})
+>>> test_index.add_document('post2', {'text':'Need cheats for Bioshock'}, variables={0:2600})
+>>> test_index.add_document('post3', {'text':'I love Tetris'}, variables={0:19500})
+</pre>
+{% endbox %}
+            </div>
+{% endblock %}
+
+{% block scoring5 %}
+            <div class="scrollable_snippet">
+{% box 'code' %}
+<pre class="sh_python">
+>>> test_index.add_function(1, 'relevance / max(1, abs(query.var[0] - doc.var[0]))')
+</pre>
+{% endbox %}
+            </div>
+{% endblock %}
+
+{% block search6 %}
+            <div class="scrollable_snippet">
+{% box 'code' %}
+<pre class="sh_python">
+>>> test_index.search('bioshock', scoring_function=1, fetch_fields=['text'], variables={0: 25})['results']
+</pre>
+{% endbox %}
+            </div>
+{% endblock %}
+
+{% block search6_output %}
+            <div class="scrollable_snippet">
+{% box 'code' %}
+<pre class="sh_python">
+[{'docid': 'post1', 'text': 'I love Bioshock.'},
+ {'docid': 'post2', 'text': 'Need cheats for Bioshock.'}]
+</pre>
+{% endbox %}
+            </div>
+{% endblock %}
+
+{% block search7 %}
+            <div class="scrollable_snippet">
+{% box 'code' %}
+<pre class="sh_python">
+>>> test_index.search('love', scoring_function=1, fetch_fields=['text'], variables={0: 15000})['results']
+</pre>
+{% endbox %}
+            </div>
+{% endblock %}
+
+{% block search7_output %}
+            <div class="scrollable_snippet">
+{% box 'code' %}
+<pre class="sh_python">
+[{'docid': 'post3', 'text': 'I love Tetris.'},
+ {'docid': 'post1', 'text': 'I love Bioshock.'}]
+</pre>
+{% endbox %}
+            </div>
+{% endblock %}

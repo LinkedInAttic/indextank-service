@@ -1,0 +1,53 @@
+          <ul>
+            <li><a href="{% url home %}"><strong>News</strong></a></li>
+            {#<li><a href="{% url get_started %}">Get Started</a></li>#}
+            <li><a href="http://apps.indextank.com/">App Gallery</a></li>
+          </ul>
+          <ul>
+            <li><a href="{% url documentation %}"><strong>Documentation</strong></a></li>
+            <li><a href="{% url documentation path='clients' %}">Client libraries</a></li>
+            <li><a href="{% url documentation path='faq' %}">FAQ</a></li>
+          </ul>
+          <ul>
+            <li><a href="{% url documentation path='staff' %}"><strong>About our Team</strong></a></li>
+            <li><a href="http://blog.indextank.com">IndexTank Blog</a></li>
+            <li><a href="mailto:support@indextank.com">Email support</a></li>
+          </ul>
+          <ul>
+            <li><a href="{% url documentation path='privacy_policy' %}"><strong>Legal</strong></a></li>
+            <li><a href="{% url documentation path='privacy_policy' %}">Privacy Policy</a></li>
+            <li><a href="{% url documentation path='terms_of_service' %}">Terms of Service</a></li>
+          </ul>
+          <ul>
+            <li><a href="http://blog.indextank.com/" class="blog">Follow our blog</a></li>
+            <li class="last"><a href="http://twitter.com/indextank" class="twitter">Follow twitter</a></li>
+            <li>
+              <p>&copy; INDEXTANK 2010-2011. All Rights Reserved</p>
+            </li>
+          </ul>
+          <ul class="space">
+            <li><a href="http://mixpanel.com/f/partner"><img src="http://mixpanel.com/site_media/images/partner/badge_blue.png" alt="Web Analytics" /></a></li>
+          </ul>
+
+
+
+<script type="text/javascript">
+var _sf_async_config={uid:19618,domain:"indextank.com"};
+(function(){
+  function loadChartbeat() {
+    window._sf_endpt=(new Date()).getTime();
+    var e = document.createElement('script');
+    e.setAttribute('language', 'javascript');
+    e.setAttribute('type', 'text/javascript');
+    e.setAttribute('src',
+       (("https:" == document.location.protocol) ? "https://a248.e.akamai.net/chartbeat.download.akamai.com/102508/" : "http://static.chartbeat.com/") +
+       "js/chartbeat.js");
+    document.body.appendChild(e);
+  }
+  var oldonload = window.onload;
+  window.onload = (typeof window.onload != 'function') ?
+     loadChartbeat : function() { oldonload(); loadChartbeat(); };
+})();
+
+</script>
+

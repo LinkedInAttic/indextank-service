@@ -1,0 +1,119 @@
+{% extends "common-base.html" %}
+
+{% load custom_tags %}
+{% load messages %}
+
+{% block extrahead %}
+
+{% endblock %}
+
+{% block container_class %}{{ block.super }} documentation{% endblock %}
+
+{% block right_content %}
+
+  {% box 'chatsimple' %}
+    <h2>DOWNLOAD</h2>
+    <ul>
+      <li>WordPress plug-in: <a href="http://downloads.wordpress.org/plugin/indextank.zip">ZIP file</a></li>
+    </ul>
+    <div class="chat_btn"> <a href="javascript:void(0);" onclick="go_chat()">LIVE CHAT NOW</a><span class="clear"></span> </div>
+  {% endbox %}
+
+  {% box 'table' %}
+    <ul>
+      <li><h2>Table of contents</h2></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#installing">Installation</a></li>
+      <li><a href="#configuration">Configuration</a></li>
+    </ul>
+  {% endbox %}
+{% endblock %}
+
+
+{% block title %}WordPress Plug-in{% endblock %}endblock %}
+
+{% block common_content %} 
+<div id="tutorial-main" class="main">
+
+<p>You can use IndexTank to improve the search experience on your Wordpres blog. For that, we have this WordPress plug-in.
+   Just follow the instructions below and you will have all the power of IndexTank search in your blog.</p>
+
+<h2 id="about">About this plug-in</h2>
+<p>
+  IndexTank's WordPress plug-in will replace your current blog's search with IndexTank's. It will enable you to use your IndexTank index as the search index for your blog.
+</p>
+<p>
+    This plug-in will provide your blog's search with different results sorting functions (time, relevance, number of comments) and a more powerful query language. You will also get InstantSearch, Autocomplete and more accurate search results for your blog.</p>
+
+<h2 id="installing">Installing the plug-in</h2>
+<p>
+    The easiest way is to use Wordpress' Plugin Manager. Go to your Wordpress dashboard, and find the <b>Plugins -&gt; Add new</b> menu. Search for 'indextank'. On the results page, find 'IndexTank Search' and install it.
+</p>
+<p>
+    If that doesn't work for your blog, you can try downloading the plugin from the link on the right, and upload it to your wordpress installation. You may need to contact your Wordpress administrator to do this.
+</p>
+
+<h2 id="configuration">Plug-in configuration</h2>
+
+<div class="sideNote">
+  <b>NOTE:</b>
+  Keep in mind that the index you use for the plug-in should be used ONLY for searching your blog's posts.
+</div>
+
+<p>
+  By enabling this plug-in, you will change the behaviour of your blog's search box. Typing a query in that box will now perform a search in an IndexTank's index.
+  This is why you first need to create an index for this purpose. Go to your blog's dashboard, and browse the <b>Tools -&gt; Indextank Searching</b> menu.
+</p>
+<p>
+  On the 'Settings' section, you will see a 'Get one' button. That button will get you and <b>Indextank</b> account, and set up an index. After that, you'll redirected back to the 'Settings' page, but you'll see credentials for your index (API URL and Index name).
+</p>
+
+<p>
+  <img width="510px" class="screenshot" src="/_static/images/wordpress/configuration.png">
+</p>
+
+<p>
+    Now that you have an account, other sections on the 'Settings' page will be enabled.
+    <ul>
+        <li>Indexing your posts</li>
+        <li>Reset your index</li>
+        <li>Look And Feel</li>
+    </ul>
+    <br/>
+</p>
+
+<p>
+  In the "Indexing your posts" section, at the bottom of the configuration page, you will find an "Index all posts" button. Click it. You only need to do this to index your documents for the first time, or to reindex them in case something happened.
+</p>
+<p>
+  There's a checkbox to apply 'the_content' filters to posts. You need to check it only if you have plugins that modify the way content is rendered (like MarkDown).
+</p>
+<p>
+  <img width="510px" class="screenshot" src="/_static/images/wordpress/indexall.png">
+</p>
+<p>
+  Wait for the confirmation message indicating that the blog posts were successfully indexed. The page won't reload. If you get an error message, check the API URL and the Index Name you entered above. Or you can write to <a href="mailto:support@indextank.com">support@indextank.com</a>, including your API URL, Index Name and error message.
+</p>
+
+<p>
+  You can now test the new search in your blog. Go to your blog's home page and type in the search box. You will find that the autocomplete feature is already enabled. Your blog's search is running with IndexTank!
+</p>
+
+
+<h2 id="looknfeel">Configuring Look and Feel</h2>
+
+<div class="sideNote">
+  <b>NOTE:</b>
+  Customizing your template won't break your blog's look in any way.
+</div>
+
+<p>
+Indextank is compatible with most Wordpress themes out-of-the-box. In order to play nice with your current theme, you need to click the 'Magic' button on the 'Look and Feel' section of the settings page.
+</p>
+<p>
+It will generate a custom configuration for you, making it possible to render results in a way that completely blends with your theme.
+</p>
+
+
+</div>  
+{% endblock %}

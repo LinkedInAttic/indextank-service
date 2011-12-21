@@ -1,0 +1,41 @@
+{% load humanize %}
+
+    <div class="col" style="width: 480px;">
+        <h5>Private URL &nbsp;
+           {% with account.get_private_apiurl as text %}{% include 'includes/clippy.html' %}{% endwith %}
+        </h5>
+        <div class="hrline"></div>
+        <div class="apiurl">
+           <a href="{{ account.get_private_apiurl }}">{{ account.get_private_apiurl }}</a>
+        </div>
+        <p>
+            This is the base url for API calls. The easiest way to access our API is instantiating one 
+            of <a href="/documentation/clients">our clients</a> with this URL.
+        </p>
+        {% comment %}
+        <h5>Public URL &nbsp;
+           {% with account.get_public_apiurl as text %}{% include 'includes/clippy.html' %}{% endwith %}
+        </h5>
+        <div class="hrline"></div>
+        <div class="apiurl">
+           <a href="{{ account.get_public_apiurl }}">{{ account.get_public_apiurl }}</a>
+        </div>
+        <p>
+            This URL is used for autocomplete API calls. It can be used in public HTML because it 
+            doesn't grant access for altering or querying your indexes.
+        </p>
+        {% endcomment %}
+    </div>
+
+    <div class="colsep"></div>
+    
+    <div class="col" style="width: 390px">
+      <h5>Current Plan : <b>{{ account.package.name }} (${{ account.package.base_price|floatformat:2 }}/month)</b></h5>
+        <div class="hrline"></div>
+        <ul>
+            <li>Up to {{ account.package.max_indexes|apnumber }} index{{ account.package.max_indexes|pluralize:"es" }}.</li>
+            <li>Up to {{ account.package.index_max_size|intcomma }} documents.</li>
+            <li>Up to {{ account.package.searches_per_day|intcomma }} daily queries.</li>
+            <li>To upgrade your account, please <a href="mailto:support@indextank.com">contact us</a>.</li>
+        </ul>
+    </div>

@@ -1,0 +1,13 @@
+body, p, form, fieldset, h1, h2, h3, h4, h5, h6,ul,li,ols{margin:0; padding:0}
+form, fieldset, img{border:none;}
+*{outline:none}
+body{font:12px/16px "Helvetica",Arial, Helvetica, sans-serif; color:#666;}
+.left{float:left !important;}
+.right{float:right !important;}
+.clear{clear:both}
+a{text-decoration:none; cursor:pointer;}
+a:hover{text-decoration:underline;}
+
+
+
+

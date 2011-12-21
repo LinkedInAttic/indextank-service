@@ -1,0 +1,160 @@
+{% extends "common-base.html" %}
+{% load custom_tags %}
+{% load humanize %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'js/jquery.flot.js' %}"></script>
+    <script type="text/javascript">
+      function load_index(link, section, code) {
+        if ($(link).hasClass('activesection')) {
+          $(link).removeClass('activesection');
+          $('#index_' + code + ' div.' + section).hide();
+        } else {
+          $('#index_' + code + ' div.insights').hide();
+          $('#index_' + code + ' div.manage').hide();
+          $('#index_' + code + ' div.inspect').hide();
+          $('#index_' + code + ' a.activesection').removeClass('activesection');
+          $('#index_' + code + ' .loading').fadeIn();
+          $('#index_' + code + ' div.' + section).load('{% url dashboard %}/' + section + '/' + code, function() {
+            $('#index_' + code + ' .loading').hide();
+            $('#index_' + code + ' div.' + section).fadeIn();
+            $(link).addClass('activesection');
+          });
+        }
+      }
+    </script>
+{% endblock %}
+
+{% block container_class %}{{ block.super }} dashboard wide{% endblock %}
+
+{% block title %}My Dashboard{% endblock %}
+
+{% block common_content %}
+  {% if account_status == 'NOINDEX' %}
+    <div style="float: right; margin-right: 15px; font-weight: bold; font-size: 15px;">
+        <a href="{% url create_index %}">+ Create Index</a>
+    </div>
+    {% box 'largebox' %}
+      <div class="messages info">No indexes have been created yet</div>
+      <p> 
+          Please download one of <a href="/documentation/clients">our client libraries</a> to access the 
+          IndexTank API.
+      </p>
+      <div style="margin: 15px 0 30px; text-align: center">
+          <a href="/documentation/java-client"><img src="{% static 'images/languages/java.png' %}"></img></a>
+          <a href="/documentation/python-client"><img src="{% static 'images/languages/python.png' %}"></img></a>
+          <a href="/documentation/php-client"><img src="{% static 'images/languages/php.png' %}"></img></a>
+          <a href="/documentation/ruby-client"><img src="{% static 'images/languages/ruby.png' %}"></img></a><br>
+          <div style="margin-top: 10px;"><i style="color: gray;">If none of the libraries fit your needs, you can develop your own based on the <a href="/documentation/api">API specification</a>.</i></div>
+      </div>
+      <p> 
+           The next step is to <a href="{% url create_index %}">create your first index</a>.
+      </p>
+      <div style="clear:both"></div>
+      <p>
+           Note: you can also create indexes through our API, with <a href="/documentation/clients">a client</a> or
+           with your own custom code.
+      </p>
+      <div style="clear:both"></div>
+    {% endbox %}
+  {% else %}
+  
+    <div style="float: right; margin-right: 15px; font-weight: bold; font-size: 15px;">
+        <a href="{% url create_index %}">+ Create another Index</a>
+    </div>
+  
+    {% for index in indexes %}
+      {% box 'largebox' %}
+        <div id="index_{{ index.code }}" class="dashboard-index">
+          <div style="float:right; font-size: 14px; vertical-align: middle;">
+            {% if index.is_demo %}
+                <a href="{% url demoindex %}" class="inspect">Live Demo</a>
+                &nbsp;|&nbsp;
+            {% endif%}
+            <a href="javascript:void(0)" onclick="load_index(this, 'inspect', '{{ index.code }}')" class="inspect">Search</a> 
+            &nbsp;|&nbsp;
+            <a href="javascript:void(0)" onclick="load_index(this, 'manage', '{{ index.code }}')" class="manage">Manage</a> 
+            &nbsp;|&nbsp;
+           {% if index.is_ready %}
+              {% if index.is_populating %}
+                 <img src="{% static 'common/images/green_check.png' %}" style="vertical-align: bottom;"> <span style="font-weight: bold; color: #009933;">Populating</span>
+              {% else %}
+                 <img src="{% static 'common/images/green_check.png' %}" style="vertical-align: bottom;"> <span style="font-weight: bold; color: #009933;">Running</span>
+              {% endif %} 
+           {% else %}
+              {% if index.is_hibernated %}
+                 <span style="font-weight: bold; color: violet">Hibernated</span>
+              {% else %}
+                 <span style="font-weight: bold; color: red">Starting</span>
+              {% endif %} 
+           {% endif %} 
+          </div>
+          <h2 style="width: auto" class="first">
+            {{ index.name }} <strong>(created at {{ index.creation_time|date:"g a, F j, Y" }})</strong>
+          </h2>
+          <div class="clear"></div>
+          <div class="summary">
+            <p><b>Current Size: </b> {{ index.current_docs_number|intcomma }} document{{ index.current_docs_number|pluralize }}<p>
+          </div>
+          <div class="loading" style="display:none; text-align: center">
+            LOADING...
+          </div>
+          <div class="manage" style="display:none"></div>
+          <div class="insights" style="display:none"></div>
+          <div class="inspect" style="display:none"></div>
+        </div>
+      {% endbox %}
+    {% endfor %}
+  {% endif %}
+  
+  <div class="clear"></div>
+  
+
+  <div class="bottom" style="float: left; width: 540px; margin-left: 5px;">
+    <h2>
+      Private URL
+    </h2>
+    <p>
+      {% with account.get_private_apiurl as text %}{% with "#f5f5f5" as bgcolor %}{% with "1" as small %}{% include 'includes/clippy.html' %}{% endwith %}{% endwith %}{% endwith %}
+      <a href="{{ request.user.get_profile.account.get_private_apiurl }}" class="apiurl private_apiurl">{{ request.user.get_profile.account.get_private_apiurl }}</a> 
+    </p>
+    <p>
+      This is the base url for authenticated API calls. The easiest way to access our 
+      API is instantiating one of <a href="/documentation/clients">our clients</a> with this URL.
+    </p>
+
+
+    <h2>
+      Public URL
+    </h2>
+    <p>
+      {% with account.get_public_apiurl as text %}{% with "#f5f5f5" as bgcolor %}{% with "1" as small %}{% include 'includes/clippy.html' %}{% endwith %}{% endwith %}{% endwith %} 
+      <a href="{{ request.user.get_profile.account.get_public_apiurl }}" class="apiurl public_apiurl">{{ request.user.get_profile.account.get_public_apiurl }}</a> 
+    </p>
+    <p>
+      This url gives you access to the public methods of the API, such as <a href="{% url documentation path='autocomplete' %}">Autocomplete</a>.
+    </p>
+
+
+    <h2>Current plan: <span style="text-transform:none">{{ account.package.name }}</span></h2>
+    <ul>
+      <li>Up to {{ account.package.max_indexes|apnumber }} index{{ account.package.max_indexes|pluralize:"es" }}.</li>
+      <li>Up to {{ account.package.index_max_size|intcomma }} documents.</li>
+      <li>Unlimited daily queries!</li>
+      <li>{% if account.package.code == 'FREE' %}<i>"Powered by IndexTank"</i> required in production{% else %}White label service{% endif %}</li>
+    </ul>
+    <div class="clear"></div>
+    <p style="margin-top: .6em">To upgrade your account, please <a href="mailto:support@indextank.com">contact us</a>.</p>
+  </div>
+  
+  <div class="works_right" style="float:right;">
+    {% box 'chat' %}
+      <h2>HAVE A QUESTION?</h2>
+      <div class="chat_btn"><a href="javascript:void(0)" onclick="go_chat()">LIVE CHAT NOW</a><span class="clear"></span></div>
+      <p>Our team of experienced and friendly devs will respond almost as quickly as our search API.</p>
+    {% endbox %}
+  </div>
+
+{% endblock %}
+

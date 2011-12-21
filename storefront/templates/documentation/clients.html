@@ -1,0 +1,59 @@
+{% extends "common-base.html" %}
+{% load custom_tags %}
+
+{% block title %}Client libraries and Plug-ins{% endblock %}endblock %}
+
+{% block common_content %}
+
+        <p>We provide client libraries in several popular languages and a few plug-ins for various frameworks.</p> 
+        
+        <p>All libraries are published in a public repository, and we encourage you to share your improvements. If you have comments, suggestions or questions please <a href="mailto:support@indextank.com">let us know</a>.</p>
+        
+        <p>Remember that if none of the libraries fit your needs, you can develop your own based on the <a href="/documentation/api">API specification</a>.</p>
+
+            <table width="100%" border="0" cellpadding="10" cellspacing="10" class="indextable">
+                <tr class="round_b clear" style="background-color: transparent;">
+                    <th class="first">
+                        CLIENTS
+                    </th>
+                    <th class="last">
+                        PLUG-INS
+                    </th>
+                </tr>
+                <tr style="background: white">
+                    <td>
+                        <big><strong><a href="/documentation/python-client">Python client library</a></strong></big><br/>
+                        <small>Python implementation of the API calls</small>
+                    </td>
+                    <td>
+                        <big><strong><a href="/documentation/wordpress-plugin">Wordpress Plug-in</a></strong></big><br/>
+                        <small>Insert IndexTank into your Wordpress blog</small>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <big><strong><a href="/documentation/ruby-client">Ruby client library</a></strong></big><br/>
+                        <small>Ruby implementation of the API calls</small>
+                    </td>
+                </tr>
+                <tr style="background: white">
+                    <td>
+                        <big><strong><a href="/documentation/php-client">PHP client library</a></strong></big><br/>
+                        <small>PHP implementation of the API calls</small>
+                    </td>
+                    <td>
+                        <big><strong><a href="/documentation/heroku-addon">Heroku Add-on</a></strong></big><br/>
+                        <small>Use IndexTank directly in your Heroku account</small>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <big><strong><a href="/documentation/java-client">Java client library</a></strong></big><br/>
+                        <small>Java implementation of the API calls</small>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+            </table>
+    {% endblock %}
+

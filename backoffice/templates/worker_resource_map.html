@@ -1,0 +1,54 @@
+{% load custom_tags %}
+{% load humanize %}
+
+{% with worker as w %}
+<span class="worker w{{ w.id }}">
+  <div class="use worker_ram">
+    <div class="used" style="width: {% widthratio w.xmx w.ram 100 %}%"></div>
+    <div class="text">{{ w.used }}M / {{ w.ram }}M</div>
+    <span class="refresh">REFRESH</span>
+    <script>makeWorkerRefresheable({{w.id}});</script>
+  </div>
+  <h1>Worker {{ w.id }} ({{ w.instance_name }}) - {{ w.wan_dns }}</h1>
+  {% for d in w.sorted_deploys %}
+    {% with d.index.configuration.get_data.ram as max_ram %}
+    <span class="deploy w{{ w.id }} i{{ d.index.id }} d{{ d.id }} p{{ d.index.account.package.code }} {% if d.index.current_docs_number == 0 %}empty{% endif %} s{{ d.status }} {% if not d.index %}orphan{% endif %} {% if d.index.is_demo %}demo{% endif %} {% if d.index.current_docs_number < 1000 %}tiny{% else %}fullsize{% endif %}">
+      <div class="index">{{ d.id }} <span style="color: yellow">{{ d.index.name }}</span></div>
+      <span class="login" apiurl="{{ d.index.account.get_private_apiurl }}">{{ d.index.account.user.email }}</span><br>
+      <div class="use ram">
+        <div class="used" style="width: {% widthratio d.effective_xmx max_ram 100 %}%"></div>
+        <div class="text">{{ d.total_ram }}M / {{ max_ram }}M</div>
+      </div>
+        
+      <div class="use">
+        <div class="used" style="width: {% widthratio d.index.current_docs_number d.index.account.package.index_max_size 200 %}px"></div>
+        <div class="text">{{ d.index.current_docs_number|intcomma }} / {{ d.index.account.package.index_max_size|intcomma }}</div>
+      </div>
+        
+      <div class="detail">
+        <hr>
+        <h1>Index <span style="color: red">{{ d.index.name }}</span> - code: {{ d.index.code }} <a href="javascript:$('#detail').html('')" style="float:right">[clear]</a></h1>
+        <p><big>{{ d.index.account.package.code }}: {{ d.index.account.package }}</big></p>
+        <p><big>{{ d.index.account.user.email }}</big></p>
+        <p><big>{{ d.index.account.get_private_apiurl }}</big></p>
+        <p></p><b>Deploys</b></p>
+        <ul>
+        {% for dd in d.index.deploys.all %}
+          <li>{{ dd.id }} : Worker {{ dd.worker.id }} @ {{ dd.base_port }} - <b>{{ dd.status }}</b> - ram: {{ dd.total_ram }}</li>
+        {% endfor %}
+        </ul>
+        <p><b>Configuration {{ d.index.configuration.id }} - {{ d.index.configuration.description }}</b></p>
+        <table class="config">
+        {% for k,v in d.index.configuration.get_data.items %}
+          <tr><th>{{k}}:</th><td>{{v}}</td></tr>
+        {% endfor %}
+        </table>
+        <p>
+          <a href="javascript:redeploy({{ d.index.id }}, {{d.id}}, {{w.id}});">REDEPLOY</a>
+        </p>
+      </div>
+    </span>
+    {% endwith %}
+  {% endfor %}
+</span>
+{% endwith %}

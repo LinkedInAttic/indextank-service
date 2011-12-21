@@ -1,0 +1,30 @@
+body {
+  margin: 0;
+  padding-top: 2em;
+  padding-left: 2em;
+}
+div.h {
+  visibility: hidden;
+  position: absolute;
+  top: 3em;
+  left: 2em;
+}
+.ss8pt {
+}
+.hss8pt {
+  font-family: sans-serif;
+  font-size: 8pt;
+}
+.tss8pt {
+  font-family: sans-serif;
+  font-size: 8pt;
+  border-left: 1px solid white;
+  border-right: 1px solid silver;
+}
+
+.bs_header {
+}
+
+.bs_right {
+  text-align: right;
+}

@@ -1,0 +1,198 @@
+{% extends "common-base.html" %}
+
+{% load custom_tags %}
+{% load messages %}
+
+{% block extrahead %}
+
+{% endblock %}
+
+{% block container_class %}{{ block.super }} documentation{% endblock %}
+
+{% block right_content %}
+  {% box 'table' %}
+	<ul>
+	    <li><a href="#intro">Query Syntax</a></li>
+	    <li><a href="#basic">Basic Queries</a></li>
+	    <li><a href="#fields">Specifying fields for queries</a></li>
+	    <li><a href="#boolean">Boolean Operators</a></li>
+	    <li><a href="#precedence">Precedence</a></li>
+	    <li class="last"><a href="#grouping">Field Grouping</a></li>
+	</ul>
+  {% endbox %}
+{% endblock %}
+    
+{% block title %}Query Syntax{% endblock %}
+{% block common_content %}
+    <p><i>A guide to understand IndexTank supported Query Format</i></p>
+    
+<div class="module"></div>
+<h2 id="basic">Example dataset</h2>
+    <p>All the examples in this page use an index composed of the following documents:</p>
+    
+<pre class="sh_sourceCode">
+    documentA = { 
+        "text" : "Hello world. I'm the content of the 'text' field. It's the default field for queries.",
+        "city" : "San Francisco, CA",
+        "author" : "Java Power Coder"
+    } 
+
+    documentB = {
+        "text" : "Good morning! The default field of this document contains 'tea'.",
+        "city" : "London, UK",
+        "author" : "World Class Developer"
+    }
+    
+    documentC = {
+        "text" : "Goodbye world. This is the default field of the last document.",
+        "city" : "San Diego, CA",
+        "author" : "PHP Power Coder"
+    }
+</pre>
+
+<div class="module"></div>
+<h2 id="basic">Basic Queries</h2>
+        <p>There are two types of basic queries: <span class="query_type">Terms</span> and <span class="query_type">Phrases</span>. A <span class="query_type">Term</span> is a single word such as "hello" or "world". 
+        For example:
+            <pre class="sh_sourceCode">hello</pre>
+        will match:
+            <pre class="sh_sourceCode">documentA</pre>
+
+        and 
+            <pre class="sh_sourceCode">world</pre>
+        will match:
+            <pre class="sh_sourceCode">documentA, documentC</pre>
+
+        <div class="alert">Notice that documentB does not match, even when the field "author" contains world. See <a href="#fields">Specifying fields for queries</a> for an explanation.</div>
+
+
+
+        <p>A <span class="query_type">Phrase</span> is a group of words by double quotes such as "hello world". Documents matching phrase queries will contain the exact phrase.</p>
+        For example:
+            <pre class="sh_sourceCode">"hello wold"</pre>
+        will match:
+            <pre class="sh_sourceCode">documentA</pre>
+
+        and
+            <pre class="sh_sourceCode">"default field"</pre>
+        will match:
+            <pre class="sh_sourceCode">documentA, documentB, documentC</pre>
+
+
+
+
+<div class="module"></div>
+<h2 id="fields">Specifying fields for queries</h2>
+    <p>By default, all basic queries are executed against the <b>Text</b> field of the indexed documents. It's possible to select a different field, by prefixing a basic query with a field name.</p>
+    For example:
+        <pre class="sh_sourceCode">author:world</pre>
+    will match:
+        <pre class="sh_sourceCode">documentB</pre>
+
+    and 
+        <pre class="sh_sourceCode">author:"power coder"</pre>
+    will match:
+        <pre class="sh_sourceCode">documentA, documentC</pre>
+
+
+
+<div class="module"></div>
+<h2 id="boolean">Boolean Operators</h2>
+    <p>You can combine basic queries with Boolean operators to form a more complex query.
+    
+    Boolean operators define the relationships between Terms or Phrases. IndexTank supports the following Boolean operators: AND, "+", OR, NOT and "-". Please note that Boolean operators must be all uppercase.</p>
+
+    <ul><li>AND</li></ul>
+	<p>
+
+        This is the default operator. It will be used if there is no Boolean operator between two terms.
+        For example:
+            <pre class="sh_sourceCode">default document</pre>
+        is the same as
+            <pre class="sh_sourceCode">default AND document</pre>
+        and will match:
+            <pre class="sh_sourceCode">documentB, documentC</pre>
+	</p>
+
+    <ul><li>OR</li></ul>
+	<p>
+        This operator makes its surrounding terms optional, but at least one must match the document.
+        For example:
+            <pre class="sh_sourceCode">hello OR last</pre>
+        will match:
+            <pre class="sh_sourceCode">documentA, documentC</pre>
+        </p>
+
+    <ul><li>NOT</li></ul>
+        <p>
+        The NOT operator excludes documents that contain the term (or phrase) after NOT. 
+        For example:
+            <pre class="sh_sourceCode">world NOT content</pre>
+        will match:
+            <pre class="sh_sourceCode">documentC</pre>
+
+        and
+            <pre class="sh_sourceCode">world NOT "default field"</pre>
+        will match:
+            <pre class="sh_sourceCode">documentA</pre>
+
+
+        You can use the NOT operator several times in the same query.
+        For example:
+            <pre class="sh_sourceCode">world NOT content NOT author:coder</pre>
+        will not match any document.
+            <pre class="sh_sourceCode"> # no documents matching </pre>
+        <div class="alert">IndexTank DOES NOT support queries that ONLY have NOT terms.</div>
+	</p>
+
+
+    
+
+<div class="module"></div>
+<h2 id="precedence">Precedence</h2>
+    The order in which you enter search terms does not effect your results.  AND and OR operators have the same precedence and group from left to right.
+    For example:
+        <pre class="sh_sourceCode">hello OR last</pre>
+    is the same as 
+        <pre class="sh_sourceCode">last OR hello</pre>
+    and will match the same documents,
+        <pre class="sh_sourceCode">documentA, documentC</pre>
+
+    If you need to modify precedence for complex queries, you can use parentheses.
+    For example:
+        <pre class="sh_sourceCode">(good AND world) OR author:power</pre>
+    will match:
+        <pre class="sh_sourceCode">documentA, documentC</pre>
+
+    and
+        <pre class="sh_sourceCode">good AND (world OR author:power)</pre>
+    will match:
+        <pre class="sh_sourceCode">documentC</pre>
+
+
+
+<div class="module"></div>
+<h2 id="grouping">Field Grouping</h2>
+    <p>
+    You can also use parentheses to specify the field only once.
+    </p>
+    For example:
+        <pre class="sh_sourceCode">author:(world class)</pre>
+    is the same as:
+        <pre class="sh_sourceCode">author:world author:class</pre>
+    and will match:
+        <pre class="sh_sourceCode">documentB</pre>
+        
+<div class="module"></div>
+<h2 id="weights">Term  Weights (caret operator)</h2>
+   <p>
+   You can boost terms in a query by appending the caret operator at the end of a term. Example:
+   </p>
+   <pre class="sh_sourceCode">author:world^2 OR city:san^10</pre>
+   This will match all documents, and documentC will be the last result.
+   <p/>
+
+
+
+{% endblock %}
+

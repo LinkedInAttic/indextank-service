@@ -1,0 +1,39 @@
+{% extends "common-base.html" %}
+
+{% load custom_tags %}
+{% load messages %}
+
+{% block right_content %}
+{% endblock %}
+
+{% block title %}"Powered-by IndexTank" badges.{% endblock %}
+
+{% block common_content %}
+    <h2 id="Big">Big</h2>
+    <div class="faq indent">
+        <h3>Sample</h3>
+        <p>
+            <a href="http://indextank.com/?utm_campaign=poweredby" name="Powered-by Indextank" rel="friend"><img src="http://indextank.com/_static/images/poweredby/idt-badge-md.png" alt="IndexTank: hosted search you control"/></a>
+        </p>
+        <h3>Code:  {% with "<a href=\"http://indextank.com/?utm_campaign=poweredby\" name=\"Powered-by Indextank\" rel=\"friend\"><img src=\"http://indextank.com/_static/images/poweredby/idt-badge-md.png\" alt=\"IndexTank: hosted search you control\"/></a>" as text %}{% with "#f5f5f5" as bgcolor %}{% include 'includes/clippy.html' %}{% endwith %}{% endwith %}</h3>
+        <p>
+        {% box 'code' %}
+            &lt;a href=&quot;http://indextank.com/?utm_campaign=poweredby&quot; name=&quot;Powered-by Indextank&quot; rel=&quot;friend&quot;&gt;&lt;img src=&quot;http://indextank.com/_static/images/poweredby/idt-badge-md.png&quot; alt=&quot;IndexTank: hosted search you control&quot;/&gt;&lt;/a&gt;
+        {% endbox %}
+        </p>
+    </div>
+    <h2 id="Small">Small</h2>
+    <div class="faq indent">
+        <h3>Sample</h3>
+        <p>
+            <a href="http://indextank.com/?utm_campaign=poweredby" name="Powered-by Indextank" rel="friend"><img src="http://indextank.com/_static/images/poweredby/idt-badge-sm.png" alt="IndexTank: hosted search you control"/></a>
+        </p>
+        <h3>Code: {% with "<a href=\"http://indextank.com/utm_campaign=poweredby\" name=\"Powered-by Indextank\" rel=\"friend\"><img src=\"http://indextank.com/_static/images/poweredby/idt-badge-sm.png\" alt=\"IndexTank: hosted search you control\"/></a>" as text %}{% with "#f5f5f5" as bgcolor %}{% include 'includes/clippy.html' %}{% endwith %}{% endwith %}</h3>
+        <p>
+        {% box 'code' %}
+            &lt;a href=&quot;http://indextank.com/?utm_campaign=poweredby&quot; name=&quot;Powered-by Indextank&quot; rel=&quot;friend&quot;&gt;&lt;img src=&quot;http://indextank.com/_static/images/poweredby/idt-badge-sm.png&quot; alt=&quot;IndexTank: hosted search you control&quot;/&gt;&lt;/a&gt;
+        {% endbox %}
+        </p>
+    </div>
+{% endblock %}
+

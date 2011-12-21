@@ -1,0 +1,150 @@
+{% extends "common-base.html" %}
+{% load custom_tags %}
+
+{% block title %} Our Team{% endblock %}endblock %}
+
+{% block container_class %}{{ block.super }} documentation{% endblock %}
+
+{% block right_content %}
+    <div class="chatsimple_box">
+        <div class="chatsimple_bg">
+            <div class="chatsimple_top">
+                <div class="chatsimple_bottom">
+                    <div class="chatsimple_main">
+                    	<h2 class="first">Contact Us</h2>
+                        <ul>
+               	            <li><a href="mailto:support@indextank.com">support@indextank.com</a></li>
+                    	    <li><a href="mailto:press@indextank.com">press@indextank.com</a></li>
+                    	    <li><a href="mailto:sales@indextank.com">sales@indextank.com</a></li>
+                    	    <li><a href="http://blog.indextank.com">IndexTank Blog</a></li>
+			       		</ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+    
+{% block common_content %}
+    <div class="doc_row">
+    <h2 class="first">About us</h2>
+    <p>We've been working together as a team on search solutions since 2005. We've implemented search solutions at <a href="http://reddit.com">Reddit</a>, Automattic (WordPress), BitTorrent, <a href="http://mylife.com">MyLife.com</a>, Kayak, and dozens more startups and industry-leaders.</p>
+    <p>You can read more about IndexTank on our <a href="http://blog.indextank.com/">blog</a> and <a href="http://twitter.com/indextank">twitter</a>.</p>
+    <p>Have a question? Our team of experienced and friendly developers are quick to respond, and never more than a few clicks away, any time. Sometimes we’re burning the midnight oil too.</p>
+
+    </div>
+
+	<div id="diego" class="staff-member doc_row">
+		<h2><a href="mailto:diego@indextank.com">Diego</a> <small>Founder / CEO</small></h2>
+		<p>Leading the team since 2005, Diego gained his search experience working with Inktomi. He is a 
+		    rock climber, piano/guitar/bass player, and, as confirmed by many, an armchair mad-scientist.</p>
+		<blockquote>I wrote some of the world's first web-scale link analysis algorithms, and now am on a mission to make every search box blazing fast and useful.</blockquote>
+		<img src="{% static 'images/staff-diego.jpg' %}"></img>
+        <div class="staff-member-contact">
+            <a class="twitter" href="http://twitter.com/dbasch/">Follow Diego on twitter</a>
+            <div class="clear"></div>
+        </div>
+	</div>
+
+	<div id="spike" class="staff-member doc_row" >
+		<h2><a href="mailto:spike@indextank.com">Spike</a> <small>Sofware engineer / architect</small></h2>
+		<p>Spike has been part of the team since 2006 working on search with clients such as WordPress, 
+		    SideStep/Kayak, BitTorrent, Hounder.org and Wink/MyLife.com.  He’s also led full-text search 
+		    workshops here in San Francisco.   Spike is an electronic hobbyist, gadget builder, and amateur baritone.</p>
+		<blockquote>I like to work on fault-tolerance and distributed<br>decision-making algorithms.</blockquote>
+		<img src="{% static 'images/staff-spike.png' %}"></img>
+        <div class="staff-member-contact">
+            <a class="twitter" href="http://twitter.com/spaic/">Follow Spike on twitter</a>
+            <div class="clear"></div>
+        </div>
+	</div>
+
+	<div id="santi" class="staff-member doc_row">
+		<h2><a href="mailto:santiago@indextank.com">Santi</a> <small>Software engineer and math enthusiast</small></h2>
+		<p>Santi joined back in 2007. Before that he had worked on core java libraries at Google. He worked 
+		    on the open source search project <a href="http://hounder.org">Hounder.org</a> and more recently, 
+		    he has developed the <a href="http://trendistic.com">Trendistic</a> search engine. Now he's working on IndexTank's searching infrastracture. On the weekends, when he is not challenging himself with math problems (ACM ICPC Latin American champion 2008, Google Code Jam Finalist, 2005),  he plays soccer, enjoys traveling and going out to enjoy Buenos Aires.</p>
+		<blockquote>I like solving complex algorithmic challenges and designing good, efficient and maintainable code.</blockquote>
+		<img src="{% static 'images/staff-santi.png' %}"></img>
+        <div class="staff-member-contact">
+            <a class="twitter" href="http://twitter.com/santip/">Follow Santi on twitter</a>
+            <div class="clear"></div>
+        </div>
+	</div>
+
+	<div id="nacho" class="staff-member doc_row">
+		<h2><a href="mailto:ignacio@indextank.com">Nacho</a> <small>Software engineer, linguistics specialist</small></h2>
+		<p>Ignacio &mdash; call him Nacho &mdash; joined the team back in 2007, a week after his younger brother, 
+		    Santi. Nacho has worked on search for Hounder.org, WordPress, Trendistic and many others. Most recently, 
+		    he’s been focused on developing Instant Insights. Nacho is a chess player, marathon runner and a tenor 
+		    in-training. He also teaches Semiotics at the University of Buenos Aires.</p>
+		<blockquote>I like problems dealing with semantic text processing, statistical semantic models, NLP in general.</blockquote>
+		<img src="{% static 'images/staff-nacho.png' %}"></img>
+        <div class="staff-member-contact">
+            <a class="twitter" href="http://twitter.com/nachopg/">Follow Nacho on twitter</a>
+            <div class="clear"></div>
+        </div>
+	</div>
+
+	<div id="jorge" class="staff-member doc_row">
+		<h2><a href="mailto:jorge@indextank.com">Jorge</a> <small>Software engineer / architect</small></h2>
+		<p>Jorge came to work with us back in 2005, and has primarily focused on back-end systems, infrastructure 
+		    and architecture design. He led the development of search for BitTorrent. He also authored one of our 
+		    white papers, and leads our work with Amazon Web Services. Jorge is a pilot and likes to spoil his kids.</p>
+		<blockquote>I like challenges, problems that re&shy;quire crea&shy;ti&shy;vi&shy;ty, keeping things clean and simple.</blockquote>
+		<img src="{% static 'images/staff-jorge.png' %}"></img>
+        <div class="staff-member-contact">
+            <a class="twitter" href="http://twitter.com/jhandl/">Follow Jorge on twitter</a>
+            <div class="clear"></div>
+        </div>
+	</div>
+
+	<div id="mono" class="staff-member doc_row">
+		<h2><a href="mailto:dbuthay@indextank.com">Mono</a> <small>Software engineer</small></h2>
+		<p>Diego Buthay, nicknamed Mono,  joined back in 2006, and has worked on search projects with Healthcare.com, Clarin (largest newspaper in Argentina), WordPress and BitTorrent.  Most recently he has worked on our WordPress plug-in. Mono is a Rubik cube solver, console freak and Counter-Strike sniper. He can put together any demo in two days, but just needs to make sure the coffee machine is plugged in.</p>
+		<blockquote>I like working with backend stuff, everything from web servers and load balancer to our full-text-search engine.</blockquote>
+		<img src="{% static 'images/staff-mono.jpg' %}"></img>
+        <div class="staff-member-contact">
+            <a class="twitter" href="http://twitter.com/dbuthay/">Follow Mono on twitter</a>
+            <div class="clear"></div>
+        </div>
+	</div>
+
+	<div id="adrian" class="staff-member doc_row">
+		<h2><a href="mailto:adrian@indextank.com">Adrian</a> <small>Software engineer</small></h2>
+		<p>Adrian Fernandez recently joined our team, coming from Technisys, where he designed banking systems for 
+		   a variety of clients. He is a self-proclaimed statistics junkie, amateur illustrator and fan of French 
+		   electronic music.</p>
+		<blockquote>I like designing software using modularity, with elegant solutions and thinking with simplicity. Most of the time I'm focused on distributed systems.</blockquote>
+		<img src="{% static 'images/staff-adrian.jpg' %}"></img>
+        <div class="staff-member-contact">
+            <a class="twitter" href="http://twitter.com/yakcusto/">Follow Adrian on twitter</a>
+            <div class="clear"></div>
+        </div>
+	</div>
+
+	<div id="leandro" class="staff-member doc_row">
+		<h2><a href="mailto:leandro@indextank.com">Leandro</a> <small>Software engineer</small></h2>
+		<p>Leandro recently joined the team from MercadoLibre.com, Latin America’s number one e-commerce site with 42 million registered users. He is an avid trekker, climber, mountain enthusiast and soccer player.</p>
+		<blockquote>I like solving problems in which creativity is a must have. When all standard solutions have failed, here I come with my crazy ideas.</blockquote>
+		<img src="{% static 'images/staff-leandro.jpg' %}"></img>
+        <div class="staff-member-contact">
+            <a class="twitter" href="http://twitter.com/loniszczuk/">Follow Leandro on twitter</a>
+            <div class="clear"></div>
+        </div>
+	</div>
+
+  <div id="sean" class="staff-member doc_row">
+    <h2><a href="mailto:sean@indextank.com">Sean</a> <small>Software engineer</small></h2>
+    <p>Sean recently joined the team from the University of Chicago. Sean is a soccer player, gamer, cheese fan, and amateur polymath.</p>
+    <blockquote>I like working on algorithms and improving the user experience- sometimes this means brevity.</blockquote>
+    <img src="{% static 'images/staff-sean.jpg' %}"></img>
+        <div class="staff-member-contact">
+            <a class="twitter" href="http://twitter.com/peripeteian/">Follow Sean on twitter</a>
+            <div class="clear"></div>
+        </div>
+    </div>
+
+{% endblock %}
+

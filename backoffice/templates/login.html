@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load custom_tags %}
+
+{% block content %}
+<div class="module x"></div>
+<div class="module x">
+    <h3>Log in to IndexTank!</h3>
+    
+    <p>Just enter your email address and password.</p>
+    <div style="margin-top: 40px;">
+    
+    <div class="form">
+      <table>
+        <form name="login_form" method="POST" action="{% url login %}?next={{ next|urlencode }}">
+         {% for f in login_form %}
+             <tr class="field">
+               <td class="label">{{ f.label_tag }}</td>
+               <td class="input">{{ f }}
+                   <div class="errors">{% for e in f.errors %}<span>{{e}}</span> {% endfor %}</div>
+               </td>
+             </tr>
+         {% endfor %}
+	    {% if login_message %}
+	      <tr>
+               <td class="label"></td>
+               <td class="input errors">
+		        {{ login_message }}
+		      </td>
+	      </tr>
+	    {% else %}
+	    {% endif %}
+         <tr>
+            <td class="label"></td>
+            <td>
+               <a href="javascript:void(0)" onclick="$('form[name=login_form]').submit()" class="btn" style="float: left;">LOGIN</a>
+               <div style="clear:both; height: 25px;"></div>
+            </td>
+         </tr>
+         </form>
+      </table>
+    </div>
+     </div>
+    
+</div>
+{% endblock %}
+

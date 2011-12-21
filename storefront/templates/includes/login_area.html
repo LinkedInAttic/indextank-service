@@ -1,0 +1,18 @@
+{% load custom_tags %}
+
+{% if provisioner %}
+  <div class="logged_in">
+    <ul>
+      <li class="first">Logged on via <b>{{ provisioner }}</b></li>
+      <li><a href="{% url dashboard %}">Dashboard</a></li>
+      {#<li><a href="{% url logout %}">Log out</a></li>#}
+    </ul>
+  </div>
+{% else %}
+  <div class="logged_out">
+    {% include 'includes/signin-box.html' %}
+  </div>
+  <div class="logged_in">
+    {% include 'includes/loggedin.html' %}
+  </div>
+{% endif %}

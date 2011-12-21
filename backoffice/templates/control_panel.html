@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load custom_tags %}
+{% load humanize %}
+{% block content %}
+<div class="module">
+</div>
+<div class="main" style="width: 950px">
+    <div class="module x">
+        <h3>IndexTank Control Panel</h3>
+    </div>
+</div>
+<div style="clear:both">
+</div>
+<div class="module x">
+    {#<h3>Manage your indexes</h3>#}
+    <div class="roundbox" style="padding: 0px; background-color: #ebebeb">
+        <table width="100%" border="0" cellpadding="10" cellspacing="10" class="indextable">
+            <tbody>
+                <tr class="round_b clear" style="background-color: transparent;">
+                    <td class="first" align="left">
+                        ID
+                    </td>
+                    <td align="center">
+                        INSTANCE NAME
+                    </td>
+                    <td align="center">
+                        WAN_DNS
+                    </td>
+                    <td align="center">
+                        DEPLOY COUNT
+                    </td>
+                    <td align="center" class="last" width="150"  style="background: url({% static 'images/tableheader.png' %}) no-repeat 30px">
+                        XMX
+                    </td>
+                </tr>
+                {% for worker in workers %}
+                <small>
+                    
+                <tr style="background-color: {% cycle 'white' '#ebebeb' %}">
+                    <td class="first" align="left">
+                        <b>{{ worker.id }}</b>
+                    </td>
+                    <td align="center">
+                        <b>{{ worker.instance_name }}</b>
+                    </td>
+                    <td align="center">
+                        {{ worker.wan_dns }}
+                    </td>
+                    <td align="center">
+                        {{ worker.deploys.all|length }}
+                    </td>
+                    <td align="center">
+                        {{ worker.get_used_ram }}M / {{ worker.ram }}M
+                    </td>
+                    <td align="center" class="action">
+                        <a href="{% url manage_worker worker_id=worker.id %}" class="btn red" style="width: 80px;">Check Stats</a>
+                    </td>
+                </tr>
+                </small>
+                {% empty %}
+                {% endfor %}
+                <tr class="round_g" style="background-color: transparent;">
+                    <td class="first" align="right" colspan="4">
+                        <small>There is a total of {{ workers|length }} workers running.</small>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div style="clear:both; height: 50px;">
+</div>
+
+{% endblock %}

@@ -1,0 +1,284 @@
+{% extends "documentation/client-base.html" %}
+{% load custom_tags %}
+
+{% block language-name %}python{% endblock %}
+
+
+{% block download-box %}
+<ul>
+    <li style="margin-bottom: 10px;">
+        Package: <span style="font-family: 'Courier new'; font-size: 14px; color: yellow;">pip install indextank</span> {% with "pip install indextank" as text %}{% with "1" as small %}{% with "#999999" as bgcolor %}{% include 'includes/clippy.html' %}{% endwith %}{% endwith %}{% endwith %}
+    </li>
+    <li>
+        Stable Version - 
+        <a href="http://github.com/flaptor/indextank-py/zipball/stable">zip</a> |
+        <a href="http://github.com/flaptor/indextank-py/tarball/stable">tgz</a>
+    </li>
+    <li>
+        <a href="http://github.com/flaptor/indextank-py/downloads">All versions</a>
+    </li>
+    <li>
+        <a href="http://github.com/flaptor/indextank-py">Source code (github)</a>
+    </li>
+</ul>
+{% endblock %}
+
+
+{% block summary-title %}Python client{% endblock %}
+
+
+{# <!-------- INSTANTIATE CLIENT --------> #}
+{% block code-instatiate %}
+from indextank.client import ApiClient
+
+api = ApiClient({% if request.user.is_authenticated %}'{{ request.user.get_profile.account.get_private_apiurl }}'{% else %}'&lt;YOUR API URL HERE&gt;'{% endif %})
+
+index = api.get_index('&lt;YOUR INDEX NAME HERE&gt;')
+{% endblock %}
+
+
+{# <!-------- SIMPLE INDEXING --------> #}
+{% block code-simple-indexing %}
+id = '&lt;YOUR DOCUMENT ID&gt;'
+text = '&lt;THE TEXTUAL CONTENT&gt;'
+
+index.add_document(id, { 'text': text })
+{% endblock %}
+
+
+{# <!-------- SIMPLE SEARCHING --------> #}
+{% block code-simple-searching %}
+query = '&lt;YOUR QUERY STRING&gt;'
+results = index.search(query)
+
+print '%d results' % results['matches']
+for doc in results['results']:
+    print 'docid: %s' % doc['docid'] 
+{% endblock %}
+
+{# <!-------- QUERY DELETE --------> #}
+{% block code-query-delete %}
+query = '&lt;YOUR QUERY STRING&gt;'
+index.delete_by_search(query)
+{% endblock %}
+
+{# <!-------- SNIPPET SEARCHING --------> #}
+{% block code-snippet-searching %}
+query = '&lt;YOUR QUERY STRING&gt;'
+results = index.search(query, 
+                          fetch_fields=['title','timestamp'], 
+                          snippet_fields=['text'])
+
+print '%d results' % results['matches']
+for doc in results['results']:
+    docid = doc['docid']
+    title = doc['title']
+    timestamp = doc['timestamp']
+    text = doc['snippet_text']
+    print "{% filter force_escape %}<a href='%s'>%s</a><p>%s</p>{% endfilter %}" % (docid,title,text) 
+{% endblock %}
+
+{% block code-simple-deleting %}
+id = "&lt;YOUR DOCUMENT ID&gt;"
+
+index.delete_document(id)
+{% endblock %}
+
+
+{# <!-------- MULTIPLE FIELD INDEXING --------> #}
+{% block code-multiple-field-indexing %}
+#### INDEX MULTIPLE FIELDS
+index.add_document(id, { 'text': text, 
+                         'title': title, 
+                         'author': author })
+{% endblock %}
+
+
+{# <!-------- FILTER BY AUTHOR --------> #}
+{% block code-filter-by-author %}
+#### FILTER TO USER'S CONTENT
+index.search('%s author:%s' % (query,user))
+{% endblock %}
+
+
+{# <!-------- INDEX WITH TIMESTAMP --------> #}
+{% block code-index-with-timestamp %}
+index.add(id, { 'text': text, 
+                'timestamp': time.mktime(time.gmtime()) 
+              })
+{% endblock %}
+
+
+{# <!-------- INDEX WITH BOOSTS --------> #}
+{% block code-index-with-boosts %}
+#### INDEX DOCUMENT WITH VARIABLES
+doc = { 'text': text }
+variables = { 0: rating, 1: reputation, 2: visits }
+ 
+index.add_document(id, doc, variables=variables)
+{% endblock %}
+
+
+{# <!-------- UPDATE BOOSTS --------> #}
+{% block code-update-boosts %}
+#### UPDATE DOCUMENT VARIABLES
+variables = { 0: new_rating, 1: new_reputation, 2: new_visits }
+index.update_variables(id, variables=variables) 
+{% endblock %}
+
+
+{# <!-------- REFEDINE FUNCTIONS --------> #}
+{% block code-redefine-functions %}
+# FUNCTION 0 : sorts by most recent 
+index.add_function(0, "-age")
+
+# FUNCTION 1 : standard textual relevance
+index.add_function(1, "relevance")
+
+# FUNCTION 2 : sorts by rating
+index.add_function(2, "doc.var[0]") 
+
+# FUNCTION 3 : sorts by reputation
+index.add_function(3, "d[1]") 
+
+# FUNCTION 4 : advanced function
+index.add_function(4, "log(d[0]) - age/50000")
+{% endblock %}
+
+
+{# <!-------- SEARCH WITH RELEVANCE FUNCTIONS --------> #}
+{% block code-search-with-relevance-function %}
+index.search(query, scoring_function=2)
+{% endblock %}
+
+{# <!-------- PROXIMITY SCORING FUNCTION --------> #}
+{% block code-proximity-scoring-function %}
+# FUNCTION 5 : inverse distance calculated in miles
+index.add_function(5, "-mi(d[0], d[1], q[0], q[1])")
+{% endblock %}
+
+
+{# <!-------- SEARCH WITH GEO --------> #}
+{% block code-search-with-geo %}
+variables = { 0: latitude, 1: longitude }
+
+index.search(query, 
+             scoring_function=5,
+             variables=variables)
+{% endblock %}
+
+{# <!-------- UPDATE CATEGORIES --------> #}
+{% block code-update-categories %}
+categories = { 
+                  'priceRange': '$0 to $299',
+                  'articleType': 'camera'
+             }
+index.update_categories(docid, categories) 
+{% endblock %}
+
+{# <!-------- SAMPLE FACETS RESULT --------> #}
+{% block code-sample-facets-result %}
+{ 
+    'matches': 8,
+    'results': [ {'docid': 'doc1'}, ... ],
+    'facets': {
+        'articleType': {
+            'camera': 5,
+            'laptop': 3
+        },
+        'priceRange': {
+            '$0 to $299': 4,
+            '$300 to $599': 4
+        }
+    }    
+}
+{% endblock %}
+
+{# <!-------- FACETING FILTERING --------> #}
+{% block code-faceting-filtering %}
+index.search(query,
+             category_filters={
+                'priceRange': ['$0 to $299', '$300 to $599'],
+                'articleType': ['camera']
+             })
+{% endblock %}
+
+
+{# <!-------- RANGE QUERIES --------> #}
+{% block code-range-queries %}
+"""
+  Ranges are specified by string with the format:
+   [BOTTOM_LIMIT,TOP_LIMIT]
+  Both top and bottom can be replaced by 'None' 
+  to indicate they should be ignored.
+  
+  In this sample, the results will only include documents 
+  whose variable #0 value is between 5 and 10 or between 15
+  and 20, and variable #1 value is less than or equal to 3
+   
+"""
+index.search(query,
+             docvar_filters={
+                0: [[5,10], [15,20]], 
+                1: [[None,3]]
+             })
+
+"""
+  The same applies to functions
+"""
+index.search(query,
+             function_filters={
+                1: [[0.5,None]]
+             })
+{% endblock %}
+
+
+{# <!-------- BATCH INDEXING --------> #}
+{% block code-batch-indexing %}
+documents = []
+documents.append({ 'docid': 'doc1', 'fields': { 'text': text1 } })
+documents.append({ 'docid': 'doc2', 'fields': { 'text': text2 } })
+documents.append({ 'docid': 'doc3', 'fields': { 'text': text2 }, 'variables': { 0 : 1.5 } })
+documents.append({ 'docid': 'doc4', 'fields': { 'text': text2 }, 'variables': { 0 : 1.5 }, 'categories': { 'Price': '0 to 100' } })
+
+response = index.add_documents(documents)
+{% endblock %}
+
+{% block code-batch-indexing-failed %}
+failed_documents = [documents[i] for i in xrange(len(response)) if not response[i]['added']]
+{% endblock %}
+
+{# <!-------- BULK DELETE --------> #}
+{% block code-bulk-delete %}
+docids = ['doc1', 'doc2', 'doc3', 'doc4']
+response = index.delete_documents(docids)
+{% endblock %}
+
+{% block code-bulk-delete-failed %}
+failed_documents = [docids[i] for i in xrange(len(response)) if not response[i]['deleted']]
+{% endblock %}
+
+{# <!-------- INDEX CREATION --------> #}
+{% block code-index-creation %}
+from indextank.client import ApiClient
+import time
+
+api = ApiClient({% if request.user.is_authenticated %}'{{ request.user.get_profile.account.get_private_apiurl }}'{% else %}'&lt;YOUR API URL HERE&gt;'{% endif %})
+
+# this parameter allows you to create indexes with public search enabled.
+# default is False.
+public_search_enabled = False
+
+index = api.create_index('test_name', public_search_enabled)
+
+while not index.has_started():
+    time.sleep(0.5)
+
+{% endblock %}
+
+
+{# <!-------- INDEX DELETION --------> #}
+{% block code-index-deletion %}
+api.delete_index('test_name')
+{% endblock %}
+

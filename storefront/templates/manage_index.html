@@ -1,0 +1,134 @@
+{% load humanize %}
+{% load custom_tags %}
+
+<hr>
+<h3 style="width:auto">Scoring Functions</h3>
+<div class="clear"></div>
+<span> Documentation is available <a href="http://indextank.com/documentation/function-definition">here</a>. </span><br>
+Examples:
+<span class="example-function" > <pre>relevance * max(1, log(doc.var[2]))</pre>(sorts documents considering the textual relevance of the document times the natural logarithm of the third var in the document, or 1 if it's lower)</span>
+<span class="example-function" > <pre>miles(query.var[0], query.var[1], doc.var[0], doc.var[1])</pre>(sorts documents considering the distance between doc and a point passed in the query)</span> <br>
+<div class="functions">
+  {% for func in functions %}
+    <div class="func_{{ func.name }}">
+      <form onsubmit="save_{{ index.code }}('{{ func.name }}'); return false;">
+        <div style="float: left; width: 85px; padding: 7px;">Function #{{ func.name }}</div>
+        <div style="float: left">
+           <input type="text" value="{{ func.definition|default:'' }}" original="{{ func.definition|default:'' }}" class="function" func="{{ func.name }}"/>
+        </div>
+        <div style="float: left; margin-left: 10px;">
+          <input type="submit" class="button save" style="display:none" value="SAVE" func="{{ func.name }}"/>
+          <input type="button" onclick="cancel_{{ index.code }}('{{ func.name }}')" class="button cancel" style="display:none" value="CANCEL"/>
+          <span class="message"></span>
+        </div>
+      </form>
+    </div>
+    <div style="clear:left"></div>
+  {% endfor %}
+</table>
+<div class="clear"></div>
+
+<h3>Public search API</h3>
+
+<p>
+  Current status: <span id="public_api_{{ index.code }}"></span>
+  <span id="public_api_{{ index.code }}_enabled" {% if not index.public_api %}style="display:none"{% endif %}>
+    <img src="{% static 'common/images/green_check.png' %}" style="vertical-align: bottom;">
+    <span style="font-weight: bold; color: #009933;">Enabled</span> -
+    <a href="javascript:void(0)" onclick="public_api_{{ index.code }}(false);">[Disable now]</a>
+  </span>
+  <span id="public_api_{{ index.code }}_disabled" {% if index.public_api %}style="display:none"{% endif %}>
+    <img src="{% static 'common/images/red_delete.png' %}" style="vertical-align: bottom;">
+    <span style="font-weight: bold; color: red;">Disabled</span> - 
+    <a href="javascript:void(0)" onclick="public_api_{{ index.code }}(true);">[Enable now]</a>
+  </span>
+</p>
+
+
+<h3>Deleting the index</h3>
+      
+<form style="display: inline;" method="POST" name="{{ index.code }}_delete_form" action="{% url delete_index %}">
+    <input type="hidden" name="index_id" value="{{ index.id }}"/> 
+    If you need to, you can completely <a href="javascript:void(0);" onclick="if (confirm('We will delete all the data in this index, as well as all scoring functions linked to it.\nThis action cannot be undone.\n\nAre you sure you want to delete \'{{ index.name }}\'?')) { $('form[name={{ index.code }}_delete_form]').submit() }">delete</a> your current index. This action cannot be undone.
+</form>
+        
+
+
+<script type="text/javascript">
+  largest_{{ index.code }} = {{ largest_func }};
+  function add_{{ index.code }}() {
+    largest_{{ index.code }}++;
+    alert(largest_{{ index.code }});
+  }
+  function public_api_{{ index.code }}(enable) {
+    var msg = $('#public_api_{{ index.code }}');
+    $('#public_api_{{ index.code }}_enabled').hide();
+    $('#public_api_{{ index.code }}_disabled').hide();
+    msg.text(enable ? 'Enabling...' : 'Disabling...');
+    $.ajax(
+      {
+        url: '{% url manage_index index_code=index.code %}',
+        type: "POST",
+        data: { 'public_api': enable },
+        dataType: 'json',
+        success: function(data, text, x) {
+          $('#public_api_{{ index.code }}' + (enable ? '_enabled' : '_disabled')).show();
+          msg.text('');
+        },
+        error: function(x, text, err) {
+          msg.text(x.responseText);
+        }
+      }
+    );
+  }
+  
+  function save_{{ index.code }}(func) {
+    var e = $("#index_{{ index.code }} .func_" + func + " .function");
+    var msg = $("#index_{{ index.code }} .func_" + func + " .message");
+    var newdef = e.val();
+    var olddef = e.attr('original');
+    if (newdef == olddef) return;
+    msg.text('Saving...');
+    $.ajax(
+      {
+        url: '{% url manage_index index_code=index.code %}',
+        type: "POST",
+        data: { 'name': func, 'definition': newdef, 'largest': largest_{{index.code}} },
+        dataType: 'json',
+        success: function(data, text, x) {
+          if (data['largest'] > largest_{{index.code}}) {
+            largest_{{index.code}} = data['largest'];
+            // append data['newrow']
+          }
+          e.attr('original', newdef);
+          e.keyup();
+          msg.text('Saved!');
+        },
+        error: function(x, text, err) {
+          msg.text(x.responseText);
+        }
+      }
+    );
+  }
+  function cancel_{{ index.code }}(func) {
+    var e = $("#index_{{ index.code }} .func_" + func + " .function");
+    e.val(e.attr('original'));
+    e.keyup();        
+  }
+  $('.functions .function').keyup(function() {
+    var e = $(this); 
+    var func = e.attr('func');
+    if (e.val() == e.attr('original')) {
+      e.removeClass('modified');
+      $("#index_{{ index.code }} .func_" + func + " .save").hide();
+      $("#index_{{ index.code }} .func_" + func + " .cancel").hide();
+    } else {
+      if (!e.hasClass('modified')) {
+        $("#index_{{ index.code }} .func_" + func + " .save").fadeIn();
+        $("#index_{{ index.code }} .func_" + func + " .cancel").fadeIn();
+      }
+      e.addClass('modified');
+    }
+    e.parent().parent().find('.message').text('')
+  })
+</script>

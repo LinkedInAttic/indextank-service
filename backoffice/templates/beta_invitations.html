@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load custom_tags %}
+{% load humanize %}
+{% block content %}
+<div class="module">
+</div>
+<div class="main" style="width: 950px">
+    <div class="module x">
+        <h3>Beta Invitations</h3>
+    </div>
+</div>
+<div style="clear:both">
+</div>
+<div class="module x">
+    <div class="roundbox" style="padding: 0px; background-color: #ebebeb">
+        <table width="100%" border="0" cellpadding="10" cellspacing="10" class="indextable">
+            <tbody>
+                <tr class="round_b clear" style="background-color: transparent;">
+                    <td class="first" align="left">
+                        CUSTOMER
+                    </td>
+                    <td align="center">
+                        PASSWORD
+                    </td>
+                    <td align="center">
+                        ACCOUNT?
+                    </td>
+                    
+                    <td align="center">
+                        DATE
+                    </td>
+                </tr>
+                {% for beta_invitation in invitations %}
+                <tr style="background-color: {% cycle 'white' '#ebebeb' %}">
+                    <td class="first" align="left">
+                        <b>{% if beta_invitation.beta_requester %}{{ beta_invitation.beta_requester.email }}{% else %}{{ beta_invitation.assigned_customer }}{% endif %}</b>
+                    </td>
+                    <td align="left">
+                        <b>{{ beta_invitation.password }} (<a href="http://indextank.com/invite_sign_up/{{ beta_invitation.password }}">link</a>)</b>
+                    </td>
+                    <td align="left" style="white-space: normal">
+                        <small>{% if beta_invitation.account %}{{ beta_invitation.account.user.email }}{% else %}NOT YET{% endif %}</small>
+                    </td>
+                    <td align="left" style="white-space: normal">
+                        {{ beta_invitation.invitation_date|date:'Y/m/d H:i'}}
+                    </td>
+                </tr>
+                {% empty %}
+                {% endfor %}
+                <form name="invite_form" method="POST">
+	                <tr class="round_g" style="background-color: transparent;">
+	                    <td class="first" align="right" colspan="2">
+	                        New Invitee: {{ form.requesting_customer }} 
+	                    </td>
+	                    <td><input type="submit" value="Invite"></td>
+	                </tr>
+                </form>
+                
+            </tbody>
+        </table>
+    </div>
+</div>
+<div style="clear:both; height: 50px;">
+</div>
+
+{% endblock %}

@@ -1,0 +1,94 @@
+<html>
+
+<head>
+  <title>Biz</title>
+  <style type="text/css">@import url("/_static/biz_stats.css");</style>
+  <script type="text/javascript" src="http://www.google.com/jsapi" ></script> 
+  <script type="text/javascript" src="/_static/biz_stats.js" ></script> 
+</head>
+
+<body class="ss8pt">
+  <div id="links" style="position:absolute; top:1em; left:2em">
+    <a href="javascript:hideAllAndShow('activity')">Activity</a> &nbsp;&nbsp;|&nbsp;&nbsp;    
+    <a href="javascript:hideAllAndShow('accounts')">Accounts</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="javascript:hideAllAndShow('history')">QPD</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="javascript:hideAllAndShow('accountsHistory')">Accounts History</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="javascript:hideAllAndShow('subscriptions')">Subscriptions</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="javascript:hideAllAndShow('tweets')">Twitter</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="javascript:void(0)">Blogsphere</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="javascript:hideAllAndShow('indexes')">Indexes</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="javascript:void(0)">Payments</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="javascript:hideAllAndShow('activationAARRR')">AARRR</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="javascript:hideAllAndShow('qos')">QoS</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+  </div>
+  <div id="tweets" class="h">
+    <h2>Twitter History</h2>
+    <div id="visualization" style="margin-top:1em; width: 800px; height: 300px;"></div>
+  </div>
+  <div id="subscriptions" class="h">    
+    <h2>Subscriptions Detail</h2>
+    <div id="subscriptionsList"></div>
+    <h2>Revenue</h2>
+    <div id="revenue"></div>
+  </div>  
+  <div id="history" class="h">
+    <h2>Queries per day</h2>
+    <div class="options">
+      <a href="javascript:historyTablePackageFilter(['Factual Contest','Free','Heroku Basic','Heroku Contest','Heroku Trial','Beta plan'])">(-Free)</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="javascript:historyTablePackageFilterOnly(['Factual Contest'])">(*Factual)</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+    </div>
+    <div id="historyList"></div>
+  </div>
+  <div id="accountsHistory" class="h">
+    <h2>Accounts History</h2>
+    <div id="accountsHistoryVisualization" style="margin-top:1em; width: 800px; height: 300px;"></div>
+  </div>
+  <div id="globalHistory" class="h">
+    <h2>API History</h2>
+  </div>
+  <div id="accounts" class="h">    
+    <h2>Accounts Detail</h2>
+    <div class="options">
+      <a href="javascript:activityTablePackageFilter(['Factual Contest','Free','Heroku Basic','Heroku Contest','Heroku Trial','Beta plan'])">(-Free)</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="javascript:activityTablePackageFilterOnly(['Factual Contest'])">(*Factual)</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="javascript:activityTableCountFilter()">(-Inactive)</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="javascript:activityTableReset()">Reset</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+    </div>
+    <div id="accountsList"></div>
+  </div>
+  <div id="indexes" class="h">
+    <h2>Index detail</h2>
+    <div id="indexesList"></div>
+  </div>
+  <div id="qos" class="h">
+    <h2>QoS</h2>
+    <h4>GET API Time [ms]: Account / HTTP method / GMT hour</h4>
+    <div id="qosList"></div>
+    <h4>Logged API Errors: Account / GMT day</h4>
+    <div id="qosErrorList"></div>
+    <h4>GET API Time [ms]: Account / 95% / GMT month</h4>
+    <div id="qos95List"></div>
+  </div>
+  <div id="activity" class="h">
+    <h2>Activity</h2>
+    <div id="globalHistoryVisualization" style="margin-top:1em; width: 800px; height: 300px;"></div>
+    <div id="activityStats"></div>
+  </div>
+  <div id="activationAARRR" class="h">
+    <h3>Adoption</h3>
+    <h4>Monthly</h4>
+    <div id="adoptionAARRRVisualization" style="margin-top:1em; width: 800px; height: 300px;"></div>
+    <h4>Weekly</h4>
+    <div id="adoptionAARRRVisualization1" style="margin-top:1em; width: 800px; height: 300px;"></div>
+    <h4>Daily</h4>
+    <div id="adoptionAARRRVisualization2" style="margin-top:1em; width: 800px; height: 300px;"></div>
+    <h3>Activation</h3>
+    <h4>Weekly, accounts that created an index and stored at least one document</h4>
+    <div id="activationAARRRVisualization" style="margin-top:1em; width: 800px; height: 300px;"></div>
+    <h3>Retention</h3>
+    <h4>In the last four days, accounts that had GET and PUT activity</h4>
+    <div id="retentionAARRRVisualization" style="margin-top:1em; width: 800px; height: 300px;"></div>
+  </div>
+</body>
+
+</html>

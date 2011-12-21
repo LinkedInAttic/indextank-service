@@ -1,0 +1,62 @@
+{% extends "common-base.html" %}
+{% load custom_tags %}
+
+{% block title %}Gallery of Applications powered by IndexTank{% endblock %}endblock %}
+
+{% block common_content %}
+    
+    <p>This is a showcase of some of the awesome apps that use IndexTank to power their search.</p>
+    
+    <div id="gallery">
+        <a href="{% url documentation path='app-gallery/culbreth.html' %}">
+            <span class="app-box">
+                <img class="main" src="{% static 'images/developers/culbreth.jpg' %}"></img>
+                <h3>Proggit FTW</h3>
+                <h4>by Matt Culbreth</h4>
+            </span>
+        </a>
+        <a href="{% url documentation path='app-gallery/waxman.html' %}">
+            <span class="app-box">
+                <img class="main" src="{% static 'images/developers/waxman.jpg' %}"></img>
+                <h3>QNA</h3>
+                <h4>by Michael Waxman</h4>
+            </span>
+        </a>
+        <a href="{% url documentation path='app-gallery/dellinger.html' %}">
+            <span class="app-box">
+                <img class="main" src="{% static 'images/developers/dellinger.jpg' %}"></img>
+                <h3>GeekSeek</h3>
+                <h4>by Chris Dellinger</h4>
+            </span>
+        </a>
+        <a href="{% url documentation path='app-gallery/spence.html' %}">
+            <span class="app-box">
+                <img class="main" src="{% static 'images/developers/spence.jpg' %}"></img>
+                <h3>Toxosis</h3>
+                <h4>by Tim Spence</h4>
+            </span>
+        </a>
+        <a href="{% url documentation path='app-gallery/crocker.html' %}">
+            <span class="app-box">
+                <img class="main" src="{% static 'images/developers/crocker.jpg' %}"></img>
+                <h3>HelpShelf</h3>
+                <h4>by Jacques Crocker</h4>
+            </span>
+        </a>
+        <a href="{% url documentation path='app-gallery/sharma.html' %}">
+            <span class="app-box">
+                <img class="main" src="{% static 'images/developers/sharma.jpg' %}"></img>
+                <h3>Wordsearch</h3>
+                <h4>by Bhaarat Sharma</h4>
+            </span>
+        </a>
+        {% comment %}
+        <span class="app-box">
+            <img class="main" src="{% static '' %}"></img>
+            <h3>The Prism</h3>
+            <h4>by Sam de Cesare</h4>
+        </span>
+        {% endcomment %}
+    </div>   
+    
+{% endblock %}

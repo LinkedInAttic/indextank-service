@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% load messages %}
+
+{% block content_body %}
+  <div class="outer_contaent_sec">
+    <div class="layout">
+      <div class="bottom_box">
+        <div class="{% block container_class %}works{% endblock %}">
+          <div class="{% block container_left_class %}works_left{% endblock %}">
+            {% render_messages messages %}
+      	    {% block common_content %}
+      	    {% endblock %}
+          </div>
+          <div class="{% block container_right_class %}works_right{% endblock %}">
+      	    {% block right_content %}
+      	    {% endblock %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

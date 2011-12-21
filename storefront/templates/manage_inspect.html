@@ -1,0 +1,141 @@
+{% load humanize %}
+{% load custom_tags %}
+
+<hr>
+<h3 style="width:auto">Search your index</h3>
+<div class="clear"></div>
+
+<form id="searchform_{{ index.code }}">
+<table class="functions">
+    <tr>
+      <th>Query</th>
+      <td>
+         <input type="text" value="{{ func.definition|default:'' }}" class="query"/>
+      </td>
+      <th>Func #</th>
+      <td>
+         <input type="text" value="0" class="fnum"/>
+      </td>
+      <td>
+        <input type="submit" class="button search" value="SEARCH"/>
+      </td>
+    </tr>
+</table>
+</form>
+
+<div class="results">
+
+<table class="search_results">
+    <tr>
+        <td class="stats">
+        </td>
+    </tr>
+    <tr>
+        <th>
+            DOC ID
+        </th>
+        <td rowspan="55" class="fullresult" style="display:none"></td>
+    </tr>
+    <tr></tr>
+</table>
+
+
+</div>
+
+<script type="text/javascript">
+
+  var fmt_{{ index.code }} = function(item){
+
+    var result = $("<tr/>")
+                    .append( $("<td/>").addClass("result")
+                             .text(item.docid)
+                             .click( function (event){
+
+                                var $this = $(this);
+                                var fullResult = $('#index_{{ index.code }} .fullresult');
+                                
+                                $this.toggleClass("active");
+                                $(".active").not($this).removeClass("active");
+                                $(".fullresult").not(fullResult).hide();
+
+                                
+                                if ($this.hasClass("active")) {
+                                    fullResult.html("");
+
+                                    var fields = $("<ul/>");
+
+                                    $.each(item, function(i, content){
+                                        if (/^variable_/.test(i)) return;
+                                        if (/^category_/.test(i)) return;
+                                        if (/^snippet_/.test(i)) return;
+                                        if ("query_relevance_score" == i) return;
+
+                                        $("<li/>").html("<b>"+i+"</b>").appendTo(fields);
+                                        $("<li/>").text(content).appendTo(fields);
+                                    });
+
+                                    var variables = $("<ul/>");
+                                    $.each(item, function(i, content){
+                                        if (/^variable_/.test(i)) { 
+                                            $("<li/>")
+                                                .append( $("<b/>").text(i.replace(/^variable_/,"")) )
+                                                .append( $("<span/>").text( ": " + content) )
+
+                                                .appendTo(variables);
+                                        }
+                                    });
+
+
+                                    var categories = $("<ul/>");
+                                    $.each(item, function(i, content){
+                                        if (/^category_/.test(i)) { 
+                                            $("<li/>")
+                                                .append( $("<b/>").text(i.replace(/^category_/,"")) )
+                                                .append( $("<span/>").text( ": " + content) )
+
+                                                .appendTo(categories);
+                                        }
+                                    });
+
+
+                                    fullResult.append( $("<small/>")
+                                                        .append( $("<p/>").html("<b>DOC ID</b>"))
+                                                        .append( $("<ul><li></li></ul>").text(item.docid))
+                                                        .append( $("<p/>").html("<b>FIELDS</b>"))
+                                                        .append( fields )
+                                                        .append( $("<p/>").html("<b>VARIABLES</b>"))
+                                                        .append( variables )
+                                                        .append( $("<p/>").html("<b>CATEGORIES</b>"))
+                                                        .append( categories )
+                                                        .append( $("<p/>").html("<b>SCORE</b>"))
+                                                        .append( $("<ul><li></li></ul>").text(item.query_relevance_score || "1"))
+
+                                    
+                                    );
+                                    fullResult.show();
+                                } else {
+                                    fullResult.hide();
+                                }
+
+                          })); 
+
+    return result;
+  };
+                  
+
+  var stfmt_{{ index.code }} = function(data){
+    var r =  $("<div/>").html("<b>" + data.matches + "</b> matches for <b>" + data.query + "</b> in <b>" + data.search_time + "</b> seconds."); 
+    if (data.matches == 0) {
+        r.append( $("<div/>").text("The default search field is 'text'- try searching another field with 'title:<query>', (or, if you use Tanker, '__any:<query>') or consider adding the docid or a desired field to your documents' 'text' field.")); }
+    return r; 
+  };
+
+
+
+  $("#searchform_{{ index.code }}").indextank_Ize("{{ account.get_private_apiurl }}", "{{ index.name }}");
+  var r = $("#index_{{ index.code }} .search_results tbody").indextank_DashboardRenderer({format: fmt_{{ index.code }} });
+  var st = $("#index_{{ index.code }} .stats").indextank_StatsRenderer({format: stfmt_{{ index.code }} });
+  var f = function() { return $("#index_{{ index.code }} .fnum").val();}; // yeap, a function!
+  $("#index_{{ index.code }} .query").indextank_Autocomplete().indextank_AjaxSearch({listeners: r.add(st), scoringFunction: f, rsLength: 30, fields: "*", snippets: ""});
+</script>
+

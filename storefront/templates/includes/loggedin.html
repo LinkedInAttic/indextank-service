@@ -1,0 +1,6 @@
+<ul>
+  <li class="first">Logged on as <b class="user_email">{{ request.user.username }}</b></li>
+  <li><a href="{% url dashboard %}">Dashboard</a></li>
+  <li><a href="{% url change_password %}">Change password</a></li>
+  <li><a href="{% url logout %}">Log out</a></li>
+</ul>

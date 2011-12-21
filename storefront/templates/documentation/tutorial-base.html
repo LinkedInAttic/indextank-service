@@ -1,0 +1,740 @@
+{% extends "common-base.html" %}
+
+{% load custom_tags %}
+{% load messages %}
+
+{% block extrahead %}
+{% endblock %}
+
+{% block container_class %}{{ block.super }} documentation{% endblock %}
+
+{% block right_content %}
+
+{% box 'table' %}
+  <ul>
+    <li><h2>Table of contents</h2></li>
+    <li>
+        <a href="#prerequisites">Before You Start</a>
+    </li>
+    <li>
+        <a href="#about">About the Example App</a>    </li>
+    <li>
+        <a href="#signup">Step 1: Sign Up for IndexTank's Free Plan</a>
+    </li>
+    <li>
+        <a href="#create_index">Step 2: Create an Empty Index</a>
+    </li>
+    <li>
+        <a href="#download_client">Step 3: Download the Client Library</a>
+    </li>
+    <li>
+        <a href="#instantiate">Step 4: Instantiate the Client</a>    </li>
+    <li>
+        <a href="#setup_index">Step 5: Set Up the Index</a>
+    </li>
+    <li>
+        <a href="#search">Step 6: Search Documents Using the Index</a>
+    </li>
+    <li>
+        <a href="#doc_fields">Step 7: Use Fields to Divide Document Text</a>
+    </li>
+    <li>
+        <a href="#scoring_functions">Step 8: Customize Ranking with functions</a>
+    </li>
+    <li>
+        <a href="#doc_vars">Step 9: Add Document Variables to functions</a>
+    </li>
+    <li>
+        <a href="#delete">Step 10: Delete a Document</a>
+    </li>
+    <li>
+        <a href="#query_vars">Step 11: Use Variables to Refine Queries</a>
+    </li>
+    <li class="last">
+        <a href="#next">Next Steps</a>
+    </li>
+  </ul>
+{% endbox %}
+{% endblock %}
+
+{% block title %}&ldquo;Hello, World&rdquo; Tutorial ({% block language %}{% endblock %}){% endblock %}endblock %}
+
+{% block common_content %}
+<div id="tutorial-main">
+    <p>        This Tutorial is for webmaster/programmers. By practicing simple tasks at
+ the command line, you will learn the basics of how to:
+    </p>
+    <ul>
+        <li>
+            <a href="http://indextank.com/get-started">Sign up</a> for IndexTank
+        </li>
+        <li>
+            Create an index and populate it with searchable text
+        </li>
+        <li>
+            Send search queries to the index and understand the results
+        </li>
+        <li>            Tweak the search results and influence the order in which they appear (with scoring functions and variables)
+        </li>
+        <li>
+            Delete documents
+        </li>
+    </ul>
+    <h2 id="prerequisites">Before You Start</h2>
+    <p>
+        To run the tutorial, you will need:
+    </p>
+    <ul>
+        <li>
+            {% block language_prerequisite %}
+            {% endblock %}
+        </li>
+        <li>
+            <b>Internet access</b>
+            <small>
+                (You must be able to view <a href="http://indextank.com">indextank.com</a>
+                in a Web browser)
+            </small>.
+        </li>
+        <li>
+            <b>Knowledge of your computer's command prompt</b>
+            <small>
+                (You will need to open a console window and issue commands at the prompt in order to perform the steps in the tutorial)
+            </small>.
+        </li>
+    </ul>
+    <p>
+        System requirements:
+    </p>
+    <ul>
+        {% block system_requirements %}
+        {% endblock %}
+    </ul>
+    <p>
+        The following would be helpful before you start, but are not required:
+    </p>
+    <ul>
+        <li>
+            <b>Working knowledge of a programming language</b>
+            <small>
+                (You will be able to complete the Tutorial just by following along with our example code, but in order to build a real application using what you've learned, you will have to do some real programming through our HTTP API or, more likely, one of our
+                <a href="http://indextank.com/documentation/clients">client libraries</a>)
+            </small>.
+        </li>
+        <li>
+            <b>Read the <a href="http://indextank.com/documentation/faq">FAQ</a> to familiarize yourself with the vocabulary and general architecture of IndexTank</b>
+            <small>
+                (The Tutorial will go more smoothly if you already know what kinds of things you can do with IndexTank, what an index is, and so on. Each step in the tutorial will provide links to any relevant FAQ sections, so, if you prefer, you can learn each concept at the moment you need to know it rather than reading all the concepts ahead of time)
+            </small>.
+        </li>
+    </ul>
+    <h2 id="about">About The Example App</h2>
+    <p>
+        The Tutorial shows the process for setting up an index and performing some example queries on a fictitious web site that includes a forum where members discuss video games.
+    </p>
+    <h2 id="signup">Step 1: Sign Up for IndexTank's Free Plan</h2>
+    <div class="back-concepts">
+        <b>Background Concepts:</b>
+        See <a href="http://indextank.com/documentation/faq#sign-up">Sign-Up, Pricing, and Billing</a>
+        in the FAQ.
+    </div>
+    <ol>
+        <li>
+            <p>Open your browser and go to <a href="http://indextank.com/get-started">http://indextank.com/get-started</a>.</p>
+        </li>
+        <li>
+            <p>Type your email address.</p>
+        </li>
+        <li>
+            <p>Go to <a href="http://indextank.com/dashboard">http://indextank.com/dashboard</a>.</p>
+        </li>
+    </ol>
+    <p>
+        <b>Result:</b>
+        <br>
+        The IndexTank dashboard appears, showing your new account:
+    </p>
+    <p>
+        <img class="screenshot" src="/_static/images/tutorial/image4.png" width="800px">
+    </p>
+    <h2 id="create_index">Step 2: Create an Empty Index</h2>
+    <div class="back-concepts">
+        <b>Background Concepts:</b>
+        See <a href="http://indextank.com/documentation/faq#index">What is an index?</a>
+        in the FAQ
+    </div>
+    <ol>
+        <li>
+            <p>Click <b>new index</b>.</p>
+            <p>
+		        {% box 'mediumbox' %}
+                <img src="/_static/images/tutorial/image7.png">
+		        {% endbox %}
+            </p>
+        </li>
+        <li>
+            <p>In Index Name, type <b>test_index</b>.</p>
+        </li>
+        <li>
+            <p>Click <b>Create Index</b>.</p>
+            <p>
+             {% box 'mediumbox' %}            
+                <img src="/_static/images/tutorial/image2.png">
+             {% endbox %}
+            </p>
+            <p>
+                <b>Result:</b>
+                <br>
+                The dashboard is displayed. In INDEX NAME, <b>test_index</b>
+                appears. In STATUS, you can see whether the index is ready to use:
+            </p>
+            <p>
+                {% box 'mediumbox' %}
+                <img src="/_static/images/tutorial/image0.png">
+                {% endbox %}
+            </p>
+        </li>
+        <li>
+            <p>Wait for a short time (typically less than one minute) to give IndexTank time to set up the cloud resources for your index.</p>
+        </li>
+        <li>
+            <p>Click your browser's Refresh button.</p>
+            <p>
+                If STATUS has changed to Running, you can proceed to the next part of the tutorial. If STATUS is still Initializing, wait a bit, then hit Refresh again.
+            </p>
+            <p>
+             {% box 'mediumbox' %}            
+             <img src="/_static/images/tutorial/image5.png"></p>
+             {% endbox %}
+             
+        </li>
+    </ol>
+    <p>
+        <b>Result:</b>
+        <br>
+        You now have an empty index that is ready to be populated with content.
+    </p>
+    <h2 id="download_client">Step 3: Download the Client Library</h2>
+    <div class="back-concepts">
+        <b>Background Concepts:</b>
+        See <a href="http://indextank.com/documentation/faq#languages">What languages do you support?</a>
+        in the FAQ
+    </div>
+    <ol>
+        <li>
+            <p>Click <b>client documentation</b> or go to <a href="http://indextank.com/documentation">http://indextank.com/documentation</a>.</p>
+	        <p>
+             {% box 'mediumbox' %}            
+             <img src="/_static/images/tutorial/image3.png">
+             {% endbox %}
+	        </p>
+        </li>
+        {% block download_client %}
+        {% endblock %}
+<h2 id="instantiate">Step 4: Instantiate the Client</h2>
+    {% block instantiate_client %}
+    {% endblock %}
+    <h2 id="setup_index">Step 5: Set Up the Index</h2>
+    <div class="back-concepts">
+        <b>Background Concepts:</b>
+        See <a href="http://indextank.com/documentation/faq#data_upload">How do I get my data to you?</a>
+        in the FAQ
+    </div>
+    <ol>
+        <li>
+            <p>Get a handle to your test index.
+            {% block get_handle %}
+            {% endblock %}
+			</p>
+        </li>
+        <li>
+            <p>Add some documents to the index.</p>
+            {% block add_documents1 %}
+            {% endblock %}
+            <div class="sideNote">
+                <b>NOTE:</b>
+                In a real application, the doc ID would most likely be a URL.
+            </div>
+                <p>
+                    <code>
+                        post1</code>,
+                    <code>
+                        post2</code>, and
+                    <code>
+                        post3
+                    </code>
+                    are unique alphanumeric IDs you give to the documents. If the doc ID is not unique, you will overwrite the existing document with the same ID, so watch out for typos during this Tutorial!
+                </p>
+                <p>
+                    The method parameters are name:value pairs that build up the index for one document. In this example, there is a single name:value pair for each forum post.
+                </p>
+                <p>
+                    <code>
+                        text
+                    </code>
+                    is a field name, and it has a special meaning to IndexTank: in search queries, IndexTank defaults to searching
+                    <code>
+                        text
+                    </code>
+                    if the query does not specify a different field. You'll learn more about this later, in <a href="#doc_fields">Use Fields to Divide Document Text</a>.
+                </p>
+            </ol>
+            <p>
+                <b>Result:</b>
+                <br>
+                test_index now contains:
+            </p>
+            <p>
+                <table>
+                    <tr>
+                        <th>
+                            Doc ID
+                        </th>
+                        <th>
+                            Field
+                        </th>
+                        <th>
+                            Value
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            post1
+                        </td>
+                        <td>
+                            text
+                        </td>
+                        <td>
+                            I love Bioshock
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            post2
+                        </td>
+                        <td>
+                            text
+                        </td>
+                        <td>
+                            Need cheats for Bioshock
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            post3
+                        </td>
+                        <td>
+                            text
+                        </td>
+                        <td>
+                            I love Tetris
+                        </td>
+                    </tr>
+                </table>
+            </p>
+        </li>
+    </ol>
+    <h2 id="search">Step 6: Search Documents Using the Index</h2>
+    <div class="back-concepts">
+        <b>Background Concepts:</b>
+        See <a href="http://indextank.com/documentation/faq#query_types">What types of queries work with IndexTank?</a>
+        in the FAQ
+    </div>
+    <ol>
+        <div class="sideNote">
+            <b>NOTE:</b>
+            The documents so far have only one field,
+            <code>
+                text</code>,
+            so the search query doesn't have to specify a field.
+        </div>
+        <li>
+            <p>Suppose you're interested in a particular game, and you want to find all the posts that contain <b>Bioshock</b>:</p>
+            {% block search1 %}
+            {% endblock %}
+            <p>
+                The output should look like this (you can ignore
+                <code>
+                    facets
+                </code>
+                for now). The search term was found in post1 and post2:
+            </p>
+            {% block search1_output %}
+            {% endblock %}
+            <div class="sideNote">
+                <b>NOTE:</b>
+                AND is the default search operator, so you can just list all the search terms.
+            </div>
+        </li>
+        <li>
+            <p>Suppose you want to find only the true enthusiasts on the forum. You can search for posts that contain <b>Bioshock</b> and <b>love</b>.</p>
+            {% block search2 %}
+            {% endblock %}
+            <p>
+                The output should look like this. The two search terms were found together only in post1:
+            </p>
+            {% block search2_output %}
+            {% endblock %}
+        </li>
+        <li>
+            <p>You can also use the query operators OR and NOT. Let's try OR, which would come in handy if you play more than one game and you want to find posts that mention any of your favorites.</p>
+            {% block search3 %}
+            {% endblock %}
+            <p>
+            The output should look like this:
+            </p>
+            {% block search3_output %}
+            {% endblock %}
+        </li>
+            {% block fetch_fields %}
+            {% endblock %}
+            <p>
+                Here,
+                <code>
+                    text
+                </code>
+                means we would like the full text of the document where the search term was found. This would be useful, for example, to construct an output page that provides complete result text for the reader to look at. The output should look like this:
+            </p>
+            {% block fetch_fields_output %}
+            {% endblock %}
+        </li>
+            {% block snippet_fields %}
+            {% endblock %}
+            <p>
+                The output should look like this:
+            </p>
+            {% block snippet_fields_output %}
+            {% endblock %}
+        </li>
+    </ol>
+    <h2 id="doc_fields">Step 7: Use Fields to Divide Document Text</h2>
+    <div class="back-concepts">
+        <b>Background Concepts:</b>
+        See the discussion of field names in <a href="http://indextank.com/documentation/faq#index">What is an index?</a>
+        in the FAQ
+    </div>
+    <p>
+        So far, we have worked with simple document index entries that contain only a single field,
+        <code>
+            text</code>,
+        containing the complete text of the document. Let's redefine the documents now and add some more fields to enable more targeted searching.
+    </p>
+    <ol>
+        <li>
+            <p>Set up two fields for each document: the original
+            <code>
+                text
+            </code>
+            field plus a new field,
+            <code>
+                game</code>,
+            that contains the name of the video game that is the subject of the forum post.</p>
+	        {% block add_fields %}
+            {% endblock %}
+            <p>
+                <b>Result:</b>
+                <br>
+                test_index now contains:
+                <table>
+                    <tr>
+                        <th>
+                            Doc ID
+                        </th>
+                        <th>
+                            Field
+                        </th>
+                        <th>
+                            Value
+                        </th>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align:top" rowspan="2">
+                            post1
+                        </td>
+                        <td>
+                            text
+                        </td>
+                        <td>
+                            I love Bioshock
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            game
+                        </td>
+                        <td>
+                            Bioshock
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align:top" rowspan="2">
+                            post2
+                        </td>
+                        <td>
+                            text
+                        </td>
+                        <td>
+                            Need cheats for Bioshock
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            game
+                        </td>
+                        <td>
+                            Bioshock
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align:top" rowspan="2">
+                            post3
+                        </td>
+                        <td>
+                            text
+                        </td>
+                        <td>
+                            I love Tetris
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            game
+                        </td>
+                        <td>
+                            Tetris
+                        </td>
+                    </tr>
+                </table>
+                
+                </li>
+                <li>
+                    {% block search_field %}
+                    {% endblock %}
+                    <p>
+                        Note that we can return the contents of a field even if it is not being searched. The output should look like this:
+                    </p>
+                    {% block search_field_output %}
+                    {% endblock %}
+                </li>
+            </ol>
+        <h2 id="scoring_functions">Step 8: Customize Result Ranking with Scoring Functions</h2>
+        <div class="back-concepts">
+            <b>Background Concepts:</b>
+            See <a href="http://indextank.com/documentation/faq#scoring_function">What is a scoring function?</a>
+            in the FAQ</i>
+        </div>
+        <p>
+            A <i>scoring function</i>
+            is a mathematical formula that you can reference in a query to influence the ranking of search results. Scoring functions are named with integers starting at 0 and going up to 5. Function 0 is the default and will be applied if no other is specified; it starts out with an initial definition of
+            <code>
+                -age</code>,
+            which sorts query results from most recently indexed to least recently indexed (newest to oldest).
+        </p>
+        <p>
+            Function 0 uses the
+            <code>
+                timestamp
+            </code>
+            field which IndexTank provides for each document. The time is recorded as the number of seconds since epoch. IndexTank automatically sets each document's timestamp to the current time when the document is indexed, but you can override this timestamp. To make this scoring function tutorial easier to follow, that's what we are going to do.
+        </p>
+        <ol>
+            <li>
+                <p>Assign timestamps to some new posts in the index.</p>
+                {% block timestamps %}
+                {% endblock %}
+            </li>
+            <li>
+                <p>Search using the default scoring function.</p>
+                {% block scoring1 %}
+                {% endblock %}
+                <p>
+                    The output should look like this. The default scoring function has sorted the documents from newest to oldest:
+                </p>
+                {% block scoring1_output %}
+                {% endblock %}
+            </li>
+            <li>
+                <p>Redefine function 0 to sort in the opposite order, by removing the negative sign from the calculation.</p>
+                {% block scoring2_redefine %}
+                {% endblock %}
+            </li>
+            <li>
+                <p>Search again.</p>
+                {% block scoring2_search %}
+                {% endblock %}
+                <p>
+                    The output should look like this. The oldest document is now first:
+                </p>
+                {% block scoring2_output %}
+                {% endblock %}
+            </li>
+            <li>
+                <p>Let's try creating another scoring function, function 1, using a different IndexTank built-in score called
+                <code>
+                    relevance</code>.
+                Relevance is calculated using a proprietary algorithm, and indicates which documents best match a query. First, add some test documents that will more clearly illustrate the effect of the relevance score.</p>
+                {% block add_documents2 %}
+                {% endblock %}
+            </li>
+            <li>
+                <p>Now define function 1.</p>
+                {% block define_function %}
+                {% endblock %}
+            </li>
+            <li>
+                <p>Search using the new scoring function.</p>
+                {% block search4 %}
+                {% endblock %}
+                <p>
+                    The output should look like this. The most relevant document is now first:
+                </p>
+                {% block search4_output %}
+                {% endblock %}
+            </li>
+        </ol>
+        <h2 id="doc_vars">Step 9: Add Document Variables To Your Scoring Functions</h2>
+        <div class="back-concepts">
+            <b>Background Concepts:</b>
+            See <a href="http://indextank.com/documentation/faq#scoring_function">What is a scoring function?</a>
+            in the FAQ
+        </div>
+        <p>
+            In addition to textual information, each document can have up to three (3) <i>document variables</i>
+            to store any numeric data you would like. Each variable is referred to by number, starting with variable 0. Document variables provide additional useful information to create more subtle and effective scoring functions.
+        </p>
+        <p>
+            For example, assume that in the video game forum, members can vote for posts that they like. The forum application keeps track of the number of votes. These vote totals can be used to push the more popular posts up higher in search results.
+        </p>
+        <p>
+            Let's also assume that the forum software assigns a <i>spam score</i>
+            by examining each new post for evidence that it is from a legitimate forum member and contains relevant content, and then assigning a confidence value from 0 (almost certainly spam) to 1 (high confidence that the post is legitimate).
+        </p>
+        <ol>
+            <li>
+                <p>Assign the total votes to document variable 0 and the spam score to document variable 1.</p>
+                {% block assign_vars %}
+                {% endblock %}
+            </li>
+            <li>
+                <p>Use the document variables in a scoring function.</p>
+                {% block function_vars %}
+                {% endblock %}
+            </li>
+            <li>
+                <p>Run a query using the scoring function.</p>
+                {% block scoring3 %}
+                {% endblock %}
+                <p>
+                    The output should look like this:
+                </p>
+                {% block scoring3_output %}
+                {% endblock %}
+            </li>
+            <li>
+                <p>When more readers vote for a post, update the vote total in variable 0.</p>
+                {% block update_var %}
+                {% endblock %}
+            </li>
+            <li>
+                <p>Now run the query again with the same scoring function.</p>
+                {% block scoring4 %}
+                {% endblock %}
+                <p>
+                    The output should show the new most-popular post first:
+                </p>
+                {% block scoring4_output %}
+                {% endblock %}
+            </li>
+        </ol>
+        <div class="back-concepts">
+            <b>Learn More:</b>
+            <a href="https://indextank.com/documentation/function-definition">Scoring Functions</a
+>
+        </div>
+        <h2 id="delete">Step 10: Delete a Document</h2>
+        <p>
+            If you're 100% confident something should not be in the index, it makes sense to remove it.
+        </p>
+        <ol>
+            <li>
+                <p>Take out that spam document.</p>
+                {% block delete_document %}
+                {% endblock %}
+            </li>
+            <li>
+                <p>Search again to confirm the deletion.</p>
+                {% block search5 %}
+                {% endblock %}
+                <p>
+                    The output should show only two results:
+                </p>
+                {% block search5_output %}
+                {% endblock %}
+            </li>
+        </ol>
+        <h2 id="query_vars">Step 11: Use Variables to Refine Queries</h2>
+        <p>
+            You can pass variables with a query and use them as input to a scoring function. This is useful, for example, to customize results for a particular user. Suppose we're dealing with the search on the forum site. It makes sense to index the poster's <a href="http://www.urbandictionary.com/define.php?term=gamerscore">gamerscore</a>
+            to use it as part of the matching process.
+        </p>
+        <ol>
+        <li>
+            <p>Add a document variable. This will be compared to the query variable later. Here variable 0 holds the gamerscore of the person who made the post:</p>
+            {% block add_doc_var %}
+            {% endblock %}
+        </li>
+        <li>
+            <p>Suppose we want to boost posts from forum members with a gamerscore closer to that of the searcher. Let's define a scoring function to do that.</p>
+            {% block scoring5 %}
+            {% endblock %}
+            <p>
+                This scoring function prioritizes gamerscores close to the searcher's own (<code>query.var[0]</code>).
+                The absolute (<code>abs</code>)
+                function is there to provide symmetry for gamerscores above and below the searcher's. The
+                <code>
+                    max
+                </code>
+                function ensures that we never divide by 0, and evens out all gamerscore differences less than 1 (in case we use floats for the gamerscores, instead of integers).
+            </p>
+        </li>
+        <li>
+            <p>Suppose John is the searcher, with a gamerscore of 25. In the query, set variable 0 to the gamerscore.</p>
+            {% block search6 %}
+            {% endblock %}
+            <p>
+                The output should look like this:
+            </p>
+            {% block search6_output %}
+            {% endblock %}
+        </li>
+        <li>
+            <p>For Isabelle, gamerscore 15,000:</p>
+            {% block search7 %}
+            {% endblock %}
+            <p>
+                The output should look like this:
+            </p>
+            {% block search7_output %}
+            {% endblock %}
+        </li>
+                </ol>
+        <h2 id="next">Next Steps</h2>
+        <p>
+            Now that you have learned some of the basic functionality of IndexTank, you are ready to go more in-depth:
+        </p>
+        <ul>
+            <li>
+                <a href="/documentation/clients">Client library documentation</a>
+                will tell you more about the specific capabilities and syntax of the client in your programming language.
+            </li>
+            <li>
+                <a href="/documentation/function-definition">Scoring functions</a>
+                goes into much more detail about formulas, operators, variables, and functions.
+            </li>
+        </ul>
+        <p>
+            Enjoy using IndexTank to improve the quality of search on your website.
+        </p>
+        </div>
+{% endblock %}
+

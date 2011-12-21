@@ -1,0 +1,100 @@
+{% load custom_tags %}
+{% load analytical %}
+<html>
+    <head>
+        {% analytical_head_top %}
+        <!-- Dependencies -->
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="{% static 'js/jquery.indextank.ize.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery.indextank.autocomplete.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery.indextank.ajaxsearch.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery.indextank.renderer.js' %}"></script> 
+        <script type="text/javascript" src="{% static 'js/jquery.indextank.instantsearch.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery.indextank.basic.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery.indextank.statsrenderer.js' %}"></script>
+        <link type="text/css" rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/themes/humanity/jquery-ui.css" media="all" />
+        <link type="text/css" rel="stylesheet" href="{% static 'common/demo/default.css' %}" media="all" />
+
+
+        <script>
+            $(document).ready(function(){
+                var resizeFunction = function(event, ui){
+                    var list = $(event.target).data("autocomplete").widget();
+                    var hlimit = list.offset().top + list.outerHeight();
+                    $("#results").offset({top: Math.max(hlimit + 2 , $("#results").data("demoPosition"))});
+                };
+
+                $("#results").data("demoPosition", $("#results").offset().top);
+                $("#query").bind("autocompleteopen", resizeFunction);
+                $("#query").bind("autocompleteclose", resizeFunction);
+                $("#query").bind("autocompletechange", resizeFunction);
+
+
+                var instrumentsFormat = function(item){
+
+                    return $("<div></div>")
+                            .append( $("<h2></h2>").addClass("title")
+                                     .append( $("<a></a>").attr("href", item.url).text(item.name) )
+                            )
+                            .append( $("<div></div>").css({"clear":"both"}) )
+                            .append( $("<div></div>").css({"height" : "48px", "width": "48px", "background-image" : "url("+item.thumbnail+")", "background-size": "100%", "background-position": "center center", "float": "left", "margin-right" : "10px"}) )
+                            .append( $("<div></div>").addClass("entry")
+                                     .append( $("<p></p>").html(item.snippet_text).prepend("...").append("...") )
+                            )
+                            .append( $("<div></div>").css({"clear":"both"}) ); 
+                };
+
+                $("#myform").indextank_Ize("{{index.account.get_public_apiurl}}", "{{index.name}}");
+                var renderer =  $("#results").indextank_Renderer({format: instrumentsFormat});
+                var stats    =  $("#stats").indextank_StatsRenderer();
+                $("#query").indextank_Autocomplete().indextank_AjaxSearch( {listeners: $("#results, #stats"), fields:"name,thumbnail,url"}).indextank_InstantSearch();
+
+                $("#query").focus(function(event){
+                    if (event.currentTarget.value == "start typing") 
+                        event.currentTarget.value = "";
+                });
+
+            });
+        </script>
+        {% analytical_head_bottom %}
+    </head>
+
+    <body>
+        {% analytical_body_top %}
+        <div id="wrapper">
+        <div>
+            <div id="page-bgtop">
+                <div id="content">
+                    <div id="gallery-bg">
+                        <div id="gallery-bgtop">
+                            <div id="foobar">
+                                <div class="navigation">
+                                    <div class="viewer">
+                                        <div class="slide">
+                                            <div style="height:46px; background: url(/_static/common/demo/images/music.jpg);"></div>
+                                            <form id="myform">
+                                                <input id="query" type="text" value="start typing"/>
+                                            </form>
+                                        </div>
+                                     </div>
+                                </div>
+                            </div>
+                            <div id="stats"></div>
+                            <div id="results">
+                                <h2 class="title"><a href="#">This is an index with instruments</a></h2>
+                                <div class="entry">
+                                    try queries like <b>'guitar'</b>, <b>'bass'</b> or <b>'drums'</b>
+                                </div>
+                            </div>
+                            <div id="gallery-bgbtm">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        {% analytical_body_bottom %}
+    </body>
+</html>

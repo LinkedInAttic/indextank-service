@@ -1,0 +1,68 @@
+{% load custom_tags %}
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <title>IndexTank is down</title>
+      <script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
+
+<link rel="shortcut icon" type="image/ico" href="{% static 'favicon.ico' %}"/> 
+
+
+<style type="text/css" media="screen">
+@import url("{% static 'common/css/reset.css' %}");
+@import url("{% static 'common/css/layout.css' %}");
+@import url("{% static 'common/css/av-hack.css' %}");
+@import url("{% static 'common/css/jquery-ui.css' %}");
+{% if request.user.is_authenticated %}
+  .logged_out{display:none;}
+{% else %}
+  .logged_in{display:none;}
+{% endif %}
+body div p {
+    color: white;
+    font-size: 25px;
+    line-height: 1.3em;
+    margin-top: 20px;
+    text-align: center;
+    padding: 0 70px;
+}
+</style>
+<!--[if IE]><link rel="stylesheet" type="text/css" href="{% static 'common/css/ie.css' %}"><![endif]-->
+
+<script type="text/javascript" src="{% static 'common/js/jquery-1.4.4.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'common/js/jquery-ui-1.8.8.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'common/js/cufon-yui.js' %}"></script>
+<script type="text/javascript">
+  Cufon.replace(['.blue_box_main h3', '.table_content li'], {fontFamily: 'Whitney', hover: true});
+  Cufon.replace('div.head h2', {fontFamily: 'Whitney', hover: true, textShadow: '1px 1px 0px #e6e6e6'}); 
+  Cufon.replace('p', {fontFamily: 'Whitney', hover: true});
+  Cufon.replace('h1', {fontFamily: 'Whitney K Semibold', textShadow: '1px 1px 0px #777777', hover: true}); 
+  Cufon.replace('.blue_box_main h2', {fontFamily: 'Whitney', hover: true, textShadow: '1px 1px 0px #797979'}); 
+</script>
+
+<script type="text/javascript" src="{% static 'common/js/function.js' %}"></script>
+
+
+<script type="text/javascript">{% include "includes/empty-inputs.js" %}</script>
+
+
+  </head>
+    
+  <body>
+      <div id="outer_layout">
+        <!--header starts here-->
+        <div id="outer_header">
+          <div class="layout">
+            <div id="header">
+                <h1><a href="/"><img src="{% static 'common/images/logo.gif' %}" alt="IndexTank - Custom search you control" /></a></h1>
+            </div>
+          </div>
+        </div>
+    <div style="width: 720px; height: 286px; padding: 50px 40px; background-image: url('{% static 'common/images/modal.png' %}'); margin: 100px auto;">
+        <h1 style="color: white; text-align: center; font-size: 50px; margin-bottom: 40px">We are down</h1>
+        <p>Amazon is currently experiencing degradation on their service. <a href="http://status.aws.amazon.com/" style="color:#ffa">They are working to resolve it.</a></p>
+        <p>Once we get access to our data and backups we'll work as fast as possible to restore our service. We apologize for the inconvenience.</p>
+    </div>
+        </div>
+  </body>
+</html>

@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% load custom_tags %}
+
+{% block extrahead %}
+<style>
+    .partiallyhidden .hiddenpart { display: none }
+    .partiallyhidden:active .hiddenpart { display: block }
+    .partiallyhidden:active tr.hiddenpart { display: table-row; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="module">
+</div>
+<div class="module x">
+    <h3>IndexTank - Running indexes by worker</h3>
+    <div class="roundbox" style="padding: 0px; background-color: #ebebeb">
+        <table width="100%" border="0" cellpadding="10" cellspacing="10" class="indextable stats">
+            <tbody>
+                <tr class="round_b clear" style="background-color: transparent;">
+                    <td class="first" align="left">
+                        ACCOUNT EMAIL
+                    </td>
+                    <td align="center">
+                        NAME
+                    </td>
+                    <td align="center">
+                        CODE
+                    </td>
+                    <td align="center">
+                        DOCS
+                    </td>
+                    <td align="center" colspan="1">
+                        DISK
+                    </td>
+                    <td align="center" colspan="1">
+                        MEM
+                    </td>
+                    <td align="center" colspan="1">
+                        CPU
+                    </td>
+                    <td align="center" colspan="1">
+                        XMX
+                    </td>
+                    <td align="center" colspan="1">
+                        PRT
+                    </td>
+                    <td align="center" colspan="1">
+                        RTI
+                    </td>
+                    <td align="center" colspan="1">
+                        SUG
+                    </td>
+                    <td align="center" colspan="1">
+                        SNI
+                    </td>
+                    <td align="center" colspan="1">
+                        BST
+                    </td>
+                </tr>
+                <tr class="round_b clear head">
+                    <td align="center" colspan="13">
+                        WORKER 1 &nbsp;&nbsp;-&nbsp;&nbsp; 10.214.117.236 &nbsp;&nbsp;-&nbsp;&nbsp; us-east-1a
+                    </td>
+                </tr>
+                {% for index in indexes %}
+                
+                <tbody class="partiallyhidden">
+                <tr style="background-color: {% cycle 'white' as bgcolor %}; border-bottom: solid silver 1px">
+                    <td class="first" align="left">
+                        <b>{{ index.index.account.user.email }}</b>
+                    </td>
+                    <td align="center">
+                        <b>{{ index.index.name }}</b>
+                    </td>
+                    <td align="center">
+                        <span class="code">{{ index.index.code }}</span>
+                    </td>
+                    <td align="center">
+                        <b>{{ index.index.current_docs_number }}</b>
+                    </td>
+                    <td align="center" class="b">
+                        {{ index.disk|floatformat:"-2" }} MB
+                    </td>
+                    {% if index.mem %}
+                        <td align="center" class="b">
+                            {{ index.mem|floatformat:"-2" }} MB
+                        </td>
+                        <td align="center">
+                            {{ index.cpu|floatformat:"-1" }} %
+                        </td>
+                        <td align="center">
+                            {{ index.xmx }}
+                        </td>
+                        <td align="center">
+                            {{ index.port }}
+                        </td>
+                        <td align="center">
+                            {{ index.rti }}
+                        </td>
+                        <td align="center">
+                            {% if index.suggest %}
+                                <img src="{% static '/img/structure/ok.png' %}"></img>
+                            {% else %}
+                                <img src="{% static '/img/structure/none.png' %}"></img>
+                            {% endif %}
+                        </td>
+                        <td align="center">
+                            {% if index.snippets %}
+                                <img src="{% static '/img/structure/ok.png' %}"></img>
+                            {% else %}
+                                <img src="{% static '/img/structure/none.png' %}"></img>
+                            {% endif %}
+                        </td>
+                        <td align="center">
+                            {{ index.boosts }}
+                        </td>
+                    {% else %}
+                        <td colspan="8" align="center">NOT RUNNING</td>
+                    {% endif %}
+                </tr>
+                {% if index.mem %}
+                    <tr class="hiddenpart" style="background-color: {{bgcolor}}; border-bottom: solid silver 1px">
+                        <td align="center" class="b" colspan="12" style="white-space: normal; padding-top: 4px; padding-bottom: 4px;">
+                            <small>{{ index.args }}</small>
+                        </td>
+                    </tr>
+                {% endif %}
+                </tbody>
+                {% empty %}
+                <tr>
+                    <td colspan="8" align="center" style="padding-top: 40px; padding-bottom: 40px;">
+                        <big><big>No indexes were created</big></big>
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr class="round_g" style="background-color: transparent;">
+                    <td class="first" align="right" colspan="3">
+                        <b>Total:</b>
+                    </td>
+                    <td align="right" class="b">
+                        <b>{{ total_docs }}</b>
+                    </td>
+                    <td align="right" class="b">
+                        <b>{{ total_disk|floatformat:"-2" }} MB</b>
+                    </td>
+                    <td align="right" class="b">
+                        <b>{{ total_mem|floatformat:"-2" }} MB</b>
+                    </td>
+                    <td align="right">
+                        <b>{{ total_cpu|floatformat:"-1" }} %</b>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div style="clear:both; height: 50px;">
+</div>
+{% endblock %}

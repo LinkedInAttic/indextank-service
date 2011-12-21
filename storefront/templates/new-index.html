@@ -1,0 +1,34 @@
+{% extends "common-base.html" %}
+{% load humanize %}
+{% load custom_tags %}
+
+{% block title %}Create a new index{% endblock %}endblock %}
+
+{% block common_content %}
+   {% box 'form' %}
+    <h2 class="first">Creating an index</h2>
+    <p>Choose the name that will indentify your new index in the dashboard and the API. Only digits, letters and "_" are allowed.</p>
+    <form name="index_form" method="POST">
+      <div class="form_sec">
+        {% for f in form %}
+          <div class="input_bg">
+            <label><span class="none">&nbsp;</span>
+              {{ f }}
+            </label>
+          </div>
+          <div id="email_error">{% for e in f.errors %}<span>{{e}}</span> {% endfor %}</div>
+          <div class="clear"></div>
+        {% endfor %}
+        {% if message %}
+          <div id="email_error">{{ message }}</div>
+        {% endif %}
+        <div class="clear"></div>
+        <label class="buttons"><span class="none">&nbsp;</span>
+          <input type="submit" value="Create" class="signup"/>
+          <a href="{% url dashboard %}">Cancel</a> 
+        </label>
+      </div>
+    </form>
+  {% endbox %}
+{% endblock %}
+

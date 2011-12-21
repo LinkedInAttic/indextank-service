@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% load custom_tags %}
+{% load messages %}
+
+{% block content_head %}
+  <h2>Easily add powerful search to your site <strong>Good search is good business.</strong></h2>
+{% endblock %}
+
+
+{% block content_body %}
+  <div class="outer_contaent_sec">
+    <div class="layout">
+      <div class="content_sec">
+        <div class="left_content_sec">
+          <ul>
+            <li>
+              <h2>PROVEN FULL-TEXT SEARCH API</h2>
+            </li>
+            <li><strong>Truly real-time:</strong> instant updates without reindexing</li>
+            <li><strong>Geo &amp; Social aware:</strong> use location, votes, ratings or comments</li>
+            <li>Works with <strong>Ruby, Rails, Python, Java, PHP, .NET &amp; more!</strong></li>
+          </ul>
+          <ul>
+            <li>
+              <h2>CUSTOM SEARCH THAT YOU CONTROL</h2>
+            </li>
+            <li>You control how to <strong>sort and score</strong> results</li>
+            <li><strong>&ldquo;Fuzzy&rdquo;, Autocomplete, Facets</strong> for how users really search</li>
+            <li><strong>Highlights &amp; Snippets</strong> quickly shows search results relevance</li>
+          </ul>
+          <ul>
+            <li>
+              <h2>EASY, FAST &amp; HOSTED</h2>
+            </li>
+            <li><strong>Scalable</strong> from a personal blog to hundreds of millions of documents! (<a href="http://reddit.com/">try Reddit</a>)</li>
+            <li><strong>Free</strong> up 100K documents</li>
+            <li><strong>Easier</strong> than SQL, SOLR/Lucene &amp; Sphinx.</li>
+          </ul>
+        </div>
+        <div class="right_content_sec">
+          <div>
+            <div class="blue_box">
+              <div class="blue_box_bg">
+                <div class="blue_box_top">
+                  <div class="blue_box_bottom">
+                    <div class="blue_box_main" style="margin: 24px 0">
+                      {% if request.user.is_authenticated %}
+                        <h2>WELCOME BACK</h2>
+                        <h3>Check out your indexes</h3>
+                        <div class="red_btn"> <a href="{% url dashboard %}">My Dashboard</a> </div>
+                      {% else %}
+                        <h2>NEW SIGN-UPS ARE CURRENTLY DISABLED</h2>
+                        {#<h3>No new accounts will be created for IndexTank, but there are plans for continuing the service...</h3>#}
+                        <div class="red_btn"> <a href="http://blog.indextank.com/1221/indextank-linkedin-acquires-indextank/">LEARN MORE</a> </div>
+                      {% endif %}
+                      {% comment %}
+                      <ul class="icon">
+                        <li><a href="#" class="icon01"><span>java</span></a></li>
+                        <li><a href="#" class="icon02"><span>rails</span></a></li>
+                        <li><a href="#" class="icon03"><span>ruby</span></a></li>
+                        <li class="last"><a href="#" class="icon04"><span>php</span></a></li>
+                      </ul>
+                      {% endcomment %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+            {% include 'includes/testimonial-banner.html' %}        
+         </div>
+      </div>
+    </div>
+  </div>
+
+  <!--tank box starts here-->
+  <div class="outer_tank_box">
+    <div class="layout">
+      <div class="tank_box">
+        <h2>INDEXTANK IN ACTION</h2>
+        <!--white box starts here-->
+        <div class="white_box">
+          <div class="white_box_bg">
+            <div class="white_box_top">
+              <div class="white_box_bottom">
+                <div class="white_box_main">
+                  <div class="box_left">
+                    <ul>
+                      <li><a href="http://reddit.com" class="news active">News</a></li>
+                      <li><a href="http://taskrabbit.com" class="web">Web App</a></li>
+                      <li><a href="http://gazaro.com" class="commerce">Commerce</a></li>
+                    </ul>
+                  </div>
+                  <div class="box_right">
+                    <ul>
+                      <li><a href="http://twitvid.com" class="news active">Social Video</a></li>
+                      <li><a href="http://spoke.com" class="web">People Search</a></li>
+                      <li><a href="http://zencoder.com" class="commerce">Cloud Service</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <span class="clear"></span> </div>
+        <div class="white_box pad_left">
+          <div class="white_box_bg">
+            <div class="white_box_top">
+              <div class="white_box_bottom">
+                <div class="white_box_main01">
+                  <h2>Featured Demo</h2>
+                  <a href="http://blip.tv/" class="tv"><span class="none">tv icon</span></a>
+                  <div class="search_tv">
+                    <form action="http://blip.tv/search" method="get">
+                      <fieldset>
+                      <div class="search_tv_main">
+             <div class="serch_tv_bg">
+                        <label>
+                        <span class="none">&nbsp;</span>
+                          <input type="text" class="empty" emptyvalue="Try me" name="q" />  
+              </label>
+                        </div>
+                        <label for="but">   <span class="none">&nbsp;</span>
+                        <input type="submit" value="" name="" class="tv_btn" id="but" />
+                        </label>
+                      </div>
+                      </fieldset>
+                    </form>
+                  </div>
+                  <p> <a href="http://blip.tv/">See IndexTank in use on the next Generation TV 
+                    Network</a></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--white box ends here-->
+      </div>
+    </div>
+  </div>
+  <!--tank box ends here-->
+  <!--bottom box starts here-->
+  <div class="outer_contaent_sec pad_bot">
+    <div class="layout">
+      <div class="bottom_box home_bottom pad">
+        <ul>
+          <li class="first">
+            <h2>DEVELOPER CONTEST</h2>
+            <p>
+              <strong><a href="http://blog.indextank.com/759/new-contest-indextank-80legs-crawlathon-2/">New Contest: IndexTank / 80legs Crawlathon!</a></strong>
+              by Diego on June 16
+            </p>                
+            <p>
+              <strong><a href="http://blog.indextank.com/626/indextank-factual-contest-results/">IndexTank / Factual contest results!</a></strong>
+              by Diego on April 26
+            </p>                
+            <p></p>
+            <p>Support from our core engineering team is a click away via <a href="javascript:void(0)" onclick="go_chat()">live chat</a> or <a href="mailto:support@indextank.com">email</a>.</p>            
+          </li>
+          <li>
+            <h2>WHAT&rsquo;S NEW</h2>
+              <p><strong>New IRC channel on Freenode!</strong>
+                  Come chat with our community on irc.freenode.net and join the channel #indextank. 
+              </p>
+              <p><strong>We've got stemming (beta!)</strong>
+                  We're on the last steps of adding stemming. If you know what stemming is, and you're willing to give it a try (knowing that there might be a few bugs) <a href="mailto:support@indextank.com">contact us</a> and we will enable this feature for your index.
+              </p>
+          </li>
+          <li>
+            {% if blog_posts %}
+              <h2>BLOG</h2>
+              {% for post in blog_posts %}
+              <p><strong><a href="{{post.url}}">{{post.title}}</a> </strong>
+                by {{post.author}} on {{post.date}}</p>
+              {% endfor %}
+              <p><a href="http://blog.indextank.com">Read more</a></p>
+            {% endif %}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <span class="clear"></span>
+  <!--bottom box ends here-->
+  
+{% endblock %}

@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+{% load custom_tags %}
+{% load humanize %}
+
+{% block title %}Why Us{% endblock %}
+
+{% block content_body %}
+  <div class="outer_contaent_sec">
+    <div class="layout01">
+      <div class="tab_sec">
+        <h2>COMPARE OUR FEATURES</h2>
+        <div class="tab">
+          <ul>
+            <li><a href="javascript:void(0);" rel="t1" class="first active"><span><img src="{% static 'common/images/tab_img02.gif' %}" alt="image" /></span></a></li>
+            <li><a href="javascript:void(0);" rel="t2" class="second"><span class="last"><img src="{% static 'common/images/tab_img01.gif' %}" alt="image" /></span></a></li>
+            {% comment %}
+            <li><a href="javascript:void(0);" rel="3"><span><img src="{% static 'common/images/tab_img02.gif' %}" alt="image" /></span></a></li>
+            <li><a href="javascript:void(0);" rel="4"><span class="last"><img src="{% static 'common/images/tab_img03.gif' %}" alt="image" /></span></a></li>
+            {% endcomment %}
+          </ul>
+        </div>
+        <div class="tab_content">
+          <div class="tab_bg">
+            <div class="tab_top">
+              <div class="tab_bottom">
+                <div class="content_main" id="content1" style="display:block;"> <img src="{% static 'common/images/reddit_features.gif' %}" alt="placeholder" />
+                  <p>After a bout with infamously disappointing search, Reddit found IndexTank, which easily handles the company’s huge index, delivers real-time results, and has helped re-polish their reputation.</p> 
+                  <blockquote style="font-size: 13px">“If we had unlimited programming resources, we could have built something great, but it was much easier to outsource, saving us the time, hassle and headache.”  <br/>&mdash; Jeremy Edberg, Reddit</blockquote>
+                  <ul>
+                    <li>IndexTank delivers the right search results to 30%  more users, Saves 20-30 hours a month.</li>
+                    <li class="second">They have complete control so the results and filters to sort by are just the way the users like it.</li>
+                    <li class="third">Search results so fast they wanted to display the speed. </li>
+                    <li class="four">User Generate Votes are part of search results and relevance in real-time.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab_bg">
+            <div class="tab_top">
+              <div class="tab_bottom">
+                <div class="content_main" id="content2" style="display:none;"> <img src="{% static 'common/images/gazaro_features.png' %}" alt="placeholder" />
+                  <p>Gazaro is a social shopping site that requires search for users to find what they want fast.</p> 
+                  <blockquote style="font-size: 13px">“The service is really easy to work with, fast, reliable, and, most importantly, scales gracefully to handle our massive database. IndexTank has saved us a huge amount of time and money.”  <br/>&mdash;  Dominic Plouffe, Head of Development</blockquote>
+                  <ul>
+                    <li>Did you mean something else? Help users find what they mean fast.</li>
+                    <li class="second">Facets to refine results are trivial to implement out-of-the-box.</li>
+                    <li class="third">Beautiful results and relevant sorting to let users discover how they want quickly. </li>
+                    <li class="four">True real-time indexing so the latest results appear instantly.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+    <div class="layout">
+      <div class="bottom_box">
+        <div class="feature_section">
+          <div class="feature_left">
+            <div class="feature_box">
+              <h2>PROVEN FULL-TEXT SEARCH API</h2>
+              <ul>
+                <li>
+                  <h3>True Real-time</h3>
+                </li>
+                <li>
+                  <p>Indextank is built for the needs of modern web sites where content is rapidly changing. With IndexTank, 
+                    your index gets updated instantly. Our engines are optimized to update relevance factors frequently with
+                    zero fragmentation penalty.</p>
+                </li>
+                <li>
+                  <h3>Geo &amp; Social aware</h3>
+                </li>
+                <li>
+                  <p>Use locations, votes, ratings or comments to improve the quality of your search results. These factors
+                    can be used to boost relevant documents and to restrict the results to a radius of a geographic location.</p>
+                </li>
+                <li>
+                  <h3>Libraries and Tutorials</h3>
+                </li>
+                <li>
+                  <p>Use the service with our official libraries for several platforms. We provide clients for 
+                    <a href="{% url documentation path='ruby-client' %}">Ruby</a>,
+                    <a href="{% url documentation path='python-client' %}">Python</a>, 
+                    <a href="{% url documentation path='php-client' %}">PHP</a> and
+                    <a href="{% url documentation path='java-client' %}">Java</a>
+                    as well as <a href="{% url documentation path='clients' %}">plug-ins</a> for different platforms. 
+                    The community also contributes several alternatives to these and other languages. Besides, our Rest API is
+                    super simple so you can develop your own client with very little effort. 
+                  </p>
+                </li>
+              </ul>
+            </div>
+            <div class="feature_box">
+              <h2>CUSTOM SEARCH THAT YOU CONTROL</h2>
+              <ul>
+                <li>
+                  <h3>Sorting &amp; Scoring</h3>
+                </li>
+                <li>
+                  <p>In IndexTank, results ordering is defined by a <a href="{% url documentation path='tutorial-sorting' %}">custom sorting algorithm</a> 
+                    that is expressed in a formula constructed using IndexTank's built-in functions and values. 
+                    These allow to incorporate the textual relevance of the result, the age of the documents, 
+                    geographic distances and any custom factors defined in the documents.</p>
+                </li>
+                <li>
+                  <h3>Highlights &amp; Snippets</h3>
+                </li>
+                <li>
+                  <p>Get relevant <a href="{% url documentation path='tutorial-snippeting' %}">snippets</a> with your search results with no extra effort, showing your users the
+                    reason why those results are relevant and allowing them to understand what they're doing and
+                    how to refine their query if necessary.</p>
+                </li>
+                <li>
+                  <h3>Faceting</h3>
+                </li>
+                <li>
+                  <p>Simply define the categories to which your documents belong and automatically get 
+                    <a href="{% url documentation path='tutorial-faceting' %}">faceting functionality</a>. Your users will
+                    be able to refine their queries to specific categories while seeing before hand the number of 
+                    documents in each category.</p>
+                </li>
+                <li>
+                  <h3>"Fuzzy" Search</h3>
+                </li>
+                <li>
+                  <p>Sometimes it is useful to present results that wouldn't normally match the user's query but
+                    could potentially be relevant. For this, IndexTank has different options such as OR queries,
+                    text stemming and "Did you mean" suggestions.</p>
+                </li>
+              </ul>
+            </div>
+            <div class="feature_box">
+              <h2>EASY, FAST &amp; HOSTED</h2>
+              <ul>
+                <li>
+                  <h3>Scalable</h3>
+                </li>
+                <li>
+                  <p>Run for free up to 100K documents and don't worry about scaling. Our service seamlessly 
+                    supports indexes of tens of millions of documents.</p>
+                </li>
+                <li>
+                  <h3>Fast results</h3>
+                </li>
+                <li>
+                  <p>IndexTank was designed to be super fast because we know speed is a key factor to
+                    provide a good search service.</p>
+                </li>
+                <li>
+                  <h3>Easy to use</h3>
+                </li>
+                <li>
+                  <p>IndexTank API is very simple and is designed for simplicity, you should be able to get
+                    up and running very quickly.</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="feature_right">
+            <div class="chat_box">
+              <div class="chat_bg">
+                <div class="chat_top">
+                  <div class="chat_bottom">
+                    <div class="chat_main">
+                      <h2>HAVE A QUESTION?</h2>
+                      <div class="chat_btn"> <a href="javascript:void(0)" onclick="go_chat()">LIVE CHAT NOW</a><span class="clear"></span> </div>
+                      <p>Our team of experienced and friendly devs will respond almost as quickly as our search API. </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="common_box">
+              <h2>TESTIMONIALS</h2>
+              <ul>
+                <li><p>&ldquo;We’re not just getting the product itself and hosting like we were before. 
+                  We’re getting access to a team of experts.&rdquo;<em> &mdash;David King, Reddit</em></p>
+                </li>
+                <li>
+                  <p>&ldquo;Lightning-fast search dropped into #cmyk courtesy of @indextank ;)&rdquo;<em>
+        &mdash;Patric M <a href="http://twitter.com/#!/719dotcom">@719dotcom</a></em></p>
+                </li>
+                <li>
+                  <p>&ldquo;I just switched from Solr to IndexTank.com 
+                      and MY GOD is it beautiful.&rdquo;<em>&mdash;Jack C
+                    <a href="http://twitter.com/#!/jackdanger">@jackdanger</a></em></p>
+                </li>
+              </ul>
+            </div>
+            <div class="common_box none_bg">
+              <h2>PRESS</h2>
+              <ul>
+                <li><strong>VentureBeat</strong>
+                  <p><a href="http://venturebeat.com/2010/07/21/reddit-hopes-to-impress-users-with-faster-search-engine/">Reddit hopes to impress users with faster search engine</a></p>
+                </li>
+                <li><strong>ReadWriteWeb</strong>
+                  <p><a href="http://www.readwriteweb.com/hack/2011/02/api-of-the-week-indextank.php">API of the Week: IndexTank</a></p>
+                </li>
+                <li><strong>GigaOM</strong>
+                  <p><a href="http://gigaom.com/2011/02/15/indextank/">IndexTank, a Hosted Search Startup Launches</a></p>
+                </li>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+

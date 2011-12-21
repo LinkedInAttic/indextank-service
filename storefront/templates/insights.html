@@ -1,0 +1,156 @@
+{% load custom_tags %}
+{% load humanize %}
+
+<hr>
+<h3 style="width:auto">Content Insights</h3>
+<div class="clear"></div>
+{% if insights.doc_avgs or insights.doc_by_time %}
+  <div class="leftcolumn">
+    <p><b>Last update</b></p>
+    <ul>
+      <li>{{ insights_update.doc_avgs|timesince }} ago</li>
+      <li>at {{ insights_update.doc_avgs|date:"g:i a, F j" }}</li>
+    </ul>
+    <div class="clear"></div>
+    <p><b>Index Size</b></p>
+    <ul>
+      <li>{{ index.current_docs_number|intcomma }} documents</li>
+      <li>{{ insights.doc_avgs.sentenceCount|intcomma }} sentences</li>
+      <li>{{ insights.doc_avgs.wordCount|intcomma }} words</li>
+      <li>{{ insights.doc_avgs.charCount|intcomma }} characters</li>
+    </ul>
+    <div class="clear"></div>
+    <p><b>Average document</b></p>
+    <ul>
+      <li>{{ insights.doc_avgs.sentencesPerDoc|floatformat:2 }} sentences</li>
+      <li>{{ insights.doc_avgs.wordsPerDoc|floatformat:2 }} words</li>
+      <li>{{ insights.doc_avgs.documentSize|floatformat:2 }} characters</li>
+    </ul>
+  </div>
+  
+  <div class="rightcolumn">
+      <p><b>Documents over time (based on document timestamps)</b></p>
+      <div id="doc_by_time_{{ index.code }}" class="chart" style="margin-bottom: 20px;"></div>
+      {% with insights.doc_by_time as data %}
+      {% with "#doc_by_time_"|add:index.code as target %}
+      {% with "1" as time %}
+        {% include 'includes/histogram.html' %}
+      {% endwith %}
+      {% endwith %}
+      {% endwith %}
+  
+      <div style="clear:right"></div>
+      <p><b>Document size distribution (in chars)</b></p>
+      <div id="sizeHistogram_{{ index.code }}" class="chart"></div>
+      {% with insights.doc_avgs.sizeHistogram as data %}
+      {% with "#sizeHistogram_"|add:index.code as target %}
+          {% include 'includes/histogram.html' %}
+      {% endwith %}
+      {% endwith %}
+  </div>
+{% else %}
+  <div class="messages info">
+    No insights have been generated yet for this index.
+  </div>
+  <p>Insights are generated every couple of hours, come back later to check if yours are done.</p>
+{% endif %}
+
+{% comment %}
+<table>
+  <tr>
+    <td rowspan>
+      
+    </td>
+  </tr>
+
+    <table class="indextable">
+        <tr class="blue">
+            <th class="first" colspan="2">
+                <span style="text-transform: none;"><span style="color: yellow">{{ index.name }}</span> insights</span>
+            </th>
+                        <th style="width: 1px; white-space: nowrap"><a href="{% url dashboard %}">&lt; dashboard</a></th>
+                        <th style="width: 1px"><a href="{% url manage_index index_code=index.code %}">manage</a></th>
+            {% if index.is_ready %}
+                <th class="running last" style="width: 1px">Running</th>
+            {% else %}
+                <th class="starting last" style="width: 1px">Starting</th>
+            {% endif %} 
+        </tr>
+
+        <tr>
+             <td colspan="6">
+                 {% if insights.doc_avgs or insights.doc_by_time %}
+                 {# charCount, wordCount, sentenceCount, wordsPerDoc, sentencesPerDoc, documentSize, sizeHistogram #}
+                    <div style="float: right; white-space: nowrap; margin-right: 15px">
+                    <h5>Index created on</h5>
+                    <ul style="margin-left: 25px;">
+                        {{ index.creation_time|date:"g a, F j Y" }}
+                    </ul>
+                    <h5>Insights last updated at</h5>
+                    <ul style="margin-left: 25px;">
+                        {{ insights_update.doc_avgs|date:"g:i a, F j" }}
+                    </ul>
+                    </div>
+                    <div style="float: left; white-space: nowrap">
+                    <h5>Index Size</h5>
+                    <ul style="margin-left: 25px;">
+                        <li>{{ index.current_docs_number|intcomma }} documents</li>
+                        <li>{{ insights.doc_avgs.sentenceCount|intcomma }} sentences</li>
+                        <li>{{ insights.doc_avgs.wordCount|intcomma }} words</li>
+                        <li>{{ insights.doc_avgs.charCount|intcomma }} characters</li>
+                    </ul>
+                    </div>
+                    <div style="float: left; white-space: nowrap; margin-left: 30px;">
+                    <h5>Average document</h5>
+                    <ul style="margin-left: 25px;">
+                        <li>{{ insights.doc_avgs.sentencesPerDoc|floatformat:2 }} sentences</li>
+                        <li>{{ insights.doc_avgs.wordsPerDoc|floatformat:2 }} words</li>
+                        <li>{{ insights.doc_avgs.documentSize|floatformat:2 }} characters</li>
+                    </ul>
+                    </div>
+                    <div style="clear: both"></div>
+                    <div style="margin-top: 30px;">
+                        <div style="text-align: center"><big><b>Documents over time (based on document timestamps)</b></big></div>
+                        <div id="doc_by_time" style="width: 800px; height: 240px;"></div>
+                        {% with insights.doc_by_time as data %}
+                        {% with "#doc_by_time" as target %}
+                        {% with "1" as time %}
+                            {% include 'includes/histogram.html' %}
+                        {% endwith %}
+                        {% endwith %}
+                        {% endwith %}
+                    </div>
+                    <div style="margin-top: 30px;">
+                        <div style="text-align: center"><big><b>Document size distribution (in chars)</b></big></div>
+                        <div id="sizeHistogram" style="width: 800px; height: 240px;"></div>
+                        {% with insights.doc_avgs.sizeHistogram as data %}
+                        {% with "#sizeHistogram" as target %}
+                            {% include 'includes/histogram.html' %}
+                        {% endwith %}
+                        {% endwith %}
+                    </div>
+                    <div style="clear: both"></div>
+                {% else %}
+                    <div class="messages info">
+                        <li>
+                            No insights have been generated for this index<br>
+                            <small><i>Insights are generated every couple of hours, come back later to check if yours are done</i></small>
+                        </li>
+                    </div>
+                    <big>
+                        <p>Current index size: {{ index.current_docs_number|intcomma }} documents</p>
+                    </big>
+                {% endif %}
+            </td>
+        </tr>
+
+    </table>
+    
+    {% include 'includes/dashboard-info.html' %}
+
+    <div style="margin-bottom: -30px;">
+        {% include 'includes/staff-banner.html' %}
+    </div>
+
+{% endblock %}
+{% endcomment %}

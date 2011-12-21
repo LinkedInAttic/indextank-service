@@ -1,0 +1,99 @@
+{% extends "common-base.html" %}
+
+{% load custom_tags %}
+{% load messages %}
+
+{% block right_content %}
+    <h1>Table of contents</h1>
+    <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#ownership">Ownership</a></li>
+        <li><a href="#payment">Payment</a></li>
+        <li><a href="#qos">Quality of Service</a></li>
+        <li class="last"><a href="#liability">Liability</a></li>
+    </ul>
+{% endblock %}
+
+{% block title %}Terms of Service (ToS){% endblock %}
+
+{% block common_content %}
+
+    <h2 id="about">About</h2>
+    <div class="tos">
+      <ul>
+        <li>
+        When you sign up to use IndexTank, a service of Flaptor, Inc. ("IndexTank"), you automatically confirm that you accept all the terms in this agreement.
+        </li>
+    
+        <li>
+        IndexTank may change the terms of this agreement from time to time without prior notice. You can review the most recent version of the Terms of Service at <a href="http://indextank.com/documentation/terms_of_service">http://indextank.com/documentation/terms_of_service</a>.
+        </li>
+      </ul>
+    </div>
+	
+	<h2 id="ownership">Ownership</h2>
+    <div class="tos">
+      <ul>
+        <li>
+        We don't claim ownership or copyright of your data.
+        </li>
+
+        <li>
+        You agree that you are responsible for, and that you own the rights to the data you send to IndexTank.
+        </li>
+
+        <li>
+        You are responsible for keeping your private data private (including your account password and your private API url), and for protecting any sensitive content you send to IndexTank by using encrypted transmission and showing your data (as presented by search, autocomplete, instant-search, instant-links, did-you-mean results or any other way in which IndexTank provides your content in full or partial form through its API or website) only to authorized persons.
+        </li>
+      </ul>
+    </div>
+	
+	<h2 id="payment">Payment</h2>
+    <div class="tos">
+      <ul>
+        <li>
+        IndexTank uses third party Payment Processing providers to process your payment information. We do not store your credit card number on our servers.
+        </li>
+
+        <li>
+        If you fail to pay for a paid account and don't respond to reasonable attempts to contact you on the email address you provided, we may cancel your account or revert it to a free account, with the possible loss of your content.
+        </li>
+
+        <li>
+        IndexTank doesn't refund partially used or unused months (for example if you cancel your account mid-way through a month, already paid for).
+        </li>
+
+        <li>
+        We reserve the right to terminate your account at any time for any reason. If you abuse the service in any way (hacking attempts, denial of service attacks, illegal content, etc) we will terminate your account.
+        </li>
+
+        <li>
+        You understand and agree that the service is provided "as is" and "as available", and that access may involve third party fees (such as bandwidth charges from your internet provider).
+        </li>
+      </ul>
+    </div>
+	
+	<h2 id="qos">Quality of Service</h2>
+    <div class="tos">
+      <ul>
+        <li>
+        We commit to providing responses within 250 ms for 95% of the search requests, as measured from the time a request arrives to our servers to the time the response leaves our servers.
+        </li>
+
+        <li>
+        We commit to a monthly uptime of 99.3%, provided you keep your indexes within the limits defined for your account.
+        </li>
+      </ul>
+    </div>
+	
+	<h2 id="liability">Liability</h2>
+    <div class="tos">
+      <ul>
+        <li>
+        You expressly understand and agree that Flaptor, Inc., its affiliates, officers, agents, partners, or employees are not liable for any direct, indirect, incidental, special, consequential or exemplary damages, including but not limited to damages for loss of profits, goodwill, use, data or other intangible losses, resulting from the use or inability to use the service, the unauthorized access to or alteration of the transmission of your data, or any other matter relating to the service.
+        </li>
+      </ul>
+    </div>
+    
+{% endblock %}
+

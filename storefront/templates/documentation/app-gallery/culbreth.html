@@ -1,0 +1,30 @@
+{% extends "documentation/app-gallery/app-base.html" %}
+{% load custom_tags %}
+
+{% block picture_path %}
+    {% static 'images/developers/culbreth.jpg' %}
+{% endblock %}
+
+{% block author %}
+    by Matt Culbreth
+{% endblock %}
+
+{% block app_name %}
+    Proggit FTW
+{% endblock %}
+
+{% block problem_solved %}
+    Proggit FTW helps developers search within the comments of the programming subreddit on <a href="http://reddit.com">reddit.com</a>
+{% endblock %}
+           
+{% block instructions %}
+    Just search proggit! Maybe search for "Ruby" or "list comprehensions" or "nosql", etc.
+{% endblock %}
+            
+{% block datasets %}
+    reddit.com/r/programming/comments
+{% endblock %}
+
+{% block website %}
+    <a href="http://proggitftw.com">Go to http://proggitftw.com</a>
+{% endblock %}

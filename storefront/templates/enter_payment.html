@@ -1,0 +1,53 @@
+{% extends "common-base.html" %}
+
+{% load custom_tags %}
+{% load humanize %}
+
+{% block title %}Enter Payment Information{% endblock %}
+
+{% block tryit %}{% endblock %}
+
+
+{% block right_content %}
+  {% box 'chat' %}
+    <h2>HAVE A QUESTION?</h2>
+    <div class="chat_btn"><a href="javascript:void(0)" onclick="go_chat()">LIVE CHAT NOW</a><span class="clear"></span></div>
+    <p>Our team of experienced and friendly devs will respond almost as quickly as our search API.</p>
+  {% endbox %}
+{% endblock %}
+
+{% block common_content %}
+
+{% include "includes/chosen_plan.html" %}
+    
+<h2>Get going in minutes</h2>
+    
+    {% if message %}
+    <div class="errors">
+        {{ message }}
+    </div>
+    {% endif %}
+    
+    <form name="form" method="POST">
+      <div class="form_sec">
+        {% with payment_form.first_name as field %}{% include 'includes/field.html' %}{% endwith %}
+        {% with payment_form.last_name as field %}{% include 'includes/field.html' %}{% endwith %}
+        <div class="select_field">
+          {% with payment_form.country as field %}{% include 'includes/field.html' %}{% endwith %}
+        </div>
+        {% with payment_form.state as field %}{% include 'includes/field.html' %}{% endwith %}
+        {% with payment_form.city as field %}{% include 'includes/field.html' %}{% endwith %}
+        {% with payment_form.address as field %}{% include 'includes/field.html' %}{% endwith %}
+        {% with payment_form.zip_code as field %}{% include 'includes/field.html' %}{% endwith %}
+    
+        {% with payment_form.credit_card_number as field %}{% include 'includes/field.html' %}{% endwith %}
+        {% with payment_form.exp_month as field %}{% include 'includes/field.html' %}{% endwith %}
+        <div class="clear"></div>
+        <label class="buttons"><span class="none">&nbsp;</span>
+          <input type="submit" value="Submit" class="signup"/>
+        </label>
+      </div>
+    </form>
+   
+{% endblock %}
+

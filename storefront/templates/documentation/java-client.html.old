@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% load custom_tags %}
+
+
+{% block extrahead %}
+
+{% endblock %}
+
+{% block wrapper_class %}nosidebar{% endblock %}
+
+{% block content %}
+
+<div class="module"></div>
+<div class="module x">
+	<h3>Java Client API and Tools</h3>
+	<div class="docblock">
+
+  <div class="roundbox">
+    <div style="font-weight: bold; font-size: 120%; " class="">Download client</div>
+    <ul>
+      <li><a href="{% static 'indextank-java-client.tar.gz' %}">indextank-java-client.tar.gz</a></li>
+      <li><a href="{% static 'indextank-java-client.zip' %}">indextank-java-client.zip</a></li>
+    </ul>
+  </div>
+  <div class="roundbox" style="margin-top: 20px">
+    <div style="font-weight: bold; font-size: 120%; " class="">Sample code: Indexing a document</div>
+      <pre class="sh_java" style="background: #eee; margin-left: 25px; margin-right: 20px; border-left: solid 3px silver">
+  
+  import com.flaptor.indextank.apiclient.IndexTank;
+  import java.util.Map;
+  import java.util.HashMap;
+  
+  ...
+
+  IndexTank it = new IndexTank("{% if request.user.is_authenticated %}{{ request.user.get_profile.account.apikey }}{% else %}YOUR API KEY HERE{% endif %}");
+  try {
+      // Add a document
+      String indexCode = "YOUR INDEX CODE";
+      String documentId = "1";
+      Map&lt;String, String&gt; document = new HashMap&lt;String, String&gt;();
+      document.put("title", "This is the title");
+      document.put("text", "This is the text");
+      it.addDocument(indexCode, documentId, document);
+  } catch (Exception e) {
+      System.out.println(e.getMessage());
+  }
+  
+        </pre>
+  </div>
+
+  <div class="roundbox" style="margin-top: 20px">
+    <div style="font-weight: bold; font-size: 120%; " class="">Sample code: Searching</div>
+      <pre class="sh_java" style="background: #eee; margin-left: 25px; border-left: solid 3px silver">
+  
+  import com.flaptor.indextank.apiclient.IndexTank;
+  import java.util.List;
+  
+  ...
+
+  IndexTank it = new IndexTank("{% if request.user.is_authenticated %}{{ request.user.get_profile.account.apikey }}{% else %}YOUR API KEY HERE{% endif %}");
+  
+  try {
+    // Search documents with the string 'title'
+    String idxCode = "YOUR INDEX CODE";
+    List&lt;String&gt; docIds = it.search(idxCode, "title");
+    
+    for (String id : listIndexes) {
+      System.out.println("Doc Id: " + id);
+    }
+    
+  } catch (Exception e) {
+    System.out.println(e.getMessage());
+  }
+      </pre>
+  </div>
+
+
+  <div class="roundbox" style="margin-top: 20px">
+    <div style="font-weight: bold; font-size: 120%; " class="">Sample code: Modifying dynamic boosts</div>
+      <pre class="sh_java" style="background: #eee; margin-left: 25px; border-left: solid 3px silver">
+  
+  import com.flaptor.indextank.apiclient.IndexTank;
+  import java.util.Map;
+  
+  ...
+
+  IndexTank it = new IndexTank("{% if request.user.is_authenticated %}{{ request.user.get_profile.account.apikey }}{% else %}YOUR API KEY HERE{% endif %}");
+  
+  try {
+    
+    String idxCode = "YOUR INDEX CODE";
+    String documentId = "1"; // The id of the existing document
+    
+    /*
+     * A map with the boosts' values to be modified.
+     * The map's keys are the boosts' indexes (zero based)
+     * and the values are doubles. 
+     * Depending on the IndexTank plan, the number of available
+     * boosts varies.  
+     */
+    Map&lt;Integer, Double&gt; boosts = new HashMap&lt;Integer, Double&gt;();
+    
+    /*
+     * The boost index is the way to reference
+     * it in the scoring functions. 
+     */  
+    boosts.put(0, 1.5d);
+
+    /*
+     * Calling updateBoosts doesn't imply reindexing
+     * the document and, therefore, is much less expensive
+     */
+    it.updateBoosts(idxCode, documentId, boosts);
+    
+  } catch (Exception e) {
+    System.out.println(e.getMessage());
+  }
+      </pre>
+  </div>
+
+  <div class="roundbox" style="margin-top: 20px">
+    <div style="font-weight: bold; font-size: 120%; " class="">Sample code: Creating (or updating) scoring functions</div>
+      <pre class="sh_java" style="background: #eee; margin-left: 25px; border-left: solid 3px silver">
+  
+  import com.flaptor.indextank.apiclient.IndexTank;
+  
+  ...
+
+  IndexTank it = new IndexTank("{% if request.user.is_authenticated %}{{ request.user.get_profile.account.apikey }}{% else %}YOUR API KEY HERE{% endif %}");
+  
+  try {
+    String idxCode = "YOUR INDEX CODE";
+    
+    /*
+     * The scoring function formula. 
+     * Check the functions' syntax documentation.
+     */
+    String formula = "pow(b(0),2) * age"
+     
+    // The function numeric identifier (zero based)
+    Integer functionId = 0;
+
+    it.addFunction(idxCode, functionId, definition);
+    
+  } catch (Exception e) {
+    System.out.println(e.getMessage());
+  }
+      </pre>
+  </div>
+    
+  </div>
+        
+</div>
+
+{% endblock %}
+

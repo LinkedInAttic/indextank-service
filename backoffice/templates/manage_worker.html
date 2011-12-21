@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% load custom_tags %}
+{% load humanize %}
+{% block content %}
+<div class="module">
+</div>
+<div class="main" style="width: 900px">
+    <div class="module x">
+    <h3>CPU Stats Control panel</h3>
+    <p>
+        Check the stats of the worker to prevent performance issues.<br>
+        <big><b>Worker {{ worker.id }} - {{ worker.wan_dns }} - {{ worker.instance_name }} </b></big><br>
+        <b>Current Load Average:</b> {{ load_info.load_average }}  <small>(<a href="{% url load_history worker_id=worker.id %}">Check history</a></small>) 
+    </p>
+    <div style="text-align: center;">
+    </div>
+    </p>    
+</div>
+</div>
+<div style="clear:both">
+</div>
+<div class="module x">
+    <h3>Filesystem</h3>
+    <div class="roundbox" style="padding: 0px; background-color: #ebebeb">
+        <table width="100%" border="0" cellpadding="10" cellspacing="10" class="indextable">
+            <tbody>
+                <tr class="round_b clear" style="background-color: transparent;">
+                    <td class="first" align="left">
+                        MOUNT
+                    </td>
+                    <td align="center">
+                        AVAILABLE SPACE
+                    </td>
+                    <td align="center">
+                        USED SPACE
+                    </td>
+                    <td align="center" class="last" width="150"  style="background: url({% static 'images/tableheader.png' %}) no-repeat 30px">
+                        &nbsp;
+                    </td>
+                </tr>
+                {% for info in mount_infos %}
+                <tr style="background-color: {% cycle 'white' '#ebebeb' %}">
+                    <td class="first" align="left">
+                        <b>{{ info.mount }}</b>
+                    </td>
+                    <td align="right">
+                        {{ info.available }} 
+                    </td>
+                    <td align="right">
+                        {{ info.used }} ({{ mount_percentages|get:info.mount|floatformat:2 }}%)
+                    </td>
+                    <td align="center" class="action">
+                        <a href="{% url mount_history worker_id=worker.id mount=info.mount %}" class="btn red" style="width: 80px;">History</a>
+                    </td>
+                </tr>
+                {% empty %}
+                {% endfor %}
+                <tr class="round_g" style="background-color: transparent;">
+                    <td class="first" align="right" colspan="4">
+                        <small>There is a total of {{ mount_infos|length }} devices.</small>
+                    </td>
+                </tr>
+                
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="module x">
+    <h3>Indexes</h3>
+    <div class="roundbox" style="padding: 0px; background-color: #ebebeb">
+        <table width="100%" border="0" cellpadding="10" cellspacing="10" class="indextable">
+            <tbody>
+                <tr class="round_b clear" style="background-color: transparent;">
+                    <td class="first" align="left">
+                        INDEX
+                    </td>
+                    <td align="center">
+                        MEMORY USED
+                    </td>
+                    <td align="center">
+                        DISK USED
+                    </td>
+                    <td align="center" class="last" width="150"  style="background: url({% static 'images/tableheader.png' %}) no-repeat 30px">
+                        &nbsp;
+                    </td>
+                </tr>
+                {% for index_info in indexes_infos %}
+                <tr style="background-color: {% cycle 'white' '#ebebeb' %}">
+                    <td class="first" align="left">
+                        <b>"{{ index_info.deploy.index.name }}" [{{ index_info.deploy.index.code }}] <small>({{ index_info.deploy.index.account.user.email }})</small></b>
+                    </td>
+                    <td align="right">
+                        {{ index_info.used_mem }} Mb
+                    </td>
+                    <td align="right">
+                        {{ index_info.used_disk }} Mb
+                    </td>
+                    <td align="center" class="action">
+                        <a href="{% url index_history worker_id=worker.id index_id=index_info.deploy.index.id %}" class="btn red" style="width: 80px;">History</a>
+                    </td>
+                </tr>
+                {% empty %}
+                {% endfor %}
+                <tr class="round_g" style="background-color: transparent;">
+                    <td class="first" align="left">
+                        <b>Total:</b>
+                    </td>
+                    <td align="right">
+                        <b>{{ used_mem_total }} Mb</b>
+                    </td>
+                    <td align="right" class="b">
+                        <b>{{ used_disk_total }} Mb</b>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div style="clear:both; height: 50px;">
+</div>
+{% endblock %}

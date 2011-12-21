@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+{% load custom_tags %}
+{% load messages %}
+
+{% block page_title %}IndexTank - hosted search you control{% endblock %}
+
+{% block head %}
+  {{ block.super }}
+	{% include 'includes/head.html' %}
+  {% block extrahead %}{% endblock %}
+{% endblock %}
+
+{% block body %}
+  {% if provisioner %}
+    {{ request.session.provisioner_navbar_html|safe }}
+  {% endif %}
+  
+  {{ block.super }}
+  <script type="text/javascript">{% include "includes/olark.js" %}</script>
+
+  {% if request.user.is_authenticated %}
+    <script type="text/javascript">
+      olark('api.chat.updateVisitorNickname', {
+        snippet: "{{ request.user.username }}"
+      });
+    </script>
+  {% endif %}
+{% endblock %}
+
+{% block header %}
+  
+  {% include 'includes/header.html' %}
+  <!--menu starts here-->
+  <div id="menu">
+    {% block menu %}
+      {% include 'includes/menu.html' %}
+    {% endblock %}
+  </div>
+  <!--menu ends here-->
+  
+  <!--search area starts here-->
+  <div id="search_area">
+    {% block search %}
+      {% include 'includes/search.html' %}
+    {% endblock %}
+  </div>
+  <!--search area ends here-->
+{% endblock %}
+
+{% block login_area %}
+  {% include 'includes/login_area.html' %}
+{% endblock %}
+
+{% block content_head %}
+  <h2>{% block title %}??? content_head ???{% endblock %}</h2> {% block tryit %}{#<div class="try_btn logged_out"> <a href="{% url get_started %}">TRY IT OUT</a> </div>#}{% endblock %}
+{% endblock %}
+
+{% block content_body %}{% endblock %}
+             
+{% block footer %}
+    {% include 'includes/footer.html' %}
+{% endblock %}

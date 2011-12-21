@@ -1,0 +1,33 @@
+{% extends "common-base.html" %}
+{% load custom_tags %}
+
+{% block title %}Log in{% endblock %}endblock %}
+
+{% block common_content %}
+  {% box 'form' %}
+    <h2 class="first">Log in to IndexTank</h2>
+    <form name="login_form" method="POST" action="http{% if not LOCAL %}s{% endif %}://{{ request.get_host }}{% url login %}?next={{ next|urlencode }}">
+      <div class="form_sec">
+        {% for f in login_form %}
+          <div class="input_bg">
+            <label><span class="none">&nbsp;</span>
+              {{ f }}
+            </label>
+          </div>
+          <div id="email_error">{% for e in f.errors %}<span>{{e}}</span> {% endfor %}</div>
+          <div class="clear"></div>
+        {% endfor %}
+        {% if login_message %}
+          <div id="email_error">{{ login_message }}</div>
+        {% else %}
+        {% endif %}
+        <div class="clear"></div>
+        <label class="buttons"><span class="none">&nbsp;</span>
+          <input type="submit" value="Log in" class="signup"/>
+          <a href="{% url forgot_password %}">Forgot password?</a> 
+        </label>
+      </div>
+    </form>
+  {% endbox %}
+{% endblock %}
+

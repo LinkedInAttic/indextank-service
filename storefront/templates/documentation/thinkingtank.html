@@ -1,0 +1,118 @@
+{% extends "common-base.html" %}
+
+{% load custom_tags %}
+{% load macros %}
+
+{% enablemacros %}
+
+{% macro language-name %}
+{% endblock %}
+
+{% block extrahead %}
+
+{% endblock %}
+
+{% block container_class %}{{ block.super }} documentation{% endblock %}
+
+{% block right_content %}
+  {% box 'table' %}
+    <ul>
+      <li><h2>Table of contents</h2></li>
+      <li><a href="#setting-up">Setting up ThinkingTank</a></li>
+      <li class="last"><a href="#indexing-models">Indexing your models</a></li>
+    </ul>
+  {% endbox %}
+{% endblock %}
+
+{% block title %}ThinkingTank, a Ruby Gem{% endblock %}endblock %}
+		
+{% block common_content %}
+    <p></p>
+        <p>ThinkingTank is a simple ActiveRecord extension that allows you to define how to index your models and gives you easy tools to
+		search them.  
+        </p>
+    <p></p>
+    
+    <a name="setting-up"></a>
+	<div class="module"></div>
+    <h2>Setting up ThinkingTank</h2>
+    
+    <p>First you'll need to install the ThinkingTank ruby gem</p>
+    <p></p>
+{% box 'code' %}
+<pre class="sh_ruby">
+gem install thinkingtank
+</pre>
+{% endbox %}
+
+    <p></p>
+    <p>Then in your rails app you'll have to require this gem by editing your Gemfile:</p>
+    <p></p>
+{% box 'code' %}
+<pre class="sh_ruby">
+gem "thinkingtank"
+</pre>
+{% endbox %}
+
+    <p></p>
+    <p>You'll also need to add a config/indextank.yml file to configure your API url, for instance:</p>
+    <p></p>
+{% box 'code' %}
+<pre class="sh_ruby">
+development:
+    api_url: '&lt;YOUR API URL HERE&gt;'
+    index_name: '&lt;YOUR DEVELOPMENT INDEX NAME HERE&gt;'
+</pre>
+{% endbox %}
+
+    <p></p>
+
+    <a name="indexing-models"></a>
+	<div class="module"></div>
+    <h2>Indexing your models</h2>
+    
+    <p>To make your models indexable, you'll need to add a define_index block to your model class. For instance, if you have
+	a Post model that defines a title and a body and you want both fields to be indexed you could do it like this:</p>
+    <p></p>
+{% box 'code' %}
+<pre class="sh_ruby">
+class Post < ActiveRecord::Base
+  define_index do
+    indexes title
+    indexes body
+  end
+end
+</pre>
+{% endbox %}
+
+    <p></p>
+    <p>This will allow you to use the search method in Post, like this:</p>
+    <p></p>
+{% box 'code' %}
+<pre class="sh_ruby">
+Post.search(query)
+</pre>
+{% endbox %}
+
+    <p></p>
+    <p>Behind the scenes, ThinkingTank will submit a post for indexing after you've saved it. 
+	It will index each indexable field respecting the field names and it will create two special fields.
+	One called "__any" with the union of every indexable field (this will be used by default when searching)
+	and another one called "__type" which will have information to discriminate different models inside an
+	index. You'll be able to search across all fields by using the default field but you can also ask for terms
+	in specific fields by using the field:term syntax.</p>
+    <p>Once you have configured all the model you wanted you can use the rake task reindex to index all the
+	existing that. This task will re-create the index (if it had never been created, this creates it for you), 
+	losing any data indexed in that index that is not in your DB and index every instance of the indexable models.</p>
+    <p></p>
+{% box 'code' %}
+<pre class="sh_ruby">
+rake indextank:reindex
+</pre>
+{% endbox %}
+
+    <p></p>
+    <p>If you change the way your models are indexed you can also use that task to apply your changes retroactively</p>
+    <p></p>
+{% endblock %}
+

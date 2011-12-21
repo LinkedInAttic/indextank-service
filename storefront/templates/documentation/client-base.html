@@ -1,0 +1,390 @@
+{% extends "common-base.html" %}
+
+{% load custom_tags %}
+{% load messages %}
+
+{% load custom_tags %}
+{% load macros %}
+
+{% enablemacros %}
+
+{% macro language-name %}
+{% endblock %}
+
+{% macro gist %}
+{% endblock %}
+
+
+{% block extrahead %}
+
+{% endblock %}
+
+{% block container_class %}{{ block.super }} documentation{% endblock %}
+
+{% block right_content %}
+  {% box 'chatsimple' %}
+    <h2>DOWNLOAD</h2>
+    {% block download-box %}{% endblock %}
+    <div class="chat_btn"> <a href="javascript:void(0);" onclick="go_chat()">LIVE CHAT NOW</a><span class="clear"></span> </div>
+  {% endbox %}
+  {% box 'table' %}
+    <ul>
+      <li>
+        <h2>Table of Contents</h2>
+      </li>
+      <li><a href="#basic-usage">Basic usage</a></li>
+      <li><a href="#additional-fields">Additional fields</a></li>
+      <li><a href="#document-variables">Document variables</a></li>
+      <li><a href="#relevance-functions">Relevance functions</a></li>
+      <li><a href="#query-variables">Query variables & Geolocation</a></li>
+      <li><a href="#faceting">Faceting</a></li>
+      <li><a href="#range-queries">Range queries</a></li>
+      <li><a href="#batch-indexing">Batch indexing</a></li>
+      <li><a href="#bulk-delete">Bulk delete</a></li>
+      <li><a href="#query-delete">Query delete</a></li>
+      <li><a href="#index-management">Index management</a></li>
+    </ul>
+  {% endbox %}
+{% endblock %}
+
+{% block title %}{% block summary-title %}{% endblock %}{% endblock %}
+
+{% block common_content %}
+    <h2>Summary</h2>
+
+    <p></p>
+        <p>{% block summary-content %}The following examples assume you have downloaded the API client into your working directory.{% endblock %}</p>
+        {% block extra-summary %}{% endblock %}
+    <p></p>
+    
+    <a name="basic-usage"></a>
+	<div class="module"></div>
+    <h2>Basic usage</h2>
+    
+    <p>If you already have created an index you'll need to use your index name to instantiate the client:</p>
+    <p></p>
+
+{% box 'code' %}
+<pre class="sh_{% repeat language-name %}">{% block code-instatiate %}{% endblock %}</pre>
+{% endbox %}
+
+    <p></p>
+    <p>Once you have an instance of the client all you need is the content you want to index.<br/>
+	The simplest way to add a document is sending that content in a single field called "text":</p>
+    <p></p>
+
+{% box 'code' %}
+<pre class="sh_{% repeat language-name %}">{% block code-simple-indexing %}{% endblock %}</pre>
+{% endbox %}
+
+    <p></p>
+    <p>That's it, you have indexed a document.</p>
+    <p></p>
+    <p>You can now search the index for any indexed document by simply providing the search query:</p>
+    <p></p>
+
+{% box 'code' %}
+<pre class="sh_{% repeat language-name %}">{% block code-simple-searching %}{% endblock %}</pre>
+{% endbox %}
+
+    <p></p>
+    <p>As you can see, the results are the document ids you provided when indexing the documents. You use them to retrieve the actual documents from your DB to render the result page.</p>
+    <p></p>
+    <p>You can get richer results using the <i>fetch fields</i> and <i>snippet fields</i> options:</p>
+	  
+{% box 'code' %}
+<pre class="sh_{% repeat language-name %}">{% block code-snippet-searching %}{% endblock %}</pre>
+{% endbox %}
+
+    <p></p>
+    <p>Deleting an indexed document is also very easy:</p>
+{% box 'code' %}
+<pre class="sh_{% repeat language-name %}">{% block code-simple-deleting %}{% endblock %}</pre>
+{% endbox %}
+      
+    <a name="additional-fields"></a>
+    <div class="module"></div>
+    <h2>Additional fields <a href="#top" class="toplink">[back to top]</a></h2>
+
+    <p></p>
+    <p>When you index a document you can define different fields by adding more elements to the document object:</p>
+    <p></p>
+    
+{% box 'code' %}
+<pre class="sh_{% repeat language-name %}">{% block code-multiple-field-indexing %}{% endblock %}</pre>
+{% endbox %}
+     
+    <p></p>
+    <p>By default, searches will only look at the "text" field,
+    but you can define special searches that look at other fields by prefixing a search term with the field name.
+    The following example filters results including only the user's content.</p>
+    <p></p>
+
+{% box 'code' %}
+<pre class="sh_{% repeat language-name %}">{% block code-filter-by-author %}{% endblock %}</pre>
+{% endbox %}
+
+    <p></p>
+    <p>There's also a special field named "timestamp" that is expected to contain the publication date of the content in
+    seconds since <a href="http://en.wikipedia.org/wiki/Unix_time">unix epoch</a> (1/1/1970 00:00 UTC). If none is provided, the time of indexation will be used by default.</p>
+    <p></p>
+    
+{% box 'code' %}
+<pre class="sh_{% repeat language-name %}">{% block code-index-with-timestamp %}{% endblock %}</pre>
+{% endbox %}
+
+    <p></p>
+    <p></p>
+    
+    <a name="document-variables"></a>
+    <div class="module"></div>
+    <h2>Document variables <a href="#top" class="toplink">[back to top]</a></h2>
+    <p></p>
+    <p>When you index a document you can define special floating point fields that can be used in the results scoring.
+    The following example can be used in an index that allows 3 or more variables:</p>
+    <p></p>
+    
+{% box 'code' %}
+<pre class="sh_{% repeat language-name %}">{% block code-index-with-boosts %}{% endblock %}</pre>
+{% endbox %}
+     
+    <p></p>
+    <p>You can also update a document variables without having to re-send the entire document.
+    This is much faster and should always be used if no changes were made to the document itself.</p>
+    <p></p>
+{% box 'code' %}
+<pre class="sh_{% repeat language-name %}">{% block code-update-boosts %}{% endblock %}</pre>
+{% endbox %}
+    
+    <p></p>
+    <p></p>
+
+    <a name="relevance-functions"></a>
+    <div class="module"></div>
+    <h2>Scoring functions <a href="#top" class="toplink">[back to top]</a></h2>
+    <p></p>
+    <p>To use the variables in your searches you'll need to define scoring functions. These functions can be defined
+    in your dashboard by clicking "Manage" in your index details or directly through the API client.
+    </p>
+    <p></p>
+
+{% box 'code' %}
+<pre class="sh_{% repeat language-name %}">{% block code-redefine-functions %}{% endblock %}</pre>
+{% endbox %}
+
+    <p></p>
+    <p>Read the <a href="/documentation/function-definition">function definition syntax</a> for help on how to write functions.</p>
+    <p></p>
+    <p>If you don't define any functions, you will get the default function 0 which sorts by timestamp (most recent first).
+        By default, searches will use the function 0. You can specify a different function when searching by using the option <i>scoring_function</i></p>
+    <p></p>
+
+{% box 'code' %}
+<pre class="sh_{% repeat language-name %}">{% block code-search-with-relevance-function %}{% endblock %}</pre>
+{% endbox %}
+      
+    <p></p>
+    <p></p>
+
+    <a name="query-variables"></a>
+    <div class="module"></div>
+    <h2>Query variables and Geolocation<a href="#top" class="toplink">[back to top]</a></h2>
+    <p></p>
+    <p>Besides the document variables, in the scoring functions you can refer to query variables. These variables
+    are defined at query time and can be different for each query.</p>
+    <p>A common use-case for query variables is geolocation, where you use two variables for latitude and longitude
+    both in the documents and in the query, and use a distance function to sort by proximity to the user. For this
+    example will assume that every document stores its position in variables 0 and 1 representing latitude and 
+    longitude respectively.</p>
+    <p>Defining a proximity scoring function:</p>
+    
+{% box 'code' %}
+<pre class="sh_{% repeat language-name %}">{% block code-proximity-scoring-function %}{% endblock %}</pre>
+{% endbox %}
+
+    <p></p>
+    <p>Searching from a user's position:</p>
+    
+{% box 'code' %}
+<pre class="sh_{% repeat language-name %}">{% block code-search-with-geo %}{% endblock %}</pre>
+{% endbox %}
+
+    <p></p>
+    <p></p>
+
+    <a name="query-variables"></a>
+    <div class="module"></div>
+    <a name="faceting"></a>
+    <h2>Faceting<a href="#top" class="toplink">[back to top]</a></h2>
+    <p></p>
+    <p>Besides being able to define numeric variables on a document you can tag documents with category values.
+    Each category is defined by string, and its values are alse defined by strings. So for instance, you can define
+    a category named "articleType" and its values can be "camera", "laptop", etc... You can have another category
+    called "priceRange" and its values can be "$0 to $49", "$50 to $100", etc...</p>
+    <p>Documents can be tagged with a single value for each category, so if a document is in the "$0 to $49" priceRange
+    it can't be in any other, and retagging over the same category results in overwriting the value.</p>
+    <p>You can tag several categories at once like this:</p>
+    
+{% box 'code' %}
+<pre class="sh_{% repeat language-name %}">{% block code-update-categories %}{% endblock %}</pre>
+{% endbox %}
+
+    <p></p>
+    <p>When searching, you will get an attribute in the results called "facets", and it will contain a dictionary with 
+    categories for keys. For each category the value will be another map, with category value as key and occurences as 
+    value. So for instance:</p>
+    
+{% box 'code' %}
+<pre class="sh_{% repeat language-name %}">{% block code-sample-facets-result %}{% endblock %}</pre>
+{% endbox %}
+
+    <p>Means that from the matches, 5 are of the "camera" articleType and 3 are "laptop". Also, 4 of them all are in the "$0 to $299" priceRange,
+    and 4 on the "$300 to $599".</p>
+    <p>Then, you can also filter a query by restricting it to a particular set of category/values. For instance the following will only return
+    results that are of the "camera" articleType and also are either in th "$0 to $299" or "$300 to $599" price range.</p>
+    
+{% box 'code' %}
+<pre class="sh_{% repeat language-name %}">{% block code-faceting-filtering %}{% endblock %}</pre>
+{% endbox %}    
+      
+    <a name="range-queries"></a>
+    <div class="module"></div>
+    <h2>Range queries <a href="#top" class="toplink">[back to top]</a></h2>
+    <p></p>
+    <p>
+    	Document variables and scoring functions can also be used to filter your query results. When performing a search
+        it is possible to add variable and function filters. This will allow you to only retrieve, in the search results,
+		documents whose variable values are within a specific range (e.g.: posts that have more than 10 votes but less than a 100).
+		Or only return documents for the which a certain scoring function returns values within a specific range.
+    </p>
+    <p></p>
+    <p>
+       You can specify more than one range for each variable or function (the value must be within at least ONE range) filter,
+	   and you can use as many filters as you want in every search (all filters must be met):
+    <p></p>
+
+{% box 'code' %}
+<pre class="sh_{% repeat language-name %}">{% block code-range-queries %}{% endblock %}</pre>
+{% endbox %}
+
+    <a name="batch-indexing"></a>
+    <div class="module"></div>
+    <h2>Batch indexing <a href="#top" class="toplink">[back to top]</a></h2>
+    <p></p>
+    
+    {% block batch-indexing %}
+    
+    <p>
+        When populating an index for the first time or when a batch task for adding documents makes sense, 
+        you can use the batch indexing call. 
+    </p>
+    <p>
+        When using batch indexing, you can add a large batch of documents to the Index with just one call. 
+        There is a limit to how many documents you can add in a single call, though. This limit is not 
+        related to the number of documents, but to the total size of the resulting HTTP request, which 
+        should be less than 1MB. 
+    </p>
+    <p>
+        Making a batch indexing call reduces the number of request needed (reducing the latency introduced by round-trips)
+        and increases the maximum throughput which can be very useful when initially loading a large index. 
+    </p>    
+    <p>
+        The indexing of individual documents may fail and your code should handle that and retry indexing them. If there
+        are formal errors in the request, the entire batch will be rejected with an exception.     
+    </p>
+    <p></p>
+
+{% box 'code' %}
+<pre class="sh_{% repeat language-name %}">{% block code-batch-indexing %}{% endblock %}</pre>
+{% endbox %}
+
+    <p>
+        The response will be an array with the same length as the sent batch. 
+        Each element will be a map with the key "added" denoting whether the document in this position of 
+        the batch was successfully added to the index. If it's false, an error message will also be in the
+        map with the key "error".         
+    </p>
+    <p></p>
+    
+{% box 'code' %}
+<pre class="sh_{% repeat language-name %}">{% block code-batch-indexing-failed %}{% endblock %}</pre>
+{% endbox %}
+
+    {% endblock %}
+
+    <a name="bulk-delete"></a>
+    <div class="module"></div>
+    <h2>Bulk Delete <a href="#top" class="toplink">[back to top]</a></h2>
+    <p></p>
+    
+    {% block bulk-delete %}
+    <p>
+        With this method, you can delete a batch of documents (reducing the latency introduced by round-trips).
+        The total size of the resulting HTTP request should be less than 1MB.
+    </p>
+    <p>
+        The deletion of individual documents may fail and your code should handle that and retry deleting them. If there
+        are formal errors in the request, the entire batch will be rejected with an exception.
+    </p>
+    <p></p>
+
+    {% box 'code' %}
+    <pre class="sh_{% repeat language-name %}">{% block code-bulk-delete %}{% endblock %}</pre>
+    {% endbox %}
+
+    <p>
+        The response will be an array with the same length as the sent batch. 
+        Each element will be a map with the key "deleted" denoting whether the document with the id in this position of 
+        the batch was successfully deleted from the index. If it's false, an error message will also be in the
+        map with the key "error".
+    </p>
+    <p></p>
+
+    {% box 'code' %}
+    <pre class="sh_{% repeat language-name %}">{% block code-bulk-delete-failed %}{% endblock %}</pre>
+    {% endbox %}
+
+    {% endblock %}
+
+    <a name="query-delete"></a>
+    <div class="module"></div>
+    <h2>Delete by Search <a href="#top" class="toplink">[back to top]</a></h2>
+    <p></p>
+
+    {% block query-delete %}
+    <p>
+        With this method, you can delete a batch of documents that match a particular search query. You can use many of the same arguments applied to a normal search - start (which will preserve the results found before the value of start), scoring function, category filters, variables, and docvar filters.
+
+    {% box 'code' %}
+    <pre class="sh_{% repeat language-name %}">{% block code-query-delete %}{% endblock %}</pre>
+    {% endbox %}
+
+    {% endblock %}
+    <a name="index-management"></a>
+    <div class="module"></div>
+    <h2>Index management <a href="#top" class="toplink">[back to top]</a></h2>
+    <p></p>
+    <p>You can create and delete indexes directly with the API client. These methods are equivalent to 
+    their corresponding actions in the dashboard. Keep in mind that index creation may take a few seconds.
+    </p>
+    <p></p>
+    <p>The create_index methods will return the new index's client:
+    <p></p>
+
+{% box 'code' %}
+<pre class="sh_{% repeat language-name %}">{% block code-index-creation %}{% endblock %}</pre>
+{% endbox %}
+
+    <p></p>
+    <p>The delete_index method completely removes the index represented by the object.
+    <p></p>
+    
+{% box 'code' %}
+<pre class="sh_{% repeat language-name %}">{% block code-index-deletion %}{% endblock %}</pre>
+{% endbox %}
+
+      
+    <p></p>
+
+{% endblock %}
+

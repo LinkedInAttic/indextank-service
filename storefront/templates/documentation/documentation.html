@@ -1,0 +1,281 @@
+{% extends "common-base.html" %}
+{% load custom_tags %}
+
+{% block container_left_class %}document_left{% endblock %}
+
+{% block title %}Docs &amp; Support{% endblock %}
+
+{% block right_content %}
+  <div class="chatsimple_box">
+    <div class="chatsimple_bg">
+      <div class="chatsimple_top">
+        <div class="chatsimple_bottom">
+          <div class="chatsimple_main">
+            <h2>TEAM &amp; SUPPORT</h2>
+            <div class="photo_sec">
+              <ul class="pict">
+                <li class="first"><a href="{% url documentation path='staff' %}#diego"><img src="{% static 'images/staff-diego.jpg' %}" alt="Diego" title="Diego" /></a></li>
+                <li><a href="{% url documentation path='staff' %}#santi"><img src="{% static 'images/staff-santi.png' %}" alt="Santi" title="Santi" /></a></li>
+                <li><a href="{% url documentation path='staff' %}#adrian"><img src="{% static 'images/staff-adrian.jpg' %}" alt="Adrian" title="Adrian" /></a></li>
+              </ul>
+              <ul class="pict">
+                <li class="first"><a href="{% url documentation path='staff' %}#spike"><img src="{% static 'images/staff-spike.png' %}" alt="Spike" title="Spike" /></a></li>
+                <li><a href="{% url documentation path='staff' %}#leandro"><img src="{% static 'images/staff-leandro.jpg' %}" alt="Leandro" title="Leandro" /></a></li>
+                <li><a href="{% url documentation path='staff' %}#nacho"><img src="{% static 'images/staff-nacho.png' %}" alt="Nacho" title="Nacho" /></a></li>
+              </ul>
+              <ul class="pict">
+                <li class="first"><a href="{% url documentation path='staff' %}#mono"><img src="{% static 'images/staff-mono.jpg' %}" alt="Mono" title="Mono" /></a></li>
+                <li><a href="{% url documentation path='staff' %}#jorge"><img src="{% static 'images/staff-jorge.png' %}" alt="Jorge" title="Jorge" /></a></li>
+                <li><a href="{% url documentation path='staff' %}#sean"><img src="{% static 'images/staff-sean.jpg' %}" alt="Sean" title="Sean" /></a></li>
+              </ul>
+              <h3>Have a question? We're here to help.</h3>
+              <p>Our team of experienced and friendly devs will respond almost as quickly as our search API.</p>
+            </div>
+            <div class="chat_btn"> <a href="javascript:void(0);" onclick="go_chat()">LIVE CHAT NOW</a><span class="clear"></span> </div>
+            <div class="follow">
+              <ul>
+                <li><a href="http://blog.indextank.com/" class="blog">Follow our blog</a></li>
+                <li><a href="http://twitter.com/indextank" class="twitter">Follow twitter</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block common_content %}
+
+  <h2>DOCUMENTATION</h2>
+  <div class="doc_row">
+    <div class="doc_col01">
+      <h3>Getting Started</h3>
+      <ul>
+        <li class="first"><a href="{% url documentation path='faq' %}">FAQ</a></li>
+      </ul>
+      <ul>
+        <li class="first">Tutorials:</li>
+        <li class="last"><a href="{% url documentation path='tutorial-python' %}">Python</a></li>
+        <li><a href="{% url documentation path='tutorial-ruby' %}">Ruby</a></li>
+      </ul>
+      <h3>Programmer&rsquo;s Guide</h3>
+      <ul>
+        <li class="first"><a href="{% url documentation path='query-syntax' %}">Query Syntax</a></li>
+      </ul>
+      <ul>
+        <li class="first"><a href="{% url documentation path='tutorial-autocomplete' %}">Autocomplete</a></li>
+      </ul>
+      <ul>
+        <li class="first"><a href="{% url documentation path='tutorial-faceting' %}">Faceting</a></li>
+      </ul>
+      <ul>
+        <li class="first"><a href="{% url documentation path='tutorial-snippets' %}">Snippets</a></li>
+      </ul>
+      <ul>
+        <li class="first"><a href="{% url documentation path='tutorial-geolocation' %}">Geolocation</a></li>
+      </ul>
+      <h3>Reference</h3>
+      <ul>
+        <li class="first"><a href="{% url documentation path='api' %}">API Specification</a></li>
+      </ul>
+      <ul>
+        <li class="first"><a href="{% url documentation path='function-definition' %}">Scoring Functions</a></li>
+      </ul>
+      <h3>Client Libraries</h3>
+      <ul>
+        <li class="first"><a href="{% url documentation path='python-client' %}">Python</a></li>
+        <li><a href="{% url documentation path='ruby-client' %}">Ruby</a></li>
+        <li><a href="{% url documentation path='php-client' %}">PHP</a></li>
+        <li><a href="{% url documentation path='java-client' %}">Java</a></li>
+      </ul>
+      <ul>
+        <li class="first"><a href="http://indextankdotnet.codeplex.com/">.NET</a> (by <a href="http://twitter.com/#!/leedumond">Lee Dumond</a>)</li>
+      </ul>
+      <ul>
+        <li class="first"><a href="https://github.com/kidpollo/tanker">Rails</a> (by <a href="http://twitter.com/#!/kidpollo">Francisco Viramontes</a>)</li>
+      </ul>
+      <ul>
+        <li class="first"><a href="http://blog.indextank.com/737/the-state-of-the-indextank-ecosystem/">Others</a></li>
+      </ul>
+    </div>
+    <div class="doc_col02">
+      <h3>Plug-ins</h3>
+      <ul>
+        <li class="first"><a href="https://github.com/flaptor/indextank-drupal">Drupal plug-in</a></li>
+      </ul>
+      <ul>
+        <li class="first"><a href="{% url documentation path='heroku-addon' %}">Heroku Add-on </a></li>
+      </ul>
+      <ul>
+        <li class="first"><a href="{% url documentation path='wordpress-plugin' %}">Wordpress plug-in</a></li>
+      </ul>
+      <h3>Demo Apps Writeups</h3>
+      <ul>
+        <li class="first"><a href="http://blog.indextank.com/132/creating-real-time-search-engine-indextank-heroku/">Real-time search engine (Heroku + Plixi) </a></li>
+      </ul>
+      <ul>
+        <li class="first"><a href="http://blog.indextank.com/223/how-i-wrote-a-twitter-timeline-search-app-in-2-days/">Twitter timeline search </a></li>
+      </ul>
+      <ul>
+        <li class="first"><a href="http://blog.indextank.com/288/faceting/">Faceting for shopping search </a></li>
+      </ul>
+      <h3>White papers</h3>
+      <ul>
+        <li class="first"><a href="{% static 'papers/IndexTank WhitePaper Technical.pdf' %}">Technical</a></li>
+        <li><a href="{% static 'papers/IndexTank WhitePaper Commercial.pdf' %}">Commercial</a></li>
+      </ul>
+      <h3>Case studies</h3>
+      <ul>
+        <li class="first"><a href="{% static 'papers/IndexTank Reddit Case Study.pdf' %}">IndexTank - Reddit (new!)</a></li>
+      </ul>
+    </div>
+  </div>
+  <div id="latest" class="latest">
+    <h2>LATEST DEV NEWS</h2>
+    <ul>
+      <li><strong><a href="http://indextank.com/documentation/api#searching">Delete by Search</a> <em>by Sean, July 11</em></strong>
+        <p>
+        You can now delete all the documents that match a particular query. You can use the same filters as a normal search, and you can even use the 'start' parameter to preserve high scoring documents. You can find the appropriate method in our Ruby, PHP, Python, and Java clients. <br> <a href="mailto:support@indextank.com" subject="Delete by Search suggestion">Let us know</a> if there's anything else you'd like to see!
+        </p>
+      </li>
+      <li><strong><a href="https://github.com/flaptor/indextank-drupal/">Drupal plugin</a> <em>by Leandro, June 26</em></strong>
+        <p>
+            We've been working on this one for a few weeks now, and supporting both drupal 7 and 6 was not easy. But thanks to the invaluable help of Xavier, here it is!
+            Give it a try, and let us know. There're still a few small issues with css, but it is completely functional now.
+        </p>
+      </li>
+      <li><strong><a href="http://indextank.com/documentation/api#searching">Search Scores and Variables Returned</a> <em>by Adrian, June 7</em></strong>
+        <p>
+           Until today, document variables could be used in your relevance formulas but you could not fetch them when querying the index. You had to create separate text fields with the same information, which was redundant. Also the document scores that were used to sort weren't returned, which made debugging relevance issues complicated.<br>
+           That is no longer the case, now you can fetch variables and scores along with your search results. Many of our users had requested this feature so here you go!
+        </p>
+      </li>
+      <li><strong><a href="http://github.com/flaptor/indextank-jquery">Javascript "Static" Search</a> <em>by Mono, May 20</em></strong>
+        <p>
+          Now it's possible to create a search page from a completely static html page in (literally) a few minutes!
+          Indextank-jquery provide a series of building blocks that provide basic search, instant search, autocomplete,
+          and faceting.
+        </p>
+      </li>
+      <li><strong><a href="{% static 'papers/IndexTank Reddit Case Study.pdf' %}">Reddit Case Study</a> <em>by Manolo, February 15</em></strong>
+        <p>
+          Learn how after a bout with infamously disappointing search, social news site Reddit found IndexTank, 
+          which easily handles the company’s huge index, delivers real-time results, and has helped re-polish their reputation.
+        </p>
+      </li>
+      <li><strong><a href="/documentation/wordpress-plugin">Wordpress Plugin</a> <em>by Nacho, January 27</em></strong>
+        <p>
+          You now can now add our search, including auto-complete, to your WordPress blog by following 
+          some quick steps. Some themes may require you to make additional changes to support snippets.
+        </p>
+      </li>
+      <li><strong><a href="/documentation/tutorial-autocomplete">Autocomplete (updated)</a> <em>by Adrian, January 18</em></strong>
+        <p>
+          Thanks to everyone who asked for a more complete write-up of one of our more popular 
+          features. You’ll find a quick-start guide, as well as help customizing with partial highlighting.
+        </p>
+      </li>
+    </ul>
+  </div>
+
+
+
+
+
+
+
+
+{% comment %}
+    <h1>Documentation</h1>
+    <h2>What's here?</h2>
+    <p>
+        You can get IndexTank working in minutes. That’s half because it’s so easy to setup, 
+        and half because we give you a lot of great documentation and support to guide your 
+        implementation path, including:
+    </p>
+    <ul>
+        <li>Tutorials to get you started</li>
+        <li>Client plug-in writeups</li>
+        <li>Detailed API reference</li>
+        <li>White papers</li>
+        <li>...and more</li>
+    <h2>What's new?</h2>
+    <p>
+        Here’s a list of the most recent additions we’ve made:
+    </p>
+    <div id="recentchanges">
+        <h3><a href="{% static 'papers/IndexTank Reddit Case Study.pdf' %}">Reddit Case Study <span style="color:red">(new!)</span></a> <small>by Manolo, February 15</small></h3>
+        <p>
+        	Learn how after a bout with infamously disappointing search, social news site Reddit found IndexTank, which easily handles the company’s huge index, delivers real-time results, and has helped re-polish their reputation.
+      	</p>
+        <h3><a href="/documentation/wordpress-plugin">Wordpress Plugin</a> <small>by Nacho, January 27</small></h3>
+        <p>
+        	You now can now add our search, including auto-complete, to your WordPress blog by following 
+        	some quick steps. Some themes may require you to make additional changes to support snippets.
+      	</p>
+        <h3><a href="/documentation/tutorial-autocomplete">Autocomplete (updated)</a> <small>by Adrian, January 18</small></h3>
+        <p>
+        	Thanks to everyone who asked for a more complete write-up of one of our more popular 
+            features. You’ll find a quick-start guide, as well as help customizing with partial highlighting.
+    	</p>
+	</div>
+	<h2>Support</h2>
+	<p>
+	    Have a question? Our team of experienced and friendly developers are quick to respond, and 
+	    never more than a few clicks away, any time. Sometimes we’re burning the midnight oil too. 
+	</p>
+	<ul>
+	    <li>Give us a shout on our live chat support (click the link at the bottom of any indextank.com page).</li>
+	    <li><a href="mailto:support@indextank.com">Email us</a> to explain your question.</li>
+	    <li>Follow <a href="http://blog.indextank.com">our blog</a> and <a href="http://twitter.com/indextank">twitter</a> to read the latest news.</li>
+	</ul>
+
+    {% include 'includes/staff-banner.html' %}
+
+{% endblock %}
+
+{% block sidebar_content %}
+    <h1>Contents</h1>
+    <ul>
+        <li class="parent">Getting Started<ul>
+            <li><a href="{% url documentation path='faq' %}">FAQ</a></li>
+            <li>Tutorials:
+                <a href="{% url documentation path='tutorial-python' %}">Python</a> |
+                <a href="{% url documentation path='tutorial-ruby' %}">Ruby</a>
+            </li>
+        </ul></li>
+        <li class="parent">Programmer's Guide</a><ul>
+            <li><a href="{% url documentation path='tutorial-autocomplete' %}">Autocomplete</a></li>
+        </ul></li>
+        <li class="parent">Reference</a><ul>
+            <li><a href="{% url documentation path='api' %}">API Specification</a></li>
+            <li><a href="{% url documentation path='query-syntax' %}">Query Syntax</a></li>
+            <li><a href="{% url documentation path='function-definition' %}">Scoring Functions</a></li>
+        </ul></li>
+        <li class="parent"><a href="{% url documentation path='clients' %}">Client Libraries</a><ul>
+            <li><a href="{% url documentation path='python-client' %}">Python</a> |
+                <a href="{% url documentation path='ruby-client' %}">Ruby</a> |
+                <a href="{% url documentation path='php-client' %}">PHP</a> |
+                <a href="{% url documentation path='java-client' %}">Java</a>
+            </li>
+        </ul></li>
+        <li class="parent"><a href="{% url documentation path='clients' %}">Plug-ins</a><ul>
+            <li><a href="{% url documentation path='heroku-addon' %}">Heroku Add-on</a></li>
+            <li><a href="{% url documentation path='wordpress-plugin' %}">Wordpress plug-in <span style="color:red">(new!)</span></a></li>
+        </ul></li>
+        <li class="parent">Demo Apps Writeups<ul>
+            <li><a href="http://blog.indextank.com/132/creating-real-time-search-engine-indextank-heroku/">Real-time search engine (Heroku + Plixi)</a></li>
+            <li><a href="http://blog.indextank.com/223/how-i-wrote-a-twitter-timeline-search-app-in-2-days/">Twitter timeline search</a></li>
+            <li><a href="http://blog.indextank.com/288/faceting/">Faceting for shopping search</a></li>
+        </ul></li>
+        <li class="parent">White papers<ul>
+            <li><a href="{% static 'papers/IndexTank WhitePaper Technical.pdf' %}">Technical</a> | <a href="{% static 'papers/IndexTank WhitePaper Commercial.pdf' %}">Commercial</a></li>
+        </ul></li>
+        <li class="last parent">Case studies<ul>
+            <li><a href="{% static 'papers/IndexTank Reddit Case Study.pdf' %}">IndexTank - Reddit <span style="color:red">(new!)</span></a></li>
+        </ul></li>
+    </ul>
+{% endcomment %}
+{% endblock %}
+

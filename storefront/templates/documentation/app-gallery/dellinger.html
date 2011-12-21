@@ -1,0 +1,30 @@
+{% extends "documentation/app-gallery/app-base.html" %}
+{% load custom_tags %}
+
+{% block picture_path %}
+    {% static 'images/developers/dellinger.jpg' %}
+{% endblock %}
+
+{% block author %}
+    by Chris Dellinger
+{% endblock %}
+
+{% block app_name %}
+    GeekSeek
+{% endblock %}
+
+{% block problem_solved %}
+    GeekSeek helps users find technical gurus on stackoverflow.com
+{% endblock %}
+
+{% block instructions %}
+    Enter a query, and we will show you which registered stackoverflow users provided the most answers containing that query term.
+{% endblock %}
+            
+{% block datasets %}
+    Stack Overflow history
+{% endblock %}
+
+{% block website %}
+    <a href="http://geekseek.heroku.com/">Go to http://geekseek.heroku.com/</a>
+{% endblock %}

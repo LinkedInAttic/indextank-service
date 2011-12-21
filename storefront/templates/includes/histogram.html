@@ -1,0 +1,45 @@
+<script type="text/javascript">
+    $(function () {
+        var raw = {{ data }};
+        var d = [];
+        var acum = 0;
+        {% if acumulated %}
+            var last = null;
+            for (i=0; i < raw.length; i++) {
+                d.push([raw[i][0]{% if time %}* 1000{% endif %}, acum]);
+                acum += raw[i][2];
+                last = raw[i][1]{% if time %}* 1000{% endif %};
+            }
+            if (last != null) {
+                d.push([last, acum]);
+            }
+        {% else %}
+            for (i=0; i<raw.length; i++) {
+                var t = raw[i][0] + raw[i][1];
+                var dt = raw[i][1] - raw[i][0];
+                dt = dt / 3600;
+                dt = dt / 24;
+                t = t/2{% if time %}* 1000{% endif %};
+                if (dt == 0) {
+                    acum += raw[i][2]; 
+                } else {
+                    var v = (acum + raw[i][2]) / dt;
+                    acum = 0;
+                    d.push([Math.round(t), v]);
+                }
+            }
+        {% endif %}
+        $.plot(
+            $("{{ target }}"), 
+            [ { data: d, lines: { fill: true }, color: '#3d9ddc'{% if acumulated %}, yaxis: 2{% endif %} } ], 
+            { 
+                {% if not acumulated %}
+                    yaxis: { ticks: [], autoscaleMargin: 0.02 },
+                {% endif %}
+                {% if time %}
+                    xaxis: { mode: "time" }, 
+                {% endif %}
+                grid: { backgroundColor: "white" } 
+            } );
+    });
+</script>

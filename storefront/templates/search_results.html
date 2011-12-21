@@ -1,0 +1,58 @@
+{% extends "common-base.html" %}
+{% load custom_tags %}
+{% load humanize %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <script type='text/javascript'>
+        var resultFormat = function(item) {
+            var titleDiv = $("<div></div>").addClass("title")
+                .append($("<a></a>").attr("href", item.url).html(item.snippet_name || item.name || ""));
+            var snippet = $("<div></div>").addClass("snippet")
+                .html(item.snippet_text || item.text || "").append(" ..").prepend(".. ");
+            var result = $("<div></div>").addClass("result")
+                .append(titleDiv)
+                .append(snippet);
+
+            return result;
+        };
+        var executedQueryFormatter = function(data) {
+            return $("<strong></strong>").html("results for \"" + data.query + "\"");
+        }
+      
+        // mixpanel query tracking
+        var queryTracker = $(new Object()).bind("Indextank.AjaxSearch.success", function(e, data){
+            if (data.matches > 0 ) { 
+                mpq.push(["track", "search", {query: data.query, results: data.matches}]);
+            } else {
+                mpq.push(["track", "search_empty", {query: data.query}]);
+            }
+        });
+
+        $(window).ready(function(){
+
+            var renderer = $("div.results").indextank_Renderer({format: resultFormat});
+            var time_div = $("div.subheader").indextank_StatsRenderer();
+            var query_div = $("#executedQuery").indextank_StatsRenderer({format: executedQueryFormatter});
+            $("#query").indextank_AjaxSearch({listeners: renderer.add(time_div).add(query_div).add(queryTracker)});
+            $("#query").trigger("Indextank.AjaxSearch.runQuery");
+        });
+    </script>
+    <style>
+        .header { font:32px arial; color:#A22522; margin-top:20px; }
+        .subheader { font:12 arial; color:#A22522; margin-bottom:20px }
+        .results { }
+        .title { font:18px arial; color:#3B6ABA; margin-top:10px; margin-bottom:5px; text-decoration:none }
+        .title:hover { text-decoration:underline }
+        .snippet { font:13px arial; margin-left:40px }
+    </style>
+{% endblock %}
+
+{% block title %}Search IndexTank.com <strong id="executedQuery"></strong>{% endblock %}
+
+{% block common_content %}
+  <div class="subheader">
+  </div>
+  <div class="results">
+  </div>
+{% endblock %}

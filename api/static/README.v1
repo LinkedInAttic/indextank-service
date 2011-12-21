@@ -1,0 +1,104 @@
+Indextank API Version 1.0
+-------------------------
+
+Each IndexTank account has its own domain which can be found in the account's dashboard.
+This domain looks like this:
+  http://<public_api_key>.api.indextank.com/
+We'll call this PUBLIC_DOMAIN
+
+This public domain can be authenticated via Basic auth:
+  http://:<private_api_key>@<public_api_key>.api.indextank.com/
+We'll call this AUTHENTICATED_DOMAIN
+
+Calls to the AUTHENTICATED_DOMAIN will return 401 if the authentication fails.
+
+Available methods
+-----------------
+
+GET http://api.indextank.com/v1                         
+    Returns this README file
+
+GET <PRIVATE_DOMAIN>/v1/indexes                         
+    Returns a JSON map from index_name to their metadata
+
+PUT <PRIVATE_DOMAIN>/v1/indexes/<index-name>            
+    Creates an index for the given name. 
+    201: It has been created and returns a JSON string with the new index code
+    204: There already existed and index for that name
+    409: The max number of indexes has been reached for the account
+                                                        
+GET <PRIVATE_DOMAIN>/v1/indexes/<index-name>            
+    Returns JSON metadata for that index 
+    404: if it doesn't exist
+                                                        
+DELETE <PRIVATE_DOMAIN>/v1/indexes/<index-name>
+    Deletes the index for the given name
+    204: if it didn't exist
+
+PUT <PRIVATE_DOMAIN>/v1/indexes/<index-name>/docs
+    Expects the following arguments in the JSON body
+     - docid: a string with the document identifier
+     - fields: map from field names to their content
+     - variables: <optional> map from variable index to their float value  
+    Indexes the given document in <index-name> using the given docid and fields
+    
+DELETE <PRIVATE_DOMAIN>/v1/indexes/<index-name>/docs
+    Expects the following arguments in the JSON body
+     - docid: a string with the document identifier
+    Removes the document from the index.
+    
+PUT <PRIVATE_DOMAIN>/v1/indexes/<index-name>/docs/variables
+    Expects the following parameters in the JSON body
+     - docid: a string with the document identifier
+     - variables: map from variable index to their float value  
+    Update the variables of the document.
+    
+GET <PRIVATE_DOMAIN>/v1/indexes/<index-name>/search
+    Searches the given query in that index
+    Required parameters in querystring:
+     - q: the query to perform
+    Optional parameters in querystring:
+     - start: integer with the first result to return (default is 0)
+     - len: integer with the number of results to return (default is 10)
+     - function: index of the relevance function to be used
+     - snippet: comma separated list of field names for which to return snippets (requires snipettinng feature)
+     - fetch: comma separated list of field names for which to return the full content (requires snipettinng feature)
+    400: if the query is invalid
+     
+PUT <PRIVATE_DOMAIN>/v1/indexes/<index-name>/promote
+    Expects the following parameters in the JSON body
+     - docid: a string with the document identifier
+     - query: the query for which to promote the document  
+    Promotes the document to the top of the given
+    
+GET <PRIVATE_DOMAIN>/v1/indexes/<index-name>/search/<query>/functions
+    Returns a list of the relevance function indexes and their definitions
+    
+PUT <PRIVATE_DOMAIN>/v1/indexes/<index-name>/search/<query>/functions/<num>
+    Expects a JSON string with the function definition in the body
+    Updates the <num> function to the given definition
+    400: if the definition is invalid
+
+DELETE <PRIVATE_DOMAIN>/v1/indexes/<index-name>/search/<query>/functions/<num>
+    Removes the definition of the <num> function
+
+GET <PRIVATE_DOMAIN>/v1/indexes/<index-name>/stats
+    Returns usage stats for the given index
+
+GET <PRIVATE_DOMAIN>/v1/indexes/<index-name>/query_log
+    Returns a portion of the query log for the given index
+    
+GET <PUBLIC_DOMAIN>/v1/indexes/<name>/autocomplete
+    Required parameters in querystring:
+     - fragment: the fragment for which to provide autocomplete suggestions
+    Optional parameters in querystring:
+     - callback: the name of the callback function. This causes the output to
+                 be JSONP
+    Returns a JSON with the suggested queries for the given fragment
+    Intended to be used with AJAX.
+    NOTE: this request in unauthenticated since it needs to be made public
+          to function. if an authenticated request is made it will be
+          rejected to prevent private key exposition. If you suspect your
+          key has been expose please regenerate it in your dashboard and
+          update your clients accordingly.
+ 

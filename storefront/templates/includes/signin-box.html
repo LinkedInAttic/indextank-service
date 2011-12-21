@@ -1,0 +1,13 @@
+<ul>
+  <li class="first"><a id="signin-link" href="http{% if not LOCAL %}s{% endif %}://{{ request.get_host }}{% url login %}" onclick="$('#signin').toggleClass('expanded'); $(this).focus()" tabindex="1">Sign in</a></li>
+  {#<li><a id="signin-link" href="{% url get_started %}"tabindex="2">Sign up</a></li>#}
+</ul>
+<div id="signin" style="display: none">
+    <a id="signin-link" href="javascript:void(0)" onclick="$('#signin').toggleClass('expanded'); $(this).focus()" tabindex="1">Sign in</a>
+    <form action="http{% if not LOCAL %}s{% endif %}://{{ request.get_host }}{% url login %}" method="post">
+        <input id="signinemail" name="email" type="text" class="empty" emptyvalue="Email" tabindex="2"/>
+        <input name="password" type="password" class="empty" emptyvalue="Password" tabindex="3"/>
+        <a href="{% url forgot_password %}" tabindex="5">Forgot password?</a>
+        <input type="submit" class="button" value="Log in" tabindex="4"/>
+    </form>
+</div>

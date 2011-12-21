@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% load messages %}
+
+{% block content %}
+    <div id="common-bg-top">
+    	<div id="short-sidebar-container">
+    		{% block presidebar %}{% endblock %}
+		    <div class="sidebar">
+		        {% block sidebar_content %}{% endblock %}
+				<div style="clear: both"></div>
+			</div>
+    		{% block postsidebar %}{% endblock %}
+			<div id="leftside">
+	            <div id="common" class="{% block expandcontents %}{% endblock %} ">
+                    {% render_messages messages %}
+	                {% block common_content %}{% endblock %}
+	            </div>
+	        </div>
+		</div>
+    </div>
+	<div style="clear: both"></div>
+{% endblock %}

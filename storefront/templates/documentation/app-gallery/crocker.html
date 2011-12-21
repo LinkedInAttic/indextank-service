@@ -1,0 +1,30 @@
+{% extends "documentation/app-gallery/app-base.html" %}
+{% load custom_tags %}
+
+{% block picture_path %}
+    {% static 'images/developers/crocker.jpg' %}
+{% endblock %}
+
+{% block author %}
+    by Jacques Crocker
+{% endblock %}
+
+{% block app_name %}
+    HelpShelf
+{% endblock %}
+
+{% block problem_solved %}
+    Allows you to search across your technical library of ebooks
+{% endblock %}
+           
+{% block instructions %}
+    Create an account, and start uploading some books. After it's done indexing your books you should be able to search across everything.
+{% endblock %}
+            
+{% block datasets %}
+    Uploaded PDFs
+{% endblock %}
+
+{% block website %}
+    <a href="http://helpshelf.com/">Go to http://helpshelf.com/</a>
+{% endblock %}

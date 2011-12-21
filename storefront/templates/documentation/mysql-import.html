@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load custom_tags %}
+
+{% block wrapper_class %}nosidebar{% endblock %}
+
+{% block content %}
+<div class="module"></div>
+
+<div class="module x">
+
+<h3>MySQL import</h3>
+
+<div class="docblock">
+    <p>
+       The MySql import tool allows you to feed your MySql database's contents to an IndexTank index without much effort. 
+       Download the importer and configure the following settings section:
+       
+	  <div class="roundbox">
+	    <div style="font-weight: bold; font-size: 120%; " class="">Download client</div>
+	    <ul>
+	      <li><a href="{% static 'mysql_import.py.gz' %}">mysql_import.py.gz</a></li>
+	      <li><a href="{% static 'mysql_import.zip' %}">mysql_import.zip</a></li>
+	    </ul>
+	  </div>
+
+      <div class="roundbox" style="margin-top: 20px">
+	    <div style="font-weight: bold; font-size: 120%;" class="">Importer settings</div>
+{% box 'code' %}
+<pre class="sh_python">
+   # The results for this query will be the indexed documents
+   # considering the field names in the query as the field names
+   # for the index.
+   # One of the fields must have the "document_id" alias to 
+   # indicate that it is the DOCUMENT IDENTIFIER field.
+
+   SELECT_QUERY = '&lt;QUERY&gt;'
+
+   # Database config  
+   DATABASE_HOST = '&lt;HOST&gt;'
+   DATABASE_USER = '&lt;USER&gt;'
+   DATABASE_PASSWORD = '&lt;PASS&gt;'
+   DATABASE_SCHEMA = '&lt;DATABASE&gt;'
+
+   # IndexTank config
+   API_KEY = '&lt;YOUR API KEY&gt;'
+   INDEX_NAME = '&lt;YOUR INDEX CODE&gt;'
+</pre>
+{% endbox %}
+		  </div>
+        
+    </p>
+</div>
+
+</div>
+
+{% endblock %}
+

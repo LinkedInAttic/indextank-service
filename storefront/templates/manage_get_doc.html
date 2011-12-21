@@ -1,0 +1,33 @@
+<small>
+<p><b>DOC ID</b></p>
+<ul>
+  <li>
+    <div style="width: 410px; max-height: 90px; margin-bottom: .4em; overflow: auto">{{docid}}</div>
+  </li>
+</ul>
+<p><b>FIELDS</b></p>
+<ul>
+	{% for k,v in doc.fields.items %}
+	    <li><b>{{k}}</b></li>
+	    <li>
+	      <div style="margin-left: 10px; width: 400px; max-height: 90px; margin-bottom: .4em; overflow: auto">{{v}}</div>
+      </li>
+	{% endfor %}
+</ul>
+<p><b>VARIABLES</b></p>
+<ul>
+	{% for k,v in doc.variables.items %}
+	    <li><b>{{k}}</b>: {{v}}</li>
+  {% empty %}
+      <li>- None -</li>
+	{% endfor %}
+</ul>
+<p><b>CATEGORIES</b></p>
+<ul>
+	{% for k,v in doc.categories.items %}
+	    <li><b>{{k}}</b>: {{v}}</li>
+  {% empty %}
+      <li>- None -</li>
+	{% endfor %}
+</ul>
+</small>

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load custom_tags %}
+{% load humanize %}
+{% block content %}
+
+<html>
+  <head>
+    <script type='text/javascript' src='http://www.google.com/jsapi'></script>
+    <script type='text/javascript'>
+      google.load('visualization', '1', {'packages':['annotatedtimeline']});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('date', 'Date');
+        data.addColumn('number', 'Load Average');
+        data.addRows([
+            
+          {% for info in load_infos %}
+          [new Date({{ info.timestamp|date:'Y'}},{{ info.timestamp|date:'n'}} - 1,{{ info.timestamp|date:'j, H, i'}}), {{ info.load_average }}],
+          {% endfor %}
+        ]);
+
+        var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
+        chart.draw(data, {displayAnnotations: true, dateFormat: 'MMMM dd, yyyy - HH:mm'});
+      }
+    </script>
+  </head>
+
+  <body>
+      <div class="module">
+  </div>
+  
+    <div class="main" style="width: 900px">
+        <div class="module x">
+            <h3>Worker {{ worker.id }} ({{ worker.wan_dns }} - {{ worker.instance_name }}), load stats</h3>
+            <p>
+                Check the load average history for the worker.<br>
+            </p>
+            <div style="text-align: center;">
+            </div>
+            </p>    
+        </div>
+    </div>
+    <div style="clear:both">
+    </div>
+
+    <div class="roundbox" style="padding: 0px; background-color: #ebebeb">
+        <table width="100%" border="0" cellpadding="10" cellspacing="10" class="indextable noborder">
+            <tbody>
+                <tr class="round_b clear" style="background-color: transparent;">
+                    <td class="first" align="left">
+                        Load Average History
+                    </td>
+                    <td align="center" class="last" width="150"  style="background: url({% static 'images/tableheader.png' %}) no-repeat 30px">
+                        &nbsp;
+                    </td>
+                    
+                </tr>
+                <tr style="background-color: {% cycle 'white' '#ebebeb' %}">
+                    <td align="center" style="border-right: none; padding: 10px 10px;" colspan="2">
+                        <div id='chart_div' style='width: 900px; height: 240px;'></div>
+                    </td>
+                </tr>
+                <tr class="round_g" style="background-color: transparent;">
+                    <td class="first" align="right">
+                        &nbsp;
+                    </td>
+                </tr>
+                
+            </tbody>
+        </table>
+    </div>
+
+    
+  </body>
+</html>
+
+{% endblock %}

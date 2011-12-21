@@ -1,0 +1,183 @@
+{% extends "common-base.html" %}
+
+{% load custom_tags %}
+{% load messages %}
+
+{% block extrahead %}
+
+{% endblock %}
+
+{% block container_class %}{{ block.super }} documentation{% endblock %}
+
+{% block right_content %}
+  {% box 'table' %}
+    <ul>
+      <li><h2>Table of contents</h2></li>
+      <li><a href="#about">About Autocomplete</a></li>
+      <li><a href="#setup">Setup</a></li>
+      <li><a href="#quickstart">Quick Start: Copy & Paste</a></li>
+      <li class="last"><a href="#more_info">More Information</a></li>
+    </ul>
+  {% endbox %}
+
+{% endblock %}
+
+{% block title %}AutoComplete Tutorial{% endblock %}endblock %}
+
+{% block common_content %} 
+<div id="tutorial-main" class="main">
+    
+<p><i>How to implement autocomplete, a user convenience feature</i></p>
+<h2 id="about">About Autocomplete</h2>
+<p>To make life easier for users of your IndexTank-powered search application,
+add <i>autocomplete</i> functionality. With autocomplete, your
+app predicts what search term the user is trying to enter while the user is
+still typing. A list of suggestions is displayed and constantly updated as the
+user types more characters, until the user is able to pick the correct term
+from the list.</p>
+<h3>Why Use Autocomplete?</h3>
+<p>Selecting a term rather than typing every character
+saves users unnecessary keystrokes, increases perceived
+ease-of-use, and makes users happy.
+It also reduces spelling errors that can adversely affect search result quality.
+Finally, autocomplete is now so common in search applications, its absence
+might be surprising to users. Luckily, it's not too difficult to set up.</p>
+<h3>How It Works</h3>
+<p>Autocomplete is performed by two components:
+<ul>
+    <li>Client, which sends requests with a partial query term.
+        This is the part you need to code, and this page shows you how.</li>
+    <li>Server, which responds with a list of matches
+        for the partial query string.
+        IndexTank provides this part. If you're curious about how the server handles data, see
+        <a href="http://indextank.com/documentation/api#autocomplete">API Specification</a>.</li>
+</ul>
+<p>The client and server exchange data in JSON/JSONP format.
+This is handled through jQuery's AJAX support.</p>
+<h2 id="setup">Setup</h2>
+<p><i>Before you start, you'll need to get a few things ready</i></p>
+<h3>Tools for This How-To</h3>
+<p>In this page, we'll show how to implement autocomplete by using:</p>
+<ul>
+    <li><b>JavaScript</b>
+        <p>You don't have to do anything to set up JavaScript, but
+        users will need to have JavaScript enabled in their browsers
+        for the autocomplete scripts to work.</p>
+    </li>
+    <li><b>jQuery, jQuery UI and Indextank-jQuery</b>
+        <p>In <a href="#quickstart">Quick Start</a>, we show how to get
+        jQuery, jQuery UI and indextank-jQuery set up.</p>
+    </li>
+    <li><b>Ruby on Rails
+        <a href="http://corelib.rubyonrails.org/classes/ERB.html" target="_blank">ERB</a>
+        templating</b> (optional)
+        <p>Rails ERB is used to construct the form containing the search box
+        where autocomplete will appear to the user, but you can build the form
+        using your own favorite technique.</p></li>
+</ul>
+<h3>Know Your Public URL</h3>
+<p>Every index on IndexTank has a unique public URL,
+provided for the purpose of interacting with clients.
+You'll need to use this URL in requests from your autocomplete client.
+Find the public URL on the <a href="/dashboard">Dashboard</a>.
+<p>In general, a public URL has the form:</p>
+
+{% box 'code' %}
+<pre class="sh_java">
+http://&lt;public part&gt;.api.indextank.com
+</pre>
+{% endbox %}
+
+<p>Example:</p>
+
+{% box 'code' %}
+<pre class="sh_java">
+http://123abc.api.indextank.com
+</pre>
+{% endbox %}
+
+
+<h2 id="quickstart">Quick Start: Copy & Paste</h2>
+
+<p><i>Tweak the following code snippets for your
+needs, and you're ready to go</i></p>
+
+<p>For the client side implementation it's recommended (but not required) that you use 
+<a href="http://github.com/flaptor/indextank-jquery/" target="_blank">Indextank-jQuery</a>
+
+<p><span style="font-weight:bold">(Optional) Replace the value</span> <code>flick</code>
+with another jQuery UI theme name to change the appearance of the widget.
+See <a href="http://jqueryui.com/docs/Theming" target="_blank">Theming jQuery UI</a>.</p>
+
+{% box 'code' %}
+<pre class="sh_java">
+&lt;script src='https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js' type='text/javascript'&gt;&lt;/script&gt;
+&lt;script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js' type='text/javascript'&gt;&lt;/script&gt;
+&lt;script src='https://raw.github.com/flaptor/indextank-jquery/master/jquery.indextank.ize.js' type='text/javascript'&gt;&lt;/script&gt;
+&lt;script src='https://raw.github.com/flaptor/indextank-jquery/master/jquery.indextank.autocomplete.js' type='text/javascript'&gt;&lt;/script&gt; 
+&lt;link href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/themes/flick/jquery-ui.css' rel='stylesheet'&gt; 
+</pre>
+{% endbox %}
+
+<p>The following code sets up some values for later use.
+<p><span style="font-weight:bold">Replace the values</span> <code>yourPublicURL</code>
+and <code>yourIndexName</code> with your own values
+from your <a href="/dashboard">Dashboard</a>.
+
+{% box 'code' %}
+<pre class="sh_java">
+&lt;script type='text/javascript'&gt; 
+var publicApiUrl = "yourPublicURL";
+var indexName = "yourIndexName";
+&lt;/script&gt; 
+</pre>
+{% endbox %}
+
+<p>The following code shows the "document ready" callback function,
+which enables autocomplete suggestions on the input box. You can change <b>#myform</b> and <b>#query</b> to match
+your templates structure.</p>
+
+{% box 'code' %}
+<pre class="sh_java">
+&lt;script type='text/javascript'&gt;
+
+$(document).ready(function(){
+    // let the form be 'indextank-aware'
+    $("#myform").indextank_Ize(publicApiUrl, indexName);
+    // let the query box have autocomplete
+    $("#query").indextank_Autocomplete();
+});
+
+
+&lt;/script&gt; 
+</pre>
+{% endbox %}
+
+<p>Finally, the following code shows the form with the search box, with id <code>query</code>
+This form is written using Ruby on Rails
+<a href="http://corelib.rubyonrails.org/classes/ERB.html" target="_blank">ERB</a>.
+If you already have a form set up, you can use it
+instead of this example,
+as long as the search box name in your form matches up
+with the rest of our sample code
+(change your search box's id to <code>query</code>, and your form's id to <code>myform</code>).
+</p>
+
+{% box 'code' %}
+<pre class="sh_java">
+&lt;%= form_tag search_path, :method =&gt; :get do %&gt;
+  &lt;%= text_field_tag :query %&gt;
+  &lt;button type="submit"&gt;Search&lt;/button&gt;
+&lt;% end %&gt;
+</pre>
+{% endbox %}
+
+
+<h2 id="more_info">More Information</h2>
+<ul>
+    <li><a href="http://github.com/flaptor/indextank-jquery/">indextank-jQuery plugins</a></li>
+    <li><a href="/documentation/api#autocomplete">IndexTank Autocomplete API Specification</a></li>
+</ul>
+
+</div>  
+{% endblock %}

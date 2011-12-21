@@ -1,0 +1,301 @@
+{% load custom_tags %}
+{% load humanize %}
+
+<html>
+    <head>
+        <title>RESOURCE MAP</title>
+        <script type="text/javascript" src="{% static 'js/jquery-1.3.2.min.js' %}"></script>
+        <style>
+            .worker, #sidebar {
+                display: block;
+                -webkit-border-radius: 5px;
+                -moz-border-radius: 5px;
+                border: solid 2px gray;
+                background: #eee;
+                padding: 10px;
+                margin: 10px;
+            }
+            .worker {
+                margin-right: 450px;
+            }
+            #sidebar {
+                width: 400px;
+                margin-top: 0px;
+                color: gray;
+                font-size: 12px;
+                font-family: sans-serif;
+                position: fixed;
+                right: 10px;
+            }        
+            .worker h1, #sidebar h1 {
+                font-family: sans-serif;
+                font-size: 15px;
+                margin: 0 0 10px 0;
+                color: gray;
+            }
+            #sidebar .selected {
+                font-weight: bold;
+                color: black;
+            } 
+            .deploy {
+                display: inline-block;
+                margin: 0 5px 5px 0;
+                padding: 4px;
+                -webkit-border-radius: 5px;
+                -moz-border-radius: 5px;
+                border: solid 1px black;
+                background: gray;
+                font-family: sans-serif;
+                font-size: 12px;
+                color: white;
+                text-shadow: 0px 0px 4px black;
+                width: 100px;
+                text-align: left;
+                white-space: nowrap;
+                overflow-x: hidden;
+            }        
+            .deploy.orphan {
+                background: #a44;
+            }
+            .deploy.highlight {
+                border: solid 1px blue;
+            }
+            .deploy .index {
+                font-size: 11px;
+                font-weight: bold;
+                padding: 2px 5px;
+                background: #444;
+                color: white;
+                margin: -4px -4px 4px -4px;
+            }
+            .deploy.sCONTROLLABLE .index {
+            	background: #282;
+            }
+            .deploy.sMOVING .index {
+            	background: #228;
+            }
+            .deploy.sRECOVERING .index {
+            	background: #772;
+            }
+            .deploy.sINITIALIZING .index {
+            	background: #822;
+            }
+            .deploy.highlight .index {
+                background: #037;
+            }
+            .deploy.highlight .use {
+                background: #5af;
+            }
+            .deploy i {
+                clear: both;
+                font-size: 10px;
+            }
+            .deploy .package {
+                display: block;
+                font-size: 10px;
+                text-align: right;
+                font-weight: bold;
+                color: #cfc;
+            }
+            .use {
+                background: silver;
+                height: 14px;
+                margin: 4px -4px -4px -4px;
+                text-align: right;
+            }
+            .use.worker_ram {
+                background: silver;
+                margin: -10px -10px 5px -10px;
+                height: 22px;
+                text-align: right;
+            }
+            .use .used {
+                background: #f88;
+                height: 14px;
+            }
+            .use.ram .used {
+                background: #88f;
+                height: 14px;
+            }
+            .use.worker_ram .used {
+                background: #fa6;
+                height: 22px;
+            }
+            .use .text {
+                margin: -14px 0 2px;
+                text-align: center;
+                font-family: sans-serif;
+                font-size: 10px;
+                font-weight: bold;
+                color: white;
+                text-shadow: 0px 0px 4px black;
+            }
+            .use.worker_ram .text {
+                margin: -22px;
+                font-size: 18px;
+            }
+            .login {
+                cursor: pointer;
+                font-weight: bold;
+                font-size: 11px;
+            }
+            .login:hover {
+                color: yellow;
+            }
+            body { margin: 0; padding: 0; }
+            .deploy .detail {
+                display: none;
+            }
+            .config {
+                font-size: 11px;
+                color: gray;
+                margin-left: 15px;
+                border: solid 1px gray;  
+                border-collapse: collapse;
+            }
+            .config tr {
+                border-bottom: solid 1px gray;
+                border-collapse: collapse;
+            }
+            .config th {
+                text-align: right
+                padding: 2px;
+            }
+            .config td {
+                padding: 2px;
+            }
+        </style>
+        <script>
+            $(function() {
+                $('.packagefilter').click(function(e) {
+                    var code = $(e.target).attr('code');
+                    $('.deploy:not(.p' + code + ')').hide();
+                });  
+                $('.packagefilter').hover(
+                    function(e) {
+                        var code = $(e.target).attr('code');
+                        $('.deploy.p' + code).addClass('highlight');
+                    },
+                    function(e) {
+                        var code = $(e.target).attr('code');
+                        $('.deploy.p' + code).removeClass('highlight');
+                    }
+                ); 
+
+ 
+                $('.filterempty').click(function(e) {
+                    $('.deploy.empty').toggle();
+                    $('.filterempty').toggleClass("selected");
+                });  
+                
+                $('.filtertiny').click(function(e) {
+                    $('.deploy.tiny').toggle();
+                    $('.filtertiny').toggleClass("selected");
+                }); 
+                
+                $('.filterdemo').click(function(e) {
+                    $('.deploy.demo').toggle();
+                    $('.filterdemo').toggleClass("selected");
+                }); 
+                
+                $('.filterfullsize').click(function(e) {
+                    $('.deploy.fullsize').toggle();
+                    $('.filterfullsize').toggleClass("selected");
+                }); 
+
+
+ 
+                $('.unfilter').click(function(e) {
+                    $('.deploy').show();
+                }); 
+
+ 
+                $('.packagefilter').each(function() {
+                    var p = $(this);
+                    var code = p.attr('code');
+                    var n = $('.p'+code).length;
+                    p.text(p.text() + ' (' + n + ')');
+                    if (n == 0) p.hide();
+                });
+
+            });
+
+
+            var makeDeploysClickable = function () {
+                $('.deploy').click(function(e) {
+                    $('#detail').empty().hide();
+                    $(this).find('.detail').clone().appendTo('#detail');
+                    $('#detail').fadeIn(1000);
+                });
+
+                $('.login').click(function(e) {
+                    var f = $('form[name="autologin"]')[0];
+                    f.password.value = $(e.target).attr('apiurl');
+                    f.submit();
+                });  
+            }
+
+            var makeWorkerRefresheable = function(worker_id) {
+                $('span.w'+worker_id+' span.refresh').click(function(e) {
+                    loadWorkerMap(worker_id);
+                });
+            }
+
+            function redeploy(index_id, deploy_id, worker_id) {
+                var f = $('form[name="redeploy"]')[0];
+                f.index_id.value = index_id;
+                $.post(f.getAttribute('action'), $(f).serialize(), function(){loadWorkerMap(worker_id)});
+               
+                // TODO poll index owner, update worker that received the move.
+            }
+
+            function loadWorkerMap(worker_id){
+                $("#worker-"+worker_id).load('/worker_resource_map/'+worker_id, makeDeploysClickable);
+            }
+        </script>
+    </head>
+    <body>
+        <div id="sidebar">
+            <h1>Sidebar</h1>
+            <div id="detail">
+                
+            </div>
+            <b>Workers</b>
+            <ul>
+            {% for w in workers %}
+                <li><a href="#worker-{{w.id}}">Worker {{w.id}}</a></li>
+            {% endfor %}
+            </ul>
+            <p class="unfilter">Remove filters</p>
+            <b>Packages</b>
+            <ul>
+                {% for p in packages %}
+                    <li class="packagefilter" code="{{ p.code }}">{{ p.code }}</li>
+                {% endfor %}
+            </ul>
+            <b>Size</b>
+            <ul>
+                <li class="filterempty">Empty</li>
+                <li class="filtertiny">Tiny</li>
+                <li class="filterdemo">Demo</li>
+                <li class="filterfullsize">Full size</li>
+            </ul>
+        </div>
+        {% for w in workers %}
+            <a name="worker-{{w.id}}"/>
+            <div id="worker-{{w.id}}"></div>
+            <script>loadWorkerMap({{w.id}});</script>
+        {% endfor %}
+       
+
+        <form name="autologin" target="_blank" method="post" action="https://indextank.com/login">
+            <input type="hidden" name="email" value="apiurl@indextank.com"></input>
+            <input type="hidden" name="password"></input>
+        </form>
+        
+        <form name="redeploy" target="_blank" method="post" action="">
+            <input type="hidden" name="task" value="redeploy"></input>
+            <input type="hidden" name="index_id"></input>
+        </form>
+    </body>
+</html>

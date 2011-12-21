@@ -1,0 +1,14 @@
+{% extends "common-base.html" %}
+{% load custom_tags %}
+
+{% block title %}Quotes{% endblock %}endblock %}
+
+{% block common_content %}
+    {% with "1" as showall %}
+        <h2>From twitter</h2>
+        {% include 'includes/twitter-banner.html' %}
+        <h2>From contestants</h2>
+        {% include 'includes/staff-banner.html' %}
+    {% endwith %}
+{% endblock %}
+

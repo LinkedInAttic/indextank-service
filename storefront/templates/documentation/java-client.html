@@ -1,0 +1,356 @@
+{% extends "documentation/client-base.html" %}
+{% load custom_tags %}
+
+{% block language-name %}java{% endblock %}
+{% block gist %}910790{% endblock %}
+
+
+{% block download-box %}
+<ul>
+    <li>
+        Stable Version - 
+        <a href="http://github.com/flaptor/indextank-java/zipball/stable">zip</a> |
+        <a href="http://github.com/flaptor/indextank-java/tarball/stable">tgz</a>
+    </li>
+    <li>
+        <a href="http://github.com/flaptor/indextank-java/downloads">All versions</a>
+    </li>
+    <li>
+        <a href="http://github.com/flaptor/indextank-java">Source code (github)</a>
+    </li>
+    <li style="margin-top:30px; margin-bottom:-20px;">
+        <strong>Maven artifact:</strong>
+    <pre style="font-family: 'Courier new'; font-size: 12px; color: yellow;">
+&lt;groupId&gt;com.indextank&lt;/groupId&gt;
+&lt;artifactId&gt;indextank-java&lt;/artifactId&gt;
+&lt;version&gt;1.0.9&lt;/version&gt;</pre>
+    </li>
+</ul>
+{% endblock %}
+
+
+{% block summary-title %}Java client{% endblock %}
+
+
+{# <!-------- INSTANTIATE CLIENT --------> #}
+{% block code-instatiate %}
+import com.flaptor.indextank.apiclient.IndexTankClient;
+import com.flaptor.indextank.apiclient.IndexTankClient.Index;
+import com.flaptor.indextank.apiclient.IndexTankClient.Query;
+
+...
+
+IndexTankClient client = new IndexTankClient("&lt;YOUR API URL HERE&gt;");
+Index index = client.getIndex("&lt;YOUR INDEX NAME HERE&gt;");
+{% endblock %}    
+
+
+{# <!-------- SIMPLE INDEXING --------> #}
+{% block code-simple-indexing %}
+String documentId = "&lt;YOUR DOCUMENT ID&gt;";
+String documentText = "&lt;THE TEXTUAL CONTENT&gt;";
+
+Map&lt;String, String> fields = new HashMap&lt;String, String&gt;();
+fields.put("text", documentText);
+
+index.addDocument(documentId, fields);
+{% endblock %}    
+
+
+{# <!-------- SIMPLE SEARCHING --------> #}
+{% block code-simple-searching %}
+import com.flaptor.indextank.apiclient.IndexTankClient.SearchResults;
+
+...
+
+String query = "&lt;YOUR QUERY STRING&gt;";
+
+SearchResults results = index.search(Query.forString(query));
+
+System.out.println("Matches: " + results.matches);
+
+for (Map&lt;String, Object&gt; document : results.results) {
+    System.out.println("doc id: " + document.get("docid"));
+}
+{% endblock %}    
+
+{# <!-------- SNIPPET SEARCHING --------> #}
+{% block code-snippet-searching %}
+results = index.search(Query.forString(query) 
+                        .withSnippetFields("text") 
+                        .withFetchFields("title", "timestamp"));
+
+
+System.out.println("Matches: " + results.matches);
+for (Map&lt;String, Object&gt; document : results.results) {
+    System.out.println("id: " + document.get("docid") + 
+                       ";title: " + document.get("title") +
+                       ";timestamp: " + document.get("timestamp") +
+                       ";snippet: " + document.get("snippet_text"));
+}
+{% endblock %}    
+
+{% block code-simple-deleting %}
+String documentId = "&lt;YOUR DOCUMENT ID&gt;";
+
+index.deleteDocument(documentId);
+{% endblock %}    
+
+{# <!-------- MULTIPLE FIELD INDEXING --------> #}
+{% block code-multiple-field-indexing %}
+// INDEX MULTIPLE FIELDS
+String title = "&lt;DOCUMENT TITLE&gt;";
+String author = "&lt;DOCUMENT AUTHOR&gt;";
+
+fields = new java.util.HashMap&lt;String, String&gt;();
+fields.put("text", documentText);
+fields.put("title", title);
+fields.put("author", author);
+
+index.addDocument(documentId, fields);
+{% endblock %}    
+
+
+{# <!-------- FILTER BY AUTHOR --------> #}
+{% block code-filter-by-author %}
+// FILTER TO USER'S CONTENT
+results = index.search(Query.forString(query + " author:" + author));
+{% endblock %}    
+
+
+{# <!-------- INDEX WITH TIMESTAMP --------> #}
+{% block code-index-with-timestamp %}
+fields.put("timestamp", 
+            Long.toString(System.currentTimeMillis() / 1000L));
+index.addDocument(documentId, fields);
+{% endblock %}    
+
+
+{# <!-------- INDEX WITH BOOSTS --------> #}
+{% block code-index-with-boosts %}
+// INDEX DOCUMENT WITH VARIABLES
+Float rating = 0.5f;
+Float reputation = 1.5f;
+Float visits = 10.0f;
+
+Map&lt;Integer, Float&gt; variables = new HashMap&lt;Integer, Float&gt;();
+variables.put(0, rating);
+variables.put(1, reputation);
+variables.put(2, visits);
+
+index.addDocument(documentId, fields, variables);
+{% endblock %}    
+
+{# <!-------- UPDATE BOOSTS --------> #}
+{% block code-update-boosts %}
+// UPDATE DOCUMENT VARIABLES ONLY
+variables.put(0, newRating);
+variables.put(2, newVisits);
+
+index.updateVariables(documentId, variables);
+{% endblock %}    
+
+{# <!-------- REFEDINE FUNCTIONS --------> #}
+{% block code-redefine-functions %}
+// FUNCTION 0 : sorts by most recent
+index.addFunction(0, "-age");
+
+// FUNCTION 1 : standard textual relevance
+index.addFunction(1, "relevance");
+
+// FUNCTION 2 : sorts by rating
+index.addFunction(2, "doc.var[0]");
+
+// FUNCTION 3 : sorts by reputation
+index.addFunction(3, "d[1]"); 
+
+// FUNCTION 4 : advanced function
+index.addFunction(4, "log(d[0]) - age/50000");
+{% endblock %}
+
+
+{# <!-------- SEARCH WITH RELEVANCE FUNCTIONS --------> #}
+{% block code-search-with-relevance-function %}
+index.search(Query.forString(query).withScoringFunction(2));
+{% endblock %}
+
+{# <!-------- QUERY-DELETE FUNCTION --------> #}
+{% block code-query-delete %}
+index.deleteBySearch(Query.forString(query))
+{% endblock %}
+
+{# <!-------- PROXIMITY SCORING FUNCTION --------> #}
+{% block code-proximity-scoring-function %}
+// FUNCTION 5 : inverse distance calculated in miles
+index.addFunction(5, "-mi(d[0], d[1], q[0], q[1])");
+{% endblock %}
+
+
+{# <!-------- SEARCH WITH GEO --------> #}
+{% block code-search-with-geo %}
+results = index.search(Query.forString(query)
+                   .withScoringFunction(5)
+                   .withQueryVariable(0, latitude)
+                   .withQueryVariable(1, longitude)); 
+{% endblock %}
+
+{# <!-------- RANGE QUERIES --------> #}
+{% block code-range-queries %}
+/*
+  In this sample, the results will only include documents 
+  whose variable #0 value is between 5 and 10 or between 15
+  and 20, and variable #1 value is less than or equal to 3
+*/
+results = index.search(Query.forString(query)
+           .withDocumentVariableFilter(0, 5d, 10d)
+           .withDocumentVariableFilter(0, 15d, 25d)
+           .withDocumentVariableFilter(1, Double.NEGATIVE_INFINITY, 3));
+
+// The same applies to functions
+results = index.search(Query.forString(query)
+           .withFunctionFilter(0, 0.5d, Double.POSITIVE_INFINITY)
+{% endblock %}
+
+{% block batch-indexing %}
+
+    <p>
+        When populating an index for the first time or when a batch task for adding documents makes sense, 
+        you can use the batch indexing call. 
+    </p>
+    <p>
+        When using batch indexing, you can add a large batch of documents to the Index with just one call. 
+        There is a limit to how many documents you can add in a single call, though. This limit is not 
+        related to the number of documents, but to the total size of the resulting HTTP request, which 
+        should be less than 1MB. 
+    </p>
+    <p>
+        Making a batch indexing call reduces the number of request needed (reducing the latency introduced by round-trips)
+        and increases the maximum throughput which can be very useful when initially loading a large index. 
+    </p>    
+    <p>
+        The indexing of individual documents may fail and your code should handle that and retry indexing them. If there
+        are formal errors in the request, the entire batch will be rejected with an exception.     
+    </p>
+    <p>
+        In the JAVA client, you can use a convenient Document object for the documents and you can pass a simple Iterable to the addDocuments() method.      
+    </p>
+    
+    <p></p>
+
+{% box 'code' %}
+<pre class="sh_java">
+List&lt;Document&gt; documents = new ArrayList&lt;Document&gt;();
+
+Map&lt;String, String&gt; fields1 = new HashMap&lt;String, String&gt;();
+fields1.put("text", "document 1 text");
+
+// Document is built with:
+// - String docId
+// - Map&lt;String, String&gt; fields
+// - Map&lt;Integer, Float&gt; variables 
+// - Map&lt;String, String&gt; facetingCategories
+Document document1 = new Document("1", fields1, null, null);
+documents.add(document1); 
+
+Map&lt;String, String&gt; fields2 = new HashMap&lt;String, String&gt;();
+fields1.put("text", "document 2 text");
+Map&lt;Integer, Float&gt; variables2 = new HashMap&lt;Integer, Float&gt;();
+variables2.put(1, 0.4f);
+Document document2 = new Document("2", fields2, variables2, null);
+documents.add(document2); 
+
+BatchResults results = index.addDocuments(documents);
+</pre>
+{% endbox %}
+
+    <p>
+         The <code>results</code> object provides you with a way to retry when some of the documents failed to be indexed:
+    </p>
+
+{% box 'code' %}
+<pre class="sh_java">
+Iterable&lt;Document&gt; failedDocuments = results.getFailedDocuments();
+index.addDocuments(failedDocuments);
+</pre>
+{% endbox %}
+{% endblock %}
+
+
+{# <!-------- BULK DELETE --------> #}
+{% block code-bulk-delete %}
+List&lt;String&gt; docids = new ArrayList&lt;String&gt;();
+docids.add("doc1");
+docids.add("doc2");
+docids.add("doc3");
+docids.add("doc4");
+
+BulkDeleteResults results = index.deleteDocuments(docids);
+{% endblock %}
+
+{% block code-bulk-delete-failed %}
+Iterable&lt;String&gt; failedDocids = results.getFailedDocids();
+index.deleteDocuments(failedDocuments);
+{% endblock %}
+
+
+{# <!-------- UPDATE CATEGORIES --------> #}
+{% block code-update-categories %}
+Map&lt;String, String&gt; categories = new HashMap&lt;String, String&gt;();
+categories.put("priceRange", "$0 to $299");
+categories.put("articleType", "camera");
+
+index.updateCategories(docId, categories); 
+{% endblock %}
+
+{# <!-------- SAMPLE FACETS RESULT --------> #}
+{% block code-sample-facets-result %}
+Map&lt;String, Map&lt;String, Integer&gt;&gt; facets = results.facets;
+
+...
+
+{ 
+    'articleType': {
+        'camera': 5,
+        'laptop': 3
+    },
+    'priceRange': {
+        '$0 to $299': 4,
+        '$300 to $599': 4
+    }
+}
+{% endblock %}
+
+{# <!-------- FACETING FILTERING --------> #}
+{% block code-faceting-filtering %}
+Map&lt;String, List&lt;String&gt;&gt; filters = 
+        new HashMap&lt;String, List&lt;String&gt;&gt;();
+filters.put("priceRange", 
+            Arrays.asList("$0 to $299", "$300 to $599"));
+filters.put("articleType", 
+            Arrays.asList("camera"));
+
+results = index.search(Query.forString(query)
+                        .withCategoryFilters(filters));
+{% endblock %}
+
+
+
+
+{# <!-------- INDEX CREATION --------> #}
+{% block code-index-creation %}
+
+// this parameter allows you to create indexes with public search enabled.
+// default is false. 
+
+boolean publicSearchEnabled = false;
+Index index = client.createIndex("test_name", publicSearchEnabled);
+
+while (!index.hasStarted()) {
+  Thread.sleep(300);
+}
+{% endblock %}
+{# <!-------- INDEX DELETION --------> #}
+{% block code-index-deletion %}
+client.deleteIndex("test_name");
+{% endblock %}
+
