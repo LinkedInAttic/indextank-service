@@ -1,7 +1,7 @@
 About IndexTank Service
 =======================
 
-IndexTank Service (http://indextank.com) contains the source code that implementing the Search-as-a-Service platform. It contains the components that allows managing user accounts, server instances (worker) and index instances (deploy); depends on IndexTank Engine (https://github.com/linkedin/indextank-engine) binary.
+IndexTank Service (http://indextank.com) contains the source code for implementing the Search-as-a-Service platform. It contains the components that allow managing user accounts, server instances (worker) and index instances (deploy); it depends on IndexTank Engine (https://github.com/linkedin/indextank-engine) binary.
 
 ### Homepage:
 
