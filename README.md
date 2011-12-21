@@ -31,7 +31,7 @@ Apache Public License (APL) 2.0
 
 ### Getting started:
 
-1. Create the database schema.
+1. Create the database schema (python manage.py syncdb).
 2. Create an account.
 3. Start an index instance (IndexTank Engine).
 4. Start API.
