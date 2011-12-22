@@ -20,12 +20,12 @@ logger = flaptor_logging.get_logger('Models')
 
 # idea taken from https://www.grc.com/passwords.htm
 def generate_apikey(id):
-    key = "2A1A8AE7CAEFAC47D6F74920CE4B0CE46430CDA6CF03D254C1C29402D727E570"
+    key = settings.APIKEY_KEY
     while True:
         hash = hashlib.md5()
         hash.update('%d' % id)
         hash.update(key)
-        hash.update('%d' % random.randint(0,1000000))
+        hash.update('%d' % random.randint(0,sys.maxint))
         random_part = binascii.b2a_base64(hash.digest())[:14]
         if not '/' in random_part:
             break
@@ -35,12 +35,12 @@ def generate_apikey(id):
     return unique_part + '-' + random_part 
 
 def generate_onetimepass(id):
-    key = "CAEFAC47D6F7D727E57024920CE4B0CE46430CDA6CF03D254C1C29402A1A8AE7"
+    key = settings.ONETIMEPASS_KEY
     while True:
         hash = hashlib.md5()
         hash.update('%d' % id)
         hash.update(key)
-        hash.update('%d' % random.randint(0,1000000))
+        hash.update('%d' % random.randint(0,sys.maxint))
         random_part = binascii.b2a_base64(hash.digest())[:5]
         if not '/' in random_part:
             break
@@ -50,12 +50,12 @@ def generate_onetimepass(id):
     return unique_part + random_part 
 
 def generate_forgotpass(id):
-    key = "E57024920CE4B0CE4643CAEFAC47D6F7D7270CDA6CF03D254C1C29402A1A8AE7"
+    key = settings.FORGOTPASS_KEY
     while True:
         hash = hashlib.md5()
         hash.update('%d' % id)
         hash.update(key)
-        hash.update('%d' % random.randint(0,1000000))
+        hash.update('%d' % random.randint(0,sys.maxint))
         random_part = binascii.b2a_base64(hash.digest())[:6]
         if not '/' in random_part:
             break
