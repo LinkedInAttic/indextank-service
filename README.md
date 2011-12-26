@@ -27,7 +27,7 @@ Apache Public License (APL) 2.0
 * uWSGI (http://projects.unbit.it/uwsgi/)
 * MySQL
 * daemontools (http://cr.yp.to/daemontools.html)
-* Thrift library (generated sources with version 0.5.0 are provided)
+* Thrift library (generated sources with version 0.5.0 are provided) source definition: https://github.com/linkedin/indextank-engine/blob/master/thrift/document.thrift
 
 ### Getting started:
 
