@@ -90,12 +90,12 @@ def report_automatic_redeploy(deploy, initial_xmx, new_xmx):
 @_no_fail
 def report_activity(subject, body, type='b'):
     if type == 'b':
-        mail_to = 'activity@indextank.com'
+        mail_to = 'activity@example.com'
     elif type == 't':
-        mail_to = 'activitytech@indextank.com'
+        mail_to = 'activitytech@example.com'
     elif type == 'l':
-        mail_to = 'lowactivity@indextank.com'
+        mail_to = 'lowactivity@example.com'
     else:
         raise Exception('Wrong report type')
     
-    send_mail(ENV + ' - ' + subject, body, 'IndexTank Activity <activity@flaptor.com>', [mail_to], fail_silently=False)
+    send_mail(ENV + ' - ' + subject, body, 'IndexTank Activity <activity@example.com>', [mail_to], fail_silently=False)
