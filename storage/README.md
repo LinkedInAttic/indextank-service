@@ -11,15 +11,15 @@ The Storage component comprises 2 servers:
 
 * Indexes. The IndexesServer fulfills different functionalities:
 
-> - Serves the records to the IndexRecoverer (Reader)
+  * Serves the records to the IndexRecoverer (Reader)
 
-> - Takes records from the raw files and deals them to the different indexes files (Dealer)
+  * Takes records from the raw files and deals them to the different indexes files (Dealer)
 
-> - Optimizes log files. Merges all mergable operations (Optimizer) 
+  * Optimizes log files. Merges all mergable operations (Optimizer) 
 
 * Writer
 
-> - The writer gets the call from the API when a new doc is added. It writes down the log storage raw files.
+  * The writer gets the call from the API when a new doc is added. It writes down the log storage raw files.
 
 ### Running
 
