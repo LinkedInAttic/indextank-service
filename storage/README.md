@@ -3,6 +3,8 @@ About Storage
 
 The Storage component is intended to guarantee the durability of the indexes data. It works as a binary log for your indexes keeping track of all operations. This allows for you to regenerate indexes from scratch (this is what the Nebulizer component does when it 'moves' an index).
 
+For more detailed info check https://github.com/linkedin/indextank-service/wiki/Log-Storage
+
 ### Components 
 
 The Storage component comprises 2 servers:
