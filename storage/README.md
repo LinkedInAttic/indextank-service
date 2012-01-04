@@ -8,8 +8,11 @@ The Storage component is intended to guarantee the durability of the indexes dat
 The Storage component comprises 2 servers:
 
 * Indexes. The IndexesServer fulfills different functionalities:
+
 ** - Serves the records to the IndexRecoverer (Reader)
+
 ** - Takes records from the raw files and deals them to the different indexes files (Dealer)
+
 ** - Optimizes log files. Merges all mergable operations (Optimizer) 
 
 * Writer
