@@ -7,7 +7,6 @@ from django.db import IntegrityError
 from models import Account, ScoreFunction, Package, Service
 
 from flaptor.indextank.rpc import ttypes
-from views import mixpanel_event_track
 
 from restresource import ProvisionerResource, Resource, JsonResponse, non_empty_argument, int_argument, required_data, optional_data, int_querystring, json_querystring, querystring_argument, required_querystring_argument, check_public_api, get_index_param, get_index_param_or404, wakeup_if_hibernated, authorized_method
 
@@ -682,7 +681,6 @@ class Index(Resource):
                 return HttpResponse(status=204) # already exists
             
             mail.report_new_index(index)
-            mixpanel_event_track('use', { 'plan' : account.package.code, 'use-type': 'index creation', 'distinct_id': account.user.email})
             
             # 201 OK : index created
             return JsonResponse(metadata_for_index(index), status=201)
@@ -695,7 +693,6 @@ class Index(Resource):
             return HttpResponse(status=204)   
         rpc.get_deploy_manager().delete_index(index.code)
         mail.report_delete_index(index)
-        mixpanel_event_track('use', { 'plan' : index.account.package.code, 'use-type': 'index deletion', 'distinct_id': index.account.user.email})
         return HttpResponse()
     
 
@@ -1533,7 +1530,6 @@ class BaseProvisioner(ProvisionerResource):
         account.apply_package(package)
         account.save()
         
-        mixpanel_event_track('signup', { 'plan' : package.code, 'signup_place': self.provisioner.name, 'distinct_id': account.user.email})
 
         # create an index, using ApiClient
         client = ApiClient(account.get_private_apiurl())
