@@ -1,2 +1,0 @@
-AMAZON_USER = ""
-AMAZON_PASSWORD = ""

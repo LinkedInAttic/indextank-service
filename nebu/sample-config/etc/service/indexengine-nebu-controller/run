@@ -1,0 +1,8 @@
+#!/bin/bash
+cd /home/indextank/nebu
+
+echo "Supervise starting controller"
+# start a local controller 
+exec sudo -u indextank DJANGO_SETTINGS_MODULE=settings PYTHONPATH=../ /usr/bin/python controller.py 2>&1
+echo "Supervise (controller) ending"
+

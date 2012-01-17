@@ -4,7 +4,6 @@ import shutil
 import os
 import signal
 import systemutils
-import subprocess
 
 import flaptor.indextank.rpc.Controller as TController
 from flaptor.indextank.rpc.ttypes import WorkerMountStats, WorkerLoadStats, IndexStats
