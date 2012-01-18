@@ -1066,10 +1066,10 @@ class Search(Resource):
         facet_filters = []
         for k,v in category_filters.items():
             if type(v) is str or type(v) is unicode:
-                facet_filters.append(ttypes.CategoryFilter(k, v))
+                facet_filters.append(ttypes.CategoryFilter(_encode_utf8(k), _encode_utf8(v)))
             elif type(v) is list:
                 for element in v:
-                    facet_filters.append(ttypes.CategoryFilter(k, element))
+                    facet_filters.append(ttypes.CategoryFilter(_encode_utf8(k), _encode_utf8(element)))
             else:
                 return HttpResponse('"Invalid facets filter"', status=400)
                 
@@ -1185,13 +1185,13 @@ class Search(Resource):
         facet_filters = []
         for k,v in category_filters.items():
             if type(v) is str or type(v) is unicode:
-                facet_filters.append(ttypes.CategoryFilter(k, v))
+                facet_filters.append(ttypes.CategoryFilter(_encode_utf8(k), _encode_utf8(v)))
             elif type(v) is list:
                 for element in v:
-                    facet_filters.append(ttypes.CategoryFilter(k, element))
+                    facet_filters.append(ttypes.CategoryFilter(_encode_utf8(k), _encode_utf8(element)))
             else:
                 return HttpResponse('"Invalid facets filter"', status=400)
-                
+
         extra_parameters = {}
         if snippet:
             extra_parameters['snippet_fields'] = snippet
