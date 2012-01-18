@@ -2,6 +2,6 @@
 
 # TEST API
 host_url = 'https://apitest.authorize.net/xml/v1/request.api'
-api_login_id = '2ErYn5tb5X'
-transaction_key = '75mhe6B5TLNwA47b'
+api_login_id = ''
+transaction_key = ''
 

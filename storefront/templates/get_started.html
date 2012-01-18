@@ -7,6 +7,46 @@
   {{ block.super }}
   
   <script type="text/javascript" src="{% static 'common/js/function01.js' %}"></script>
+
+  <script>
+    $(window).ready(function() {
+      $('#signup').submit(function() {
+        try {
+          $.ajax(
+            {
+              type: "POST",
+              data: { 'email': $('#email').val() },
+              dataType: 'json',
+              success: function(data, text, x) {
+                //$('#email').val(data['api_key']);
+                $('#get_api_url').hide();
+                $('.user_email').text(data['email']);
+                $('.logged_out').hide();
+                $('.logged_in').show();
+                $('.private_apiurl').text(data['private_api_url']);
+                $('.public_apiurl').text(data['public_api_url']);
+                $('#account_created').show();
+                
+
+                // if you wanted to use some tracking tool (mixpanel, google analytics? ),
+                // this is the place to callback the service
+              },
+              error: function(x, text, err) {
+                $('#email_error').text(x.responseText);
+                $('.signup').val('SIGN UP');
+              }
+            }
+          );
+          $('#email_error').text('')
+          $('.signup').val('...');
+        } finally {
+          return false;
+        }
+      });
+    });  
+
+  </script>
+
 {% endblock %}
 
 

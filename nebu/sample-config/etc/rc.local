@@ -1,0 +1,12 @@
+if [ ! -d /mnt/logs/controller ]; then
+  rm -fr /etc/service/indexengine-nebu-controller/log/main
+  mkdir -p /mnt/logs/controller /mnt/indexes
+  ln -s /mnt/logs/controller /etc/service/indexengine-nebu-controller/log/main
+  echo PROD >/mnt/env.name
+  chown -R indextank:indextank /mnt
+  ln -s /mnt /data
+fi
+
+/usr/bin/svscanboot &
+exit 0
+

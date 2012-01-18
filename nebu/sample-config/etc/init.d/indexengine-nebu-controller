@@ -1,0 +1,35 @@
+#! /bin/sh
+
+PATH=.:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+NAME=indexengine-nebu-controller
+
+. /lib/lsb/init-functions
+
+case "$1" in
+  start)
+    log_daemon_msg "Starting" "$NAME"
+    svc -u /etc/service/$NAME
+    log_end_msg $?
+    ;;
+  stop)
+    cd $APP_DIR
+    log_daemon_msg "Stopping" "$NAME"
+    svc -d /etc/service/$NAME
+    log_end_msg $?
+    ;;
+  restart)
+    log_daemon_msg "Restarting" "$NAME"
+    svc -t /etc/service/$NAME
+    log_end_msg $?
+    ;;
+  status)
+    svok /etc/service/$NAME
+    log_end_msg $?
+    ;;
+  *)
+    N=/etc/init.d/$NAME
+    echo "Usage: $N {start|stop|restart|status}" >&2
+    exit 1
+    ;;
+esac
+

@@ -2,6 +2,6 @@
 
 # PROD API
 host_url = 'https://api.authorize.net/xml/v1/request.api'
-api_login_id = '9rnJ45EuM'
-transaction_key = '7Jm5Lgw88P5VwK7Y'
+api_login_id = ''
+transaction_key = ''
 

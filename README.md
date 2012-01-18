@@ -20,7 +20,7 @@ Apache Public License (APL) 2.0
 
 ### Dependencies:
 
-* Django tested with 1.2.7
+* Django 1.2.x ( tested with 1.2.7, not compatible with 1.3.x )
 * Python tested with 2.6.6
 * Java(TM) SE Runtime Environment tested with build 1.6.0_24-b07
 * nginx

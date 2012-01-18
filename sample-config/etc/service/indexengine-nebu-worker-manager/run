@@ -1,0 +1,6 @@
+#!/bin/bash
+# start a worker manager
+cd /home/indextank/nebu
+echo "Supervise's run starting worker manager."
+exec sudo -u indextank DJANGO_SETTINGS_MODULE=settings PYTHONPATH=../ /usr/bin/python worker_manager.py 2>&1
+echo "Supervise's run (worker manager) ending."
