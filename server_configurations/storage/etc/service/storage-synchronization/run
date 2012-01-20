@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# start a storage writer
+cd /home/indextank/storage
+echo "Supervise's run starting synchronization"
+
+while [ 1 ]; do
+  sudo -u indextank /bin/bash ./synchronize.sh 2>&1
+  sleep 30
+done
