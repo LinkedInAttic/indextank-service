@@ -1,6 +1,5 @@
 + /indexes
 + /indexes/*
 + /indexes/*/segments/
-+ /indexes/*/segments/*___sorted_*
-+ /indexes/*/segments/*___index
++ /indexes/*/segments/*\.sorted_*
 - *

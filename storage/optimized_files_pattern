@@ -1,6 +1,5 @@
 + /indexes
 + /indexes/*
 + /indexes/*/optimized/
-+ /indexes/*/optimized/*___sorted_*
-+ /indexes/*/optimized/*___index
++ /indexes/*/optimized/*\.optimized_*
 - *

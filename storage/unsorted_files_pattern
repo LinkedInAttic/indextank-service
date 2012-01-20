@@ -1,5 +1,5 @@
 + /indexes
 + /indexes/*
 + /indexes/*/segments/
-+ /indexes/*/segments/*___unsorted_*
++ /indexes/*/segments/*\.unsorted_*
 - *

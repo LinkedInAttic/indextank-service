@@ -81,7 +81,7 @@ if [[ ! -f "/data/master" || ! -f "/data/storage/safe_to_read" ]]; then
       if [[ $? != 0 ]]; then echo ">>>>>>>>>>>>>>>>>> FAILED to synchronize optimized segments :("; exit 1; fi
       
       echo "[+] Removing duplicates between sorted and unsorted segments..."
-      find /data/storage/migrating/indexes -name *_sorted_* | cut -d_ -f1 | awk '{printf "%s_*_unsorted_*\n",$1}' | xargs -L 100 rm -f
+      find /data/storage/migrating/indexes -name *.sorted_* | cut -d. -f1 | awk '{printf "%s.unsorted_*\n",$1}' | xargs -L 100 rm -f
       
       echo "[+] Fetching time delta with master..."
       MASTER_DATE=`ssh $MASTER date "+%s"`
