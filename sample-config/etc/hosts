@@ -1,6 +1,6 @@
 127.0.0.1 localhost
 
-127.0.0.1 database api storage deploymanager workermanager fend
+127.0.0.1 database api storage deploymanager workermanager fend dbajo.api.indextank.com api.indextank.com
 
 # The following lines are desirable for IPv6 capable hosts
 ::1 ip6-localhost ip6-loopback
