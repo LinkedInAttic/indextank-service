@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # start a worker manager
 cd /home/indextank/nebu
 echo "Supervise's run starting worker manager."

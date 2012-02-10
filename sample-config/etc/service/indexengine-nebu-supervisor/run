@@ -1,4 +1,5 @@
 #!/bin/bash
+
 if [ -f /data/master ]; then
     # start a local controller 
     cd /home/indextank/nebu

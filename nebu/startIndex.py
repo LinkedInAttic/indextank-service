@@ -111,7 +111,7 @@ app_params['--recover'] =           '' # recover does not take arguments
 
 
 # We want to use everything 64 bits because mmap doesn't like things it can't map to 31 bits.
-java = '/opt/java/64/jre/bin/java'
+java = 'java'
 os.putenv('LD_LIBRARY_PATH','lib/berkeleydb_libs_64/')
 
 

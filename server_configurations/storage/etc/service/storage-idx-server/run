@@ -3,4 +3,4 @@
 # start a logstorage dealer
 cd /home/indextank/storage
 echo "Supervise's run starting IndexesLog server."
-exec sudo -u indextank ionice -c 2 -n 3 /usr/bin/java -cp conf:lib/indextank-engine-1.0.0-jar-with-dependencies.jar com.flaptor.indextank.storage.IndexesLogServer -rp 15100 -mp 16000 2>&1
+exec sudo -u indextank ionice -c 2 -n 3 /usr/bin/java -cp conf:lib/indextank-trunk-deps.jar:lib/indextank-trunk.jar com.flaptor.indextank.storage.IndexesLogServer -rp 15100 -mp 16000 2>&1
