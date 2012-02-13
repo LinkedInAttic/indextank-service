@@ -4,8 +4,9 @@
 
 while true; do
   echo starting sync at `/bin/date`
-  ionice -c 2 -n 5 rsync -av --append-verify --delete /data/storage/live /archive/
-  ionice -c 2 -n 5 rsync -av --append-verify /data/storage/history /archive/
+  ionice -c 2 -n 5 rsync -av --append-verify --delete /data/storage/raw/live /archive/
+  # we don't use --delete with /data/storage/raw/history so we can safely remove old logs from there
+  ionice -c 2 -n 5 rsync -av --append-verify /data/storage/raw/history /archive/
   echo finished sync at `/bin/date`
   sleep 2
 done
