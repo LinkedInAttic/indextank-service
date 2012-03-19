@@ -546,22 +546,25 @@ def delete_docs_from_index(resource, index, documents):
         documents: list of documents to delete. **Need** 'docid' on each of them.
     """
     indexers = rpc.get_indexer_clients(index)
-    
-    responses = []
 
-    for doc in documents:
-        ret = {'deleted': True}
-        try:
-            for indexer in indexers:
-                indexer.delDoc(doc['docid'])
-        except Exception:
-            resource.logger.exception('"Failed to delete %s on %s (%s)', doc['docid'], index.code, index.name)
-            resource.error_logger.exception('"Failed to delete %s on %s (%s)', doc['docid'], index.code, index.name)
-            ret['deleted'] = False
-            ret['error'] = '"Currently unable to delete the requested document"'
+    try:
+        responses = []
+
+        for doc in documents:
+            ret = {'deleted': True}
+            try:
+                for indexer in indexers:
+                    indexer.delDoc(doc['docid'])
+            except Exception:
+                resource.logger.exception('"Failed to delete %s on %s (%s)', doc['docid'], index.code, index.name)
+                resource.error_logger.exception('"Failed to delete %s on %s (%s)', doc['docid'], index.code, index.name)
+                ret['deleted'] = False
+                ret['error'] = '"Currently unable to delete the requested document"'
         
-        responses.append(ret)
-    return responses
+            responses.append(ret)
+        return responses
+    finally:
+        rpc.close_thrift(indexers)
  
 """ Util functions for request processing """
 def metadata_for_index(index):
@@ -612,7 +615,6 @@ def send_log_storage_batch(resource, index, records):
         resource.logger.exception('Error sending batch to log storage. %d records for index %s', len(records), index.code)
         resource.error_logger.exception('Error sending batch to log storage. %d records for index %s', len(records), index.code)
         return False
-
 
 """ 
     Version resource ======================================================
@@ -691,7 +693,11 @@ class Index(Resource):
     def DELETE(self, request, data, version, index):
         if not index:
             return HttpResponse(status=204)   
-        rpc.get_deploy_manager().delete_index(index.code)
+        deploy_manager = rpc.get_deploy_manager()
+        try:
+            deploy_manager.delete_index(index.code)
+        finally:
+            rpc.close_thrift(deploy_manager)
         mail.report_delete_index(index)
         return HttpResponse()
     
@@ -766,21 +772,24 @@ class Document(Resource):
         
         indexers = rpc.get_indexer_clients(index)
         
-        if LOG_STORAGE_ENABLED:
-            records = [build_logrecord_for_add(index, d) for d in documents]
-            if not send_log_storage_batch(self, index, records):
-                return HttpResponse('"Currently unable to insert the requested document(s)."', status=503)
+        try:
+            if LOG_STORAGE_ENABLED:
+                records = [build_logrecord_for_add(index, d) for d in documents]
+                if not send_log_storage_batch(self, index, records):
+                    return HttpResponse('"Currently unable to insert the requested document(s)."', status=503)
         
-        for document in documents:
-            rt.append(self._insert_document(index, indexers, document))
+            for document in documents:
+                rt.append(self._insert_document(index, indexers, document))
         
-        if not batch_mode:
-            if rt[0]['added']:
-                return HttpResponse()
-            else:
-                return HttpResponse(rt[0]['error'], status=503)
+            if not batch_mode:
+                if rt[0]['added']:
+                    return HttpResponse()
+                else:
+                    return HttpResponse(rt[0]['error'], status=503)
             
-        return JsonResponse(rt)
+            return JsonResponse(rt)
+        finally:
+            rpc.close_thrift(indexers)
 
 
 
@@ -806,15 +815,18 @@ class Document(Resource):
 
         indexers = rpc.get_indexer_clients(index)
         
-        responses = delete_docs_from_index(self, index, documents)
+        try:
+            responses = delete_docs_from_index(self, index, documents)
 
-        if not bulk_mode:
-            if responses[0]['deleted']:
-                return HttpResponse()
-            else:
-                return HttpResponse(responses[0]['error'], status=503)
+            if not bulk_mode:
+                if responses[0]['deleted']:
+                    return HttpResponse()
+                else:
+                    return HttpResponse(responses[0]['error'], status=503)
             
-        return JsonResponse(responses)
+            return JsonResponse(responses)
+        finally:
+            rpc.close_thrift(indexers)
 
        
 """ 
@@ -842,24 +854,27 @@ class Categories(Resource):
         
         indexers = rpc.get_indexer_clients(index)
         
-        failed = False
-        for indexer in indexers:
-            try:
-                indexer.updateCategories(docid, categories)
-            except Exception, e:
-                if isinstance(e, ttypes.IndextankException):
-                    return HttpResponse(e.message, status=400)
-                else:
-                    self.logger.exception('Failed to update variables for %s on %s (%s)', docid, index.code, index.name)
-                    self.error_logger.exception('Failed to update variables for %s on %s (%s)', docid, index.code, index.name)
-                    failed = True
-                    break                
+        try:
+            failed = False
+            for indexer in indexers:
+                try:
+                    indexer.updateCategories(docid, categories)
+                except Exception, e:
+                    if isinstance(e, ttypes.IndextankException):
+                        return HttpResponse(e.message, status=400)
+                    else:
+                        self.logger.exception('Failed to update variables for %s on %s (%s)', docid, index.code, index.name)
+                        self.error_logger.exception('Failed to update variables for %s on %s (%s)', docid, index.code, index.name)
+                        failed = True
+                        break                
         
-        if failed:
-            return HttpResponse('"Currently unable to update the categories for the requested document."', status=503)
-        else:
-            self.set_message('Updated categories for %s' % docid)            
-            return HttpResponse()
+            if failed:
+                return HttpResponse('"Currently unable to update the categories for the requested document."', status=503)
+            else:
+                self.set_message('Updated categories for %s' % docid)            
+                return HttpResponse()
+        finally:
+            rpc.close_thrift(indexers)
        
 
 """ 
@@ -887,24 +902,27 @@ class Variables(Resource):
         
         indexers = rpc.get_indexer_clients(index)
         
-        failed = False
-        for indexer in indexers:
-            try:
-                indexer.updateBoost(docid, variables)
-            except Exception, e:
-                if isinstance(e, ttypes.IndextankException) and e.message.startswith('Invalid boost index'):
-                    return HttpResponse(e.message.replace('boost', 'variable'), status=400)
-                else:
-                    self.logger.exception('Failed to update variables for %s on %s (%s)', docid, index.code, index.name)
-                    self.error_logger.exception('Failed to update variables for %s on %s (%s)', docid, index.code, index.name)
-                    failed = True
-                    break                
+        try:
+            failed = False
+            for indexer in indexers:
+                try:
+                    indexer.updateBoost(docid, variables)
+                except Exception, e:
+                    if isinstance(e, ttypes.IndextankException) and e.message.startswith('Invalid boost index'):
+                        return HttpResponse(e.message.replace('boost', 'variable'), status=400)
+                    else:
+                        self.logger.exception('Failed to update variables for %s on %s (%s)', docid, index.code, index.name)
+                        self.error_logger.exception('Failed to update variables for %s on %s (%s)', docid, index.code, index.name)
+                        failed = True
+                        break                
         
-        if failed:
-            return HttpResponse('"Currently unable to index the requested document."', status=503)
-        else:
-            self.set_message('Updated variables for %s' % docid)            
-            return HttpResponse()
+            if failed:
+                return HttpResponse('"Currently unable to index the requested document."', status=503)
+            else:
+                self.set_message('Updated variables for %s' % docid)            
+                return HttpResponse()
+        finally:
+            rpc.close_thrift(indexers)
        
 """ 
     Functions resource ======================================================
@@ -920,9 +938,12 @@ class Functions(Resource):
         if not index.is_writable():
             return HttpResponse('"Index not ready to list functions."', status=409)
 
-        indexer = rpc.get_indexer_clients(index)[0]
-        functions = indexer.listScoreFunctions()
-        return JsonResponse(functions)
+        indexers = rpc.get_indexer_clients(index)
+        try:
+            functions = indexers[0].listScoreFunctions()
+            return JsonResponse(functions)
+        finally:
+            rpc.close_thrift(indexers)
     
 
 """ 
@@ -951,25 +972,28 @@ class Function(Resource):
 
         indexers = rpc.get_indexer_clients(index)
         
-        failed = False
-        for indexer in indexers:
-            try:
-                indexer.addScoreFunction(function, definition)
-            except:
-                self.logger.warn('Failed to add function %s with definition: %s', function, data)
-                failed = True
-                break
+        try:
+            failed = False
+            for indexer in indexers:
+                try:
+                    indexer.addScoreFunction(function, definition)
+                except:
+                    self.logger.warn('Failed to add function %s with definition: %s', function, data)
+                    failed = True
+                    break
     
-        if failed:
-            return HttpResponse('"Unable to add the requested function. Check your syntax."', status=400)
-        else:
-            sf, _ = ScoreFunction.objects.get_or_create(index=index, name=function)
-            sf.definition = definition
-            sf.save()
+            if failed:
+                return HttpResponse('"Unable to add the requested function. Check your syntax."', status=400)
+            else:
+                sf, _ = ScoreFunction.objects.get_or_create(index=index, name=function)
+                sf.definition = definition
+                sf.save()
             
-            self.set_message('set to %s' % (definition))
-            return HttpResponse()
-    
+                self.set_message('set to %s' % (definition))
+                return HttpResponse()
+        finally:
+            rpc.close_thrift(indexers)
+            
     @required_index_name
     @required_integer_function
     @get_index_param_or404
@@ -985,21 +1009,24 @@ class Function(Resource):
 
         indexers = rpc.get_indexer_clients(index)
         
-        failed = False
-        for indexer in indexers:
-            try:
-                indexer.removeScoreFunction(function)
-            except:
-                self.logger.exception('Failed to remove function %s', function)
-                self.error_logger.exception('Failed to remove function %s', function)
-                failed = True
-                break
+        try:
+            failed = False
+            for indexer in indexers:
+                try:
+                    indexer.removeScoreFunction(function)
+                except:
+                    self.logger.exception('Failed to remove function %s', function)
+                    self.error_logger.exception('Failed to remove function %s', function)
+                    failed = True
+                    break
     
-        if failed:
-            return HttpResponse('"Failed to remove the requested function."', status=503)
-        else:
-            models.ScoreFunction.objects.filter(index=index, name=function).delete()
-            return HttpResponse()
+            if failed:
+                return HttpResponse('"Failed to remove the requested function."', status=503)
+            else:
+                models.ScoreFunction.objects.filter(index=index, name=function).delete()
+                return HttpResponse()
+        finally:
+            rpc.close_thrift(indexers)
     
 builtin_len = len
 """ 
@@ -1081,46 +1108,49 @@ class Search(Resource):
             self.error_logger.warn('cannot find searcher for index %s (%s)', index.name, index.code)
             return HttpResponse('"Currently unable to perform the requested query"', status=503)
 
-        len = 1000
-        iterations = None
-        while True:
-            if iterations is not None:
-                iterations -= 1
-                if iterations < 0:
-                    return HttpResponse('"Currently unable to perform the requested query - some or all documents may not have been deleted."', status=503)
-            try:
-                rs = searcher.search(q, start, len, function, query_vars, facet_filters, docvar_filters, function_filters, extra_parameters)
-            except ttypes.InvalidQueryException, iqe:
-                return HttpResponse('"Invalid query: %s"' % q, status=400)
-            except ttypes.MissingQueryVariableException, qve:
-                return HttpResponse('"%s"' % qve.message, status=400)
-            except ttypes.IndextankException, ite:
-                if ite.message == 'Invalid query':
+        try:
+            len = 1000
+            iterations = None
+            while True:
+                if iterations is not None:
+                    iterations -= 1
+                    if iterations < 0:
+                        return HttpResponse('"Currently unable to perform the requested query - some or all documents may not have been deleted."', status=503)
+                try:
+                    rs = searcher.search(q, start, len, function, query_vars, facet_filters, docvar_filters, function_filters, extra_parameters)
+                except ttypes.InvalidQueryException, iqe:
                     return HttpResponse('"Invalid query: %s"' % q, status=400)
-                else:
-                    self.logger.exception('Unexpected IndextankException while performing query')
-                    self.error_logger.exception('Unexpected IndextankException while performing query')
-                    if iterations is None:
-                        return HttpResponse('"Currently unable to perform the requested query."', status=503)
+                except ttypes.MissingQueryVariableException, qve:
+                    return HttpResponse('"%s"' % qve.message, status=400)
+                except ttypes.IndextankException, ite:
+                    if ite.message == 'Invalid query':
+                        return HttpResponse('"Invalid query: %s"' % q, status=400)
                     else:
+                        self.logger.exception('Unexpected IndextankException while performing query')
+                        self.error_logger.exception('Unexpected IndextankException while performing query')
+                        if iterations is None:
+                            return HttpResponse('"Currently unable to perform the requested query."', status=503)
+                        else:
+                            continue
+            
+                if iterations is None:
+                    iterations = ((rs.matches - start) / len) * 2
+            
+                self.logger.debug('query delete: %s docids', rs.matches) 
+
+                if LOG_STORAGE_ENABLED:
+                    records = [build_logrecord_for_delete(index, d) for d in rs.docs]
+            
+                    if not send_log_storage_batch(self, index, records):
                         continue
-            
-            if iterations is None:
-                iterations = ((rs.matches - start) / len) * 2
-            
-            self.logger.debug('query delete: %s docids', rs.matches) 
 
-            if LOG_STORAGE_ENABLED:
-                records = [build_logrecord_for_delete(index, d) for d in rs.docs]
-            
-                if not send_log_storage_batch(self, index, records):
-                    continue
+                delete_docs_from_index(self, index, rs.docs)
+                if (rs.matches - start) < len:
+                    break
 
-            delete_docs_from_index(self, index, rs.docs)
-            if (rs.matches - start) < len:
-                break
-
-        return HttpResponse()
+            return HttpResponse()
+        finally:
+            rpc.close_thrift(searcher)
     
     @required_index_name
     @required_querystring_argument('q')
@@ -1226,6 +1256,8 @@ class Search(Resource):
                 self.logger.exception('Unexpected IndextankException while performing query')
                 self.error_logger.exception('Unexpected IndextankException while performing query')
                 return HttpResponse('"Currently unable to perform the requested search"', status=503)
+        finally:
+            rpc.close_thrift(searcher)
             
 
         formatted_time = '%.3f' % (t2-t1)
@@ -1333,20 +1365,23 @@ class Promote(Resource):
                 
         indexers = rpc.get_indexer_clients(index)
         
-        failed = False
-        for indexer in indexers:
-            try:
-                indexer.promoteResult(docid, query)
-            except:
-                self.logger.exception('"Failed to promote result %s for query %s"', docid, query)
-                self.error_logger.exception('"Failed to promote result %s for query %s"', docid, query)
-                failed = True
-                break
+        try:
+            failed = False
+            for indexer in indexers:
+                try:
+                    indexer.promoteResult(docid, query)
+                except:
+                    self.logger.exception('"Failed to promote result %s for query %s"', docid, query)
+                    self.error_logger.exception('"Failed to promote result %s for query %s"', docid, query)
+                    failed = True
+                    break
     
-        if failed:
-            return HttpResponse('"Currently unable to perform the requested promote."', status=503)
-        else:
-            return HttpResponse()
+            if failed:
+                return HttpResponse('"Currently unable to perform the requested promote."', status=503)
+            else:
+                return HttpResponse()
+        finally:
+            rpc.close_thrift(indexers)
         
 """ 
     InstantLinks resource ======================================================
@@ -1398,6 +1433,8 @@ class InstantLinks(Resource):
             self.logger.exception('Failed to provide instant links for "%s"', query)
             self.error_logger.exception('Failed to provide instant links for "%s"', query)
             return HttpResponse('"Currently unable to perform the requested instant links."', status=503)
+        finally:
+            rpc.close_thrift([searcher, suggestor])
             
         
 """ 
@@ -1426,6 +1463,8 @@ class AutoComplete(Resource):
             self.logger.exception('Failed to provide autocomplete for "%s"', query)
             self.error_logger.exception('Failed to provide autocomplete for "%s"', query)
             return HttpResponse('"Currently unable to perform the requested autocomplete."', status=503)
+        finally:
+            rpc.close_thrift(suggestor)
             
         
        

@@ -167,3 +167,14 @@ def get_indexer_clients(index, timeout_ms=1000):
         return retval
     else:
         raise exceptions.NoIndexerException()
+
+def close_thrift(client):
+    if type(client) is list:
+        for c in client:
+            close_thrift(c)
+    else:
+        try:
+            client._oprot.trans.close()
+        except:
+            pass
+
