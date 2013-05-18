@@ -24,7 +24,7 @@ class MessagesNode(template.Node):
             # Create a list of messages for each tag.
             out_str = ''
             for level, tag in sorted(grouped.iterkeys()):
-                out_str += '<div class="messages %s">\n<ul">' % tag
+                out_str += '<div class="messages %s">\n<ul>' % tag
                 for m in grouped[(level, tag)]:
                     out_str += '<li>%s</li>' % (m)
                 out_str += '</ul>\n</div>\n'
